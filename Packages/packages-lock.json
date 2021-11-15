@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "co.parabox.stl": {
+      "version": "https://github.com/karl-/pb_Stl.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f13d4ca646a24580dbd6984264215809fbec9247"
+    },
     "com.unity.collab-proxy": {
       "version": "1.11.2",
       "depth": 0,
@@ -126,6 +133,20 @@
       "source": "registry",
       "dependencies": {
         "com.unity.subsystemregistration": "1.1.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.xr.interaction.toolkit": {
+      "version": "1.0.0-pre.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.inputsystem": "1.0.2",
+        "com.unity.ugui": "1.0.0",
+        "com.unity.xr.legacyinputhelpers": "2.1.7",
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.physics": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
