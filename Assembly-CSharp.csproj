@@ -65,6 +65,8 @@
     <None Include="Assets\AssetStore\Photon\PhotonUnityNetworking\changelog.txt" />
     <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\AssetStore\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Extended.shader" />
+    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Oswald-Bold - OFL.txt" />
+    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Anton OFL.txt" />
     <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\AssetStore\Photon\PhotonLibs\WebSocket\websocket-sharp.dll" />
@@ -92,6 +94,7 @@
     <None Include="Assets\AssetStore\Photon\PhotonUnityNetworking\link.xml" />
     <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Bangers - OFL.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -789,6 +792,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj">
+      <Project>{68D83766-8ACD-34A2-7510-99A0CB42C6DF}</Project>
+      <Name>PhotonUnityNetworking.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj">
       <Project>{ACB65B05-7768-FB82-B34E-E1FAFAD610A7}</Project>
       <Name>PhotonUnityNetworking.Utilities.PhotonPlayer.Editor</Name>
@@ -797,13 +804,29 @@
       <Project>{959B93DF-1AFC-5B1B-1B9F-6F76D99A20C1}</Project>
       <Name>PunDemos.DemoHubEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="PhotonUnityNetworking.csproj">
+      <Project>{1834D597-E12B-3D19-912B-3E4F8B0B9F95}</Project>
+      <Name>PhotonUnityNetworking</Name>
+    </ProjectReference>
+    <ProjectReference Include="Boxophobic.SkyboxCubemapExtended.Editor.csproj">
+      <Project>{4E39CE0F-FE66-FD7F-E774-F15DFD711CC8}</Project>
+      <Name>Boxophobic.SkyboxCubemapExtended.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj">
       <Project>{19F86686-C640-76D3-9FDF-A6D19613CC11}</Project>
       <Name>PunDemos.DemoSlotcarEditor</Name>
     </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
-      <Project>{58890371-E227-559B-3B1E-C75277547716}</Project>
-      <Name>PhotonUnityNetworking.Demos</Name>
+    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj">
+      <Project>{16D71DDA-E039-ACD8-8F6E-9584C9B73ECC}</Project>
+      <Name>PhotonUnityNetworking.Utilities.Culling.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="Boxophobic.Utils.Editor.csproj">
+      <Project>{7871B646-1651-6FC1-1A33-95132AECE841}</Project>
+      <Name>Boxophobic.Utils.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="PhotonRealtime.csproj">
+      <Project>{04D014B0-7C0A-3FBC-EEC9-544D73C822DE}</Project>
+      <Name>PhotonRealtime</Name>
     </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj">
       <Project>{25A351B0-4EBE-8248-7BDA-E62B6B5B995B}</Project>
@@ -813,29 +836,9 @@
       <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>
       <Name>Boxophobic.Utils.Scripts</Name>
     </ProjectReference>
-    <ProjectReference Include="PhotonRealtime.csproj">
-      <Project>{04D014B0-7C0A-3FBC-EEC9-544D73C822DE}</Project>
-      <Name>PhotonRealtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="Boxophobic.SkyboxCubemapExtended.Editor.csproj">
-      <Project>{4E39CE0F-FE66-FD7F-E774-F15DFD711CC8}</Project>
-      <Name>Boxophobic.SkyboxCubemapExtended.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.csproj">
-      <Project>{1834D597-E12B-3D19-912B-3E4F8B0B9F95}</Project>
-      <Name>PhotonUnityNetworking</Name>
-    </ProjectReference>
-    <ProjectReference Include="Boxophobic.Utils.Editor.csproj">
-      <Project>{7871B646-1651-6FC1-1A33-95132AECE841}</Project>
-      <Name>Boxophobic.Utils.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj">
-      <Project>{16D71DDA-E039-ACD8-8F6E-9584C9B73ECC}</Project>
-      <Name>PhotonUnityNetworking.Utilities.Culling.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Editor.csproj">
-      <Project>{68D83766-8ACD-34A2-7510-99A0CB42C6DF}</Project>
-      <Name>PhotonUnityNetworking.Editor</Name>
+    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
+      <Project>{58890371-E227-559B-3B1E-C75277547716}</Project>
+      <Name>PhotonUnityNetworking.Demos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

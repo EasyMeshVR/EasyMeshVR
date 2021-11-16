@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -24,8 +25,19 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
+        public void OnClickedSinglePlayer()
+        {
+            Debug.Log("Clicked Single Player");
+        }
+
+        public void OnClickedMultiPlayer()
+        {
+            Debug.Log("Clicked Multi Player");
+        }
+
         public void OnClickedQuit()
         {
+            Debug.Log("Clicked Quit");
             Application.Quit();
         }
 
