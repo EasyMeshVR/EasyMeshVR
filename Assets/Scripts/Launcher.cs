@@ -7,18 +7,21 @@ namespace EasyMeshVR.Multiplayer
 {
     public class Launcher : MonoBehaviour
     {
+        #region Private Fields
+
+        [SerializeField]
+        private GameObject launcherMenu;
+        [SerializeField]
+        private GameObject multiplayerMenu;
+
+        #endregion
+
         #region MonoBehaviour Callbacks
 
-        // Start is called before the first frame update
         void Start()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            launcherMenu.SetActive(true);
+            multiplayerMenu.SetActive(false);
         }
 
         #endregion
@@ -27,17 +30,25 @@ namespace EasyMeshVR.Multiplayer
 
         public void OnClickedSinglePlayer()
         {
+            // Here we should first turn PhotonNetwork.OfflineMode = true and then "connect"
+            // to the offline room using photon
             Debug.Log("Clicked Single Player");
         }
 
         public void OnClickedMultiPlayer()
         {
-            Debug.Log("Clicked Multi Player");
+            launcherMenu.SetActive(false);
+            multiplayerMenu.SetActive(true);
+        }
+
+        public void OnClickedBackMultiplayer()
+        {
+            launcherMenu.SetActive(true);
+            multiplayerMenu.SetActive(false);
         }
 
         public void OnClickedQuit()
         {
-            Debug.Log("Clicked Quit");
             Application.Quit();
         }
 
