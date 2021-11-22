@@ -27,6 +27,9 @@ namespace EasyMeshVR.UI
         // TODO: we can give the KeyInputManager the position of the cursor in the input field
         // so that the user can insert characters in-between the string, currently the VRKeys.Keyboard
         // class just appends to the current string when you type
+
+        // Also TODO: lets use the free Oculus hand models and animate the hands transitioning to a pointer state
+        // with the index finger when hovering over a canvas UI (casting a ray/line from the index finger)
         public void InputFieldSelected()
         {
             KeyInputManager.GetInstance().InputFieldSelected(inputField);

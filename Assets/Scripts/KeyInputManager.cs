@@ -16,7 +16,7 @@ namespace EasyMeshVR.UI
 
         private TMP_InputField inputField;
 
-        private static KeyInputManager instance = new KeyInputManager();
+        private static KeyInputManager instance;
 
         private KeyInputManager() { }
 
