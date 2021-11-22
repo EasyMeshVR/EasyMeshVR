@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1291752650784973118}
   - component: {fileID: 1291752650784973119}
   - component: {fileID: 1291752650784973104}
+  - component: {fileID: 5972249980683552815}
   m_Layer: 5
   m_Name: InputField
   m_TagString: Untagged
@@ -145,9 +146,9 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: VRKeys.Keyboard, Assembly-CSharp
-        m_MethodName: Enable
+      - m_Target: {fileID: 5972249980683552815}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.InputField, Assembly-CSharp
+        m_MethodName: InputFieldSelected
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -157,16 +158,40 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.InputField, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: VRKeys.Keyboard, Assembly-CSharp
-        m_MethodName: Disable
+      - m_Target: {fileID: 5972249980683552815}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.InputField, Assembly-CSharp
+        m_MethodName: InputFieldDeselected
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.InputField, Assembly-CSharp
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -199,6 +224,18 @@ MonoBehaviour:
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
   m_InputValidator: {fileID: 0}
+--- !u!114 &5972249980683552815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1291752650784973106}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9879b2ec6ca2b240b5d548d3f7f58cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1291752651266172414
 GameObject:
   m_ObjectHideFlags: 0

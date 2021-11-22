@@ -221,6 +221,14 @@ namespace VRKeys {
 			PositionAndAttachMallets ();
 		}
 
+		/// <summary>
+		/// Clears the current text stored in the keyboard script.
+		/// </summary>
+		public void ClearText()
+        {
+			text = string.Empty;
+        }
+
 		private IEnumerator EnableWhenInitialized () {
 			yield return new WaitUntil (() => initialized);
 
