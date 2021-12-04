@@ -21,6 +21,9 @@ namespace EasyMeshVR.Multiplayer
         private GameObject roomListMenu;
 
         [SerializeField]
+        private GameObject settingsMenu;
+
+        [SerializeField]
         private GameObject connectingPanel;
 
         [SerializeField]
@@ -73,6 +76,7 @@ namespace EasyMeshVR.Multiplayer
             launcherMenu.SetActive(true);
             multiplayerMenu.SetActive(false);
             roomListMenu.SetActive(false);
+            settingsMenu.SetActive(false);
             connectingPanel.SetActive(false);
         }
 
@@ -100,6 +104,12 @@ namespace EasyMeshVR.Multiplayer
             roomListMenu.SetActive(true);
         }
 
+        public void OnClickedSettings()
+        {
+            launcherMenu.SetActive(false);
+            settingsMenu.SetActive(true);
+        }
+
         public void OnClickedBackMultiplayer()
         {
             launcherMenu.SetActive(true);
@@ -110,6 +120,12 @@ namespace EasyMeshVR.Multiplayer
         {
             roomListMenu.SetActive(false);
             multiplayerMenu.SetActive(true);
+        }
+
+        public void OnClickedBackSettings()
+        {
+            settingsMenu.SetActive(false);
+            launcherMenu.SetActive(true);
         }
 
         public void OnClickedQuit()
