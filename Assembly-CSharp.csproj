@@ -53,79 +53,80 @@
     <UnityVersion>2020.3.20f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\AssetStore\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\HandCollider.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonLibs\WebSocket\WebSocket.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\CancelKey.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Layouts\Dvorak.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\LetterKey.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Layout.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\ShiftKey.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\BackspaceKey.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\SpaceKey.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\ClearKey.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Keyboard.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Layouts\French.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Key.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Example\DemoScene.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Placement.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Controller.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\EnterKey.cs" />
-    <Compile Include="Assets\Scripts\Launcher.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\Mallet.cs" />
-    <Compile Include="Assets\AssetStore\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
-    <Compile Include="Assets\AssetStore\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
-    <Compile Include="Assets\Scripts\KeyInputManager.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\HandCollider.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\WebSocket.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\CancelKey.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\Dvorak.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LetterKey.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layout.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\BackspaceKey.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ClearKey.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\InputField.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Keyboard.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\French.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Key.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Example\DemoScene.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Placement.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Controller.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
+    <Compile Include="Assets\Scripts\KeyInputManager.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
+    <Compile Include="Assets\Scripts\Launcher.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Mallet.cs" />
+    <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
+    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
+    <Compile Include="Assets\Scripts\GameMenuManager.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMPro.cginc" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\AssetStore\Photon\PhotonUnityNetworking\changelog.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\AssetStore\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Extended.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Oswald-Bold - OFL.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Anton OFL.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\WebSocket\websocket-sharp.dll" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\AssetStore\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Blend.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\changes-library.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\AssetStore\Photon\PhotonUnityNetworking\readme.txt" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\Photon3Unity3D.dll" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\Metro\Photon3Unity3D.dll" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\AssetStore\Photon\PhotonLibs\Photon3Unity3D.xml" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\AssetStore\Photon\PhotonUnityNetworking\link.xml" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Shaders\TMP_Sprite.shader" />
-    <None Include="Assets\AssetStore\TextMesh Pro\Fonts\Bangers - OFL.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonUnityNetworking\changelog.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\ExternalAssets\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Extended.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Fonts\Oswald-Bold - OFL.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Fonts\Anton OFL.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\websocket-sharp.dll" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\ExternalAssets\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Blend.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\changes-library.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonUnityNetworking\readme.txt" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Photon3Unity3D.dll" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Metro\Photon3Unity3D.dll" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Photon3Unity3D.xml" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\ExternalAssets\Photon\PhotonUnityNetworking\link.xml" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\ExternalAssets\TextMesh Pro\Fonts\Bangers - OFL.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -351,10 +352,10 @@
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
     <Reference Include="Photon3Unity3D">
-      <HintPath>Assets\AssetStore\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll</HintPath>
+      <HintPath>Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="websocket-sharp">
-      <HintPath>Assets\AssetStore\Photon\PhotonLibs\WebSocket\websocket-sharp.dll</HintPath>
+      <HintPath>Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\websocket-sharp.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -823,18 +824,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Boxophobic.SkyboxCubemapExtended.Editor.csproj">
-      <Project>{4E39CE0F-FE66-FD7F-E774-F15DFD711CC8}</Project>
-      <Name>Boxophobic.SkyboxCubemapExtended.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Boxophobic.Utils.Editor.csproj">
-      <Project>{7871B646-1651-6FC1-1A33-95132AECE841}</Project>
-      <Name>Boxophobic.Utils.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="Boxophobic.Utils.Scripts.csproj">
-      <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>
-      <Name>Boxophobic.Utils.Scripts</Name>
-    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Utilities.PhotonPlayer.Editor.csproj">
       <Project>{ACB65B05-7768-FB82-B34E-E1FAFAD610A7}</Project>
       <Name>PhotonUnityNetworking.Utilities.PhotonPlayer.Editor</Name>
@@ -855,13 +844,25 @@
       <Project>{25A351B0-4EBE-8248-7BDA-E62B6B5B995B}</Project>
       <Name>PhotonUnityNetworking.Utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="Boxophobic.Utils.Scripts.csproj">
+      <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>
+      <Name>Boxophobic.Utils.Scripts</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonRealtime.csproj">
       <Project>{04D014B0-7C0A-3FBC-EEC9-544D73C822DE}</Project>
       <Name>PhotonRealtime</Name>
     </ProjectReference>
+    <ProjectReference Include="Boxophobic.SkyboxCubemapExtended.Editor.csproj">
+      <Project>{4E39CE0F-FE66-FD7F-E774-F15DFD711CC8}</Project>
+      <Name>Boxophobic.SkyboxCubemapExtended.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.csproj">
       <Project>{1834D597-E12B-3D19-912B-3E4F8B0B9F95}</Project>
       <Name>PhotonUnityNetworking</Name>
+    </ProjectReference>
+    <ProjectReference Include="Boxophobic.Utils.Editor.csproj">
+      <Project>{7871B646-1651-6FC1-1A33-95132AECE841}</Project>
+      <Name>Boxophobic.Utils.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="PhotonChat.csproj">
       <Project>{1D75F430-8C51-201E-FC16-A1D47E7A76C0}</Project>
