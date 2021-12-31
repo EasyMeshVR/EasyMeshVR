@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3418511483476113316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1250802533660600755}
+  - component: {fileID: 3635793493768956968}
+  m_Layer: 0
+  m_Name: KeyInputManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1250802533660600755
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418511483476113316}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 5886072729805668313}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3635793493768956968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3418511483476113316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5c271d029d9fd74ea7ff009f575a4fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyboard: {fileID: 5779438165330171285}
 --- !u!1 &5882333925241122005
 GameObject:
   m_ObjectHideFlags: 0
@@ -4197,6 +4241,7 @@ Transform:
   - {fileID: 5886072731685850317}
   - {fileID: 5886072729036661485}
   - {fileID: 5886072728903883353}
+  - {fileID: 1250802533660600755}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4252,8 +4297,7 @@ MonoBehaviour:
   OnUpdate:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 688086155477860296, guid: 161abe67e8cb59845bfeca1288c7fb2c,
-          type: 3}
+      - m_Target: {fileID: 3635793493768956968}
         m_TargetAssemblyTypeName: EasyMeshVR.UI.KeyInputManager, Assembly-CSharp
         m_MethodName: UpdateTextField
         m_Mode: 0
@@ -4267,10 +4311,34 @@ MonoBehaviour:
         m_CallState: 2
   OnSubmit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3635793493768956968}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.KeyInputManager, Assembly-CSharp
+        m_MethodName: Submit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnCancel:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3635793493768956968}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.KeyInputManager, Assembly-CSharp
+        m_MethodName: Submit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5779438164485191765
 MonoBehaviour:
   m_ObjectHideFlags: 0
