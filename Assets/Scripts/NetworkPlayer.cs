@@ -14,6 +14,8 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField] private Transform head;
         [SerializeField] private Transform leftHand;
         [SerializeField] private Transform rightHand;
+        [SerializeField] private Animator leftHandAnimator;
+        [SerializeField] private Animator rightHandAnimator;
 
         private Transform headOrigin;
         private Transform leftHandOrigin;
@@ -38,6 +40,14 @@ namespace EasyMeshVR.Multiplayer
             headOrigin = origin.transform.Find("Camera Offset/Main Camera");
             leftHandOrigin = origin.transform.Find("Camera Offset/LeftHand Controller");
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
+
+            /*if (photonView.IsMine)
+            {
+                foreach (var renderer in GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = false;
+                }
+            }*/
         }
 
         // Update is called once per frame
@@ -45,13 +55,12 @@ namespace EasyMeshVR.Multiplayer
         {
             if (photonView.IsMine)
             {
-                head.GetChild(0).gameObject.SetActive(false);
-                leftHand.GetChild(0).gameObject.SetActive(false);
-                rightHand.GetChild(0).gameObject.SetActive(false);
-
                 MapPosition(head, headOrigin);
                 MapPosition(leftHand, leftHandOrigin);
                 MapPosition(rightHand, rightHandOrigin);
+
+                UpdateHandAnimation(InputDevices.GetDeviceAtXRNode(XRNode.LeftHand), leftHandAnimator);
+                UpdateHandAnimation(InputDevices.GetDeviceAtXRNode(XRNode.RightHand), rightHandAnimator);
             }
         }
 
@@ -63,6 +72,27 @@ namespace EasyMeshVR.Multiplayer
         {
             target.position = originTransform.position;
             target.rotation = originTransform.rotation;
+        }
+
+        void UpdateHandAnimation(InputDevice targetDevice, Animator handAnimator)
+        {
+            if (targetDevice.TryGetFeatureValue(CommonUsages.trigger, out float triggerValue))
+            {
+                handAnimator.SetFloat("Trigger", triggerValue);
+            }
+            else
+            {
+                handAnimator.SetFloat("Trigger", 0);
+            }
+
+            if (targetDevice.TryGetFeatureValue(CommonUsages.grip, out float gripValue))
+            {
+                handAnimator.SetFloat("Grip", gripValue);
+            }
+            else
+            {
+                handAnimator.SetFloat("Grip", 0);
+            }
         }
 
         #endregion
