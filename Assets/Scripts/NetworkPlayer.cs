@@ -47,6 +47,11 @@ namespace EasyMeshVR.Multiplayer
                 {
                     renderer.enabled = false;
                 }
+
+                foreach (var canvas in GetComponentsInChildren<Canvas>())
+                {
+                    canvas.enabled = false;
+                }
             }
         }
 
