@@ -41,13 +41,13 @@ namespace EasyMeshVR.Multiplayer
             leftHandOrigin = origin.transform.Find("Camera Offset/LeftHand Controller");
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
 
-            /*if (photonView.IsMine)
+            if (photonView.IsMine)
             {
                 foreach (var renderer in GetComponentsInChildren<Renderer>())
                 {
                     renderer.enabled = false;
                 }
-            }*/
+            }
         }
 
         // Update is called once per frame
