@@ -5,7 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using EasyMeshVR.Core;
-using Photon.Pun.UtilityScripts;
+using EasyMeshVR.Web;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace EasyMeshVR.Multiplayer
@@ -27,6 +27,8 @@ namespace EasyMeshVR.Multiplayer
         private GameObject XROrigin;
 
         private GameObject spawnedPlayerPrefab;
+
+        private ApiRequester apiRequester;
 
         private int myPlayerNumber = 0;
 
@@ -52,6 +54,12 @@ namespace EasyMeshVR.Multiplayer
 
         void Start()
         {
+            apiRequester = GetComponent<ApiRequester>();
+
+            // debugging the requester
+            // TODO: remove later
+            apiRequester.DownloadModel("gold-preliminary-smelt");
+
             spawnedPlayerPrefab = SpawnPlayer();
         }
 

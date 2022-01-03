@@ -76,6 +76,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\WebSocket.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\CancelKey.cs" />
+    <Compile Include="Assets\Scripts\XRGrabNetworkInteractable.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LetterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
@@ -93,7 +94,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\XRGrabNetworkInteractable.cs" />
+    <Compile Include="Assets\Scripts\ApiRequester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
