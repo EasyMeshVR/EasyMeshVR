@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using Unity.XR.CoreUtils;
 using Photon.Pun;
+using Photon.Realtime;
 
 namespace EasyMeshVR.Multiplayer
 {
