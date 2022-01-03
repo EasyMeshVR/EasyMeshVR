@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
+using EasyMeshVR.Core;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -31,9 +32,6 @@ namespace EasyMeshVR.Multiplayer
 
         [SerializeField]
         private TMP_InputField joinRoomInputField;
-
-        [SerializeField]
-        private byte MAX_PLAYERS_PER_ROOM = 4;
 
         /// <summary>
         /// This client's game version number. Users can be separated from each other
@@ -187,10 +185,12 @@ namespace EasyMeshVR.Multiplayer
             if (creatingRoom)
             {
                 Debug.Log("Creating room " + roomCode);
+                Debug.Log("roomCode |" + roomCode + "|");
+
                 creatingRoom = false;
                 PhotonNetwork.CreateRoom(roomCode, new RoomOptions
                 {
-                    MaxPlayers = MAX_PLAYERS_PER_ROOM
+                    MaxPlayers = Constants.MAX_PLAYERS_PER_ROOM
                 });
             }
             else

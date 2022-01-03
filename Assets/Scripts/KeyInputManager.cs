@@ -68,12 +68,10 @@ namespace EasyMeshVR.UI
             }
         }
 
-        public void Cancel()
+        public void Submit()
         {
-            if (inputField != null)
-            {
-                inputField.text = string.Empty;
-            }
+            this.inputField = null;
+            keyboard.SetText(string.Empty);
         }
 
         #endregion
