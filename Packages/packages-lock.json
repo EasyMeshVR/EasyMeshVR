@@ -1,11 +1,10 @@
 {
   "dependencies": {
     "co.parabox.stl": {
-      "version": "https://github.com/karl-/pb_Stl.git",
+      "version": "file:co.parabox.stl",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "f13d4ca646a24580dbd6984264215809fbec9247"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.collab-proxy": {
       "version": "1.11.2",

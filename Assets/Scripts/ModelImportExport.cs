@@ -43,7 +43,7 @@ namespace EasyMeshVR.Core
             Debug.Log(downloadHandler.text);
 
             // TODO: import the model into the scene using the STL parser library
-            //Importer.Import("test");
+            
         }
 
         void UploadCallback()
