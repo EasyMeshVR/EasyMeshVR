@@ -33,7 +33,7 @@ namespace EasyMeshVR.Core
 
         #region ApiRequester Callbacks
 
-        void DownloadCallback(DownloadHandler downloadHandler, string error)
+        async void DownloadCallback(DownloadHandler downloadHandler, string error)
         {
             if (!string.IsNullOrEmpty(error))
             {
@@ -41,15 +41,18 @@ namespace EasyMeshVR.Core
                 return;
             }
 
-            // TODO: currently Import function is blocking the game until it's finished which lags which higher poly models
-            // need to find a way to make it async or run in a separate job/thread
-            Mesh[] meshes = Importer.Import(downloadHandler.data);
+            Debug.Log("Importing model into scene...");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            Mesh[] meshes = await Importer.Import(downloadHandler.data);
+
+            watch.Stop();
+            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
 
             if (meshes.Length < 1)
                 return;
 
-            var parent = new GameObject();
-            parent.name = name;
+            var parent = gameObject;
 
             if (meshes.Length < 2)
             {

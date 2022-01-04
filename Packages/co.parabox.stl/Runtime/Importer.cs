@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using UnityEngine.Rendering;
+using System.Threading.Tasks;
 
 namespace Parabox.Stl
 {
@@ -35,11 +36,11 @@ namespace Parabox.Stl
 			}
 		}
 
-		public static Mesh[] Import(byte[] stlData, CoordinateSpace space = CoordinateSpace.Right, UpAxis axis = UpAxis.Y, bool smooth = false, IndexFormat indexFormat = IndexFormat.UInt16)
+		public async static Task<Mesh[]> Import(byte[] stlData, CoordinateSpace space = CoordinateSpace.Right, UpAxis axis = UpAxis.Y, bool smooth = false, IndexFormat indexFormat = IndexFormat.UInt16)
         {
-			IEnumerable<Facet> facets = null;
+			List<Facet> facets = null;
 
-			facets = ImportAscii(null, stlData);
+			facets = await ImportAsciiAsync(null, stlData);
 
 			if (smooth)
 				return ImportSmoothNormals(facets, space, axis, indexFormat);
@@ -152,27 +153,26 @@ namespace Parabox.Stl
 				return EMPTY;
 		}
 
-		static IEnumerable<Facet> ImportAscii(string path = null, byte[] stlData = null)
-		{
+		static List<Facet> ImportAscii(string path = null, byte[] stlData = null)
+        {
 			List<Facet> facets = new List<Facet>();
-
-			StreamReader sr;
+			StreamReader sr = null;
 
 			if (path != null)
-            {
+			{
 				sr = new StreamReader(path);
-            }
+			}
 			else if (stlData != null)
-            {
+			{
 				sr = new StreamReader(new MemoryStream(stlData));
-            }
+			}
 			else
-            {
+			{
 				Debug.LogError("Parabox.Stl.ImportAscii(): Must specify either path or stlData parameter");
 				return null;
-            }
+			}
 
-			using(sr)
+			using (sr)
 			{
 				string line;
 				int state = EMPTY, vertex = 0;
@@ -180,55 +180,65 @@ namespace Parabox.Stl
 				Vector3 a = Vector3.zero, b = Vector3.zero, c = Vector3.zero;
 				bool exit = false;
 
-				while(sr.Peek() > 0 && !exit)
+				while (sr.Peek() > 0 && !exit)
 				{
 					line = sr.ReadLine().Trim();
 					state = ReadState(line);
 
-					switch(state)
+					switch (state)
 					{
 						case SOLID:
 							continue;
 
 						case FACET:
 							normal = StringToVec3(line.Replace("facet normal ", ""));
-						break;
+							break;
 
 						case OUTER:
 							vertex = 0;
-						break;
+							break;
 
 						case VERTEX:
-                            // maintain counter-clockwise orientation of vertices:
-                            if (vertex == 0)
+							// maintain counter-clockwise orientation of vertices:
+							if (vertex == 0)
 								a = StringToVec3(line.Replace("vertex ", ""));
-							else if(vertex == 2)
+							else if (vertex == 2)
 								c = StringToVec3(line.Replace("vertex ", ""));
-                            else if (vertex == 1)
+							else if (vertex == 1)
 								b = StringToVec3(line.Replace("vertex ", ""));
-                            vertex++;
-						break;
+							vertex++;
+							break;
 
 						case ENDLOOP:
-						break;
+							break;
 
 						case ENDFACET:
 							facets.Add(new Facet(normal, a, b, c));
-						break;
+							break;
 
 						case ENDSOLID:
 							exit = true;
-						break;
+							break;
 
 						case EMPTY:
 						default:
-						break;
+							break;
 
 					}
 				}
-			}
 
-			return facets;
+				return facets;
+			}
+		}
+
+		static async Task<List<Facet>> ImportAsciiAsync(string path = null, byte[] stlData = null)
+		{
+			var res = await Task.Run(() =>
+			{
+				return ImportAscii(path, stlData);
+			});
+
+			return res;
 		}
 
 		static Vector3 StringToVec3(string str)
