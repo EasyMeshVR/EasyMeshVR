@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Photon.Pun;
-using UnityEngine.Networking;
 using Photon.Realtime;
 using EasyMeshVR.Core;
 using EasyMeshVR.Web;
@@ -13,12 +12,6 @@ namespace EasyMeshVR.Multiplayer
 {
     public class NetworkPlayerManager : MonoBehaviourPunCallbacks
     {
-        #region Public Fields
-
-        public static NetworkPlayerManager instance;
-
-        #endregion
-
         #region Private Fields
 
         [SerializeField]
@@ -39,11 +32,6 @@ namespace EasyMeshVR.Multiplayer
 
         #region MonoBehaviour Callbacks
 
-        void Awake()
-        {
-            instance = this;
-        }
-
         void OnValidate()
         {
             if (spawnPoints.Length != Constants.MAX_PLAYERS_PER_ROOM)
@@ -53,26 +41,8 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
-        // TODO: download model callback for debugging purposes remove later
-        void testCallback(DownloadHandler downloadHandler, string error)
-        {
-            if (!string.IsNullOrEmpty(error))
-            {
-                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
-                return;
-            }
-
-            Debug.Log(downloadHandler.text);
-        }
-
         void Start()
         {
-            apiRequester = GetComponent<ApiRequester>();
-
-            // debugging the requester
-            // TODO: remove later
-            apiRequester.DownloadModel("gold-preliminary-smelt", testCallback);
-
             spawnedPlayerPrefab = SpawnPlayer();
         }
 
@@ -106,11 +76,6 @@ namespace EasyMeshVR.Multiplayer
         #endregion
 
         #region Public Methods
-
-        public static NetworkPlayerManager GetInstance()
-        {
-            return instance;
-        }
 
         public GameObject SpawnPlayer()
         {
