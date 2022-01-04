@@ -18,6 +18,12 @@ namespace EasyMeshVR.Core
 
         #region Private Fields
 
+        [SerializeField]
+        private string modelObjectName = "Model";
+
+        [SerializeField]
+        private Transform modelObjectInitialTransform;
+
         private ApiRequester apiRequester;
 
         #endregion
@@ -52,7 +58,10 @@ namespace EasyMeshVR.Core
             if (meshes.Length < 1)
                 return;
 
-            var parent = gameObject;
+            var parent = new GameObject();
+            parent.name = modelObjectName;
+            parent.transform.position = modelObjectInitialTransform.position;
+            parent.transform.rotation = modelObjectInitialTransform.rotation;
 
             if (meshes.Length < 2)
             {
