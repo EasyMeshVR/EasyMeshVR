@@ -35,6 +35,18 @@ namespace Parabox.Stl
 			}
 		}
 
+		public static Mesh[] Import(byte[] stlData, CoordinateSpace space = CoordinateSpace.Right, UpAxis axis = UpAxis.Y, bool smooth = false, IndexFormat indexFormat = IndexFormat.UInt16)
+        {
+			IEnumerable<Facet> facets = null;
+
+			facets = ImportAscii(null, stlData);
+
+			if (smooth)
+				return ImportSmoothNormals(facets, space, axis, indexFormat);
+
+			return ImportHardNormals(facets, space, axis, indexFormat);
+		}
+
 		/// <summary>
 		/// Import an STL file.
 		/// </summary>
@@ -140,11 +152,27 @@ namespace Parabox.Stl
 				return EMPTY;
 		}
 
-		static IEnumerable<Facet> ImportAscii(string path)
+		static IEnumerable<Facet> ImportAscii(string path = null, byte[] stlData = null)
 		{
 			List<Facet> facets = new List<Facet>();
 
-			using(StreamReader sr = new StreamReader(path))
+			StreamReader sr;
+
+			if (path != null)
+            {
+				sr = new StreamReader(path);
+            }
+			else if (stlData != null)
+            {
+				sr = new StreamReader(new MemoryStream(stlData));
+            }
+			else
+            {
+				Debug.LogError("Parabox.Stl.ImportAscii(): Must specify either path or stlData parameter");
+				return null;
+            }
+
+			using(sr)
 			{
 				string line;
 				int state = EMPTY, vertex = 0;

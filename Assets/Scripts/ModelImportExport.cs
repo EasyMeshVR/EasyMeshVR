@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,10 +41,39 @@ namespace EasyMeshVR.Core
                 return;
             }
 
-            Debug.Log(downloadHandler.text);
+            // TODO: currently Import function is blocking the game until it's finished which lags which higher poly models
+            // need to find a way to make it async or run in a separate job/thread
+            Mesh[] meshes = Importer.Import(downloadHandler.data);
 
-            // TODO: import the model into the scene using the STL parser library
-            
+            if (meshes.Length < 1)
+                return;
+
+            var parent = new GameObject();
+            parent.name = name;
+
+            if (meshes.Length < 2)
+            {
+                var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                Destroy(go.GetComponent<BoxCollider>());
+                go.transform.SetParent(parent.transform, false);
+                go.name = name;
+                meshes[0].name = "Mesh-" + name;
+                go.GetComponent<MeshFilter>().sharedMesh = meshes[0];
+            }
+            else
+            {
+                for (int i = 0, c = meshes.Length; i < c; i++)
+                {
+                    var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    Destroy(go.GetComponent<BoxCollider>());
+                    go.transform.SetParent(parent.transform, false);
+                    go.name = name + "(" + i + ")";
+
+                    var mesh = meshes[i];
+                    mesh.name = "Mesh-" + name + "(" + i + ")";
+                    go.GetComponent<MeshFilter>().sharedMesh = mesh;
+                }
+            }
         }
 
         void UploadCallback()
@@ -67,6 +97,7 @@ namespace EasyMeshVR.Core
 
             // TODO: remove later (debugging)
             apiRequester.DownloadModel("chocolate-related-monkey", DownloadCallback);
+            //apiRequester.DownloadModel("gold-preliminary-smelt", DownloadCallback);
         }
 
         #endregion
