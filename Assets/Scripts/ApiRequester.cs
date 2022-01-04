@@ -37,13 +37,14 @@ namespace EasyMeshVR.Web
 
         #region Public Methods
 
-        public void DownloadModel(string modelCode)
+        public void DownloadModel(string modelCode, Action<DownloadHandler, string> callback = null)
         {
-            StartCoroutine(RequestPresignedGet(modelCode));
+            StartCoroutine(RequestPresignedGet(modelCode, callback));
+        }
 
-
-            // FetchModelData(presignedGetUrl);
-
+        public void UploadModel()
+        {
+            // TODO
         }
 
         #endregion
@@ -69,7 +70,7 @@ namespace EasyMeshVR.Web
             return uriBuilder.Uri;
         }
 
-        private IEnumerator RequestPresignedGet(string modelCode)
+        private IEnumerator RequestPresignedGet(string modelCode, Action<DownloadHandler, string> callback = null)
         {
             Dictionary<string, string> queryParams = new Dictionary<string, string>()
             {
@@ -81,43 +82,43 @@ namespace EasyMeshVR.Web
 
             yield return webRequest.SendWebRequest();
 
-            switch (webRequest.result)
+            if (!string.IsNullOrEmpty(webRequest.error))
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError("Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    PresignedGetJSON presignedGetJSON = JsonUtility.FromJson<PresignedGetJSON>(webRequest.downloadHandler.text);
-                    StartCoroutine(FetchModelData(presignedGetJSON.url));
-                    break;
+                if (callback != null)
+                {
+                    callback.Invoke(webRequest.downloadHandler, webRequest.error);
+                }
+            }
+            else
+            {
+                PresignedGetJSON presignedGetJSON = JsonUtility.FromJson<PresignedGetJSON>(webRequest.downloadHandler.text);
+                StartCoroutine(FetchModelData(presignedGetJSON.url, callback));
             }
         }
 
-        private IEnumerator RequestPresignedPost()
-        {
-            yield return 1;
-        }
-
-        private IEnumerator FetchModelData(string presignedGetUrl)
+        private IEnumerator FetchModelData(string presignedGetUrl, Action<DownloadHandler, string> callback = null)
         {
             Uri uri = BuildUri(presignedGetUrl);
             UnityWebRequest webRequest = UnityWebRequest.Get(uri);
 
             yield return webRequest.SendWebRequest();
 
-            switch (webRequest.result)
+            if (!string.IsNullOrEmpty(webRequest.error))
             {
-                case UnityWebRequest.Result.ConnectionError:
-                case UnityWebRequest.Result.DataProcessingError:
-                case UnityWebRequest.Result.ProtocolError:
-                    Debug.LogError("Error: " + webRequest.error);
-                    break;
-                case UnityWebRequest.Result.Success:
-                    Debug.Log(webRequest.downloadHandler.text);
-                    break;
+                if (callback != null)
+                {
+                    callback.Invoke(webRequest.downloadHandler, webRequest.error);
+                }
             }
+            else if (callback != null)
+            {
+                callback.Invoke(webRequest.downloadHandler, null);
+            }
+        }
+
+        private IEnumerator RequestPresignedPost()
+        {
+            yield return 1;
         }
 
         #endregion
