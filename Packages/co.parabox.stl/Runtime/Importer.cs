@@ -5,6 +5,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using UnityEngine.Rendering;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Parabox.Stl
@@ -14,6 +15,7 @@ namespace Parabox.Stl
 	/// </summary>
 	public static class Importer
 	{
+		private static CancellationTokenSource tokenSource = new CancellationTokenSource();
         const int MaxFacetsPerMesh16 = UInt16.MaxValue / 3;
         const int MaxFacetsPerMesh32 = int.MaxValue / 3;
 
@@ -41,6 +43,9 @@ namespace Parabox.Stl
 			List<Facet> facets = null;
 
 			facets = await ImportAsciiAsync(null, stlData);
+
+			if (facets == null)
+				return null;
 
 			if (smooth)
 				return ImportSmoothNormals(facets, space, axis, indexFormat);
@@ -74,11 +79,19 @@ namespace Parabox.Stl
 				facets = ImportAscii(path);
 			}
 
+			if (facets == null)
+				return null;
+
 			if(smooth)
 				return ImportSmoothNormals(facets, space, axis, indexFormat);
 
 			return ImportHardNormals(facets, space, axis, indexFormat);
 		}
+
+		public static void CancelImportThread()
+        {
+			tokenSource.Cancel();
+        }
 
 		static IEnumerable<Facet> ImportBinary(string path)
 		{
@@ -153,7 +166,7 @@ namespace Parabox.Stl
 				return EMPTY;
 		}
 
-		static List<Facet> ImportAscii(string path = null, byte[] stlData = null)
+		static List<Facet> ImportAscii(string path = null, byte[] stlData = null, bool isInThread = false)
         {
 			List<Facet> facets = new List<Facet>();
 			StreamReader sr = null;
@@ -182,6 +195,12 @@ namespace Parabox.Stl
 
 				while (sr.Peek() > 0 && !exit)
 				{
+					if (isInThread && tokenSource.Token.IsCancellationRequested)
+                    {
+						Debug.Log("Cancelled import thread");
+						return null;
+                    }
+
 					line = sr.ReadLine().Trim();
 					state = ReadState(line);
 
@@ -235,8 +254,8 @@ namespace Parabox.Stl
 		{
 			var res = await Task.Run(() =>
 			{
-				return ImportAscii(path, stlData);
-			});
+				return ImportAscii(path, stlData, true);
+			}, tokenSource.Token);
 
 			return res;
 		}

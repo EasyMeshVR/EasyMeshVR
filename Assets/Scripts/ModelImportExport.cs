@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.Networking;
 using EasyMeshVR.Web;
 using Parabox.Stl;
+using Photon.Pun;
+using UnityEngine.InputSystem;
 
 namespace EasyMeshVR.Core
 {
@@ -23,6 +25,9 @@ namespace EasyMeshVR.Core
 
         [SerializeField]
         private Transform modelObjectInitialTransform;
+
+        [SerializeField]
+        private InputActionReference toggleReference = null;
 
         private ApiRequester apiRequester;
 
@@ -52,16 +57,15 @@ namespace EasyMeshVR.Core
 
             Mesh[] meshes = await Importer.Import(downloadHandler.data);
 
-            watch.Stop();
-            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
+            if (meshes == null)
+            {
+                return;
+            }
 
             if (meshes.Length < 1)
                 return;
 
-            var parent = new GameObject();
-            parent.name = modelObjectName;
-            parent.transform.position = modelObjectInitialTransform.position;
-            parent.transform.rotation = modelObjectInitialTransform.rotation;
+            var parent = PhotonNetwork.Instantiate(modelObjectName, modelObjectInitialTransform.position, modelObjectInitialTransform.rotation);
 
             if (meshes.Length < 2)
             {
@@ -86,6 +90,9 @@ namespace EasyMeshVR.Core
                     go.GetComponent<MeshFilter>().sharedMesh = mesh;
                 }
             }
+
+            watch.Stop();
+            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
         }
 
         void UploadCallback()
@@ -105,11 +112,26 @@ namespace EasyMeshVR.Core
         // Start is called before the first frame update
         void Start()
         {
+            toggleReference.action.started += ActionTest; // TODO: remove later (debugging)
             apiRequester = GetComponent<ApiRequester>();
+            ImportModel("chocolate-related-monkey");
+        }
 
-            // TODO: remove later (debugging)
-            apiRequester.DownloadModel("chocolate-related-monkey", DownloadCallback);
-            //apiRequester.DownloadModel("gold-preliminary-smelt", DownloadCallback);
+        void OnDisable()
+        {
+            Importer.CancelImportThread();
+        }
+
+        // TODO: remove later (debugging)
+        void OnDestroy()
+        {
+            toggleReference.action.started -= ActionTest;
+        }
+
+        // TODO: remove later (debugging)
+        private void ActionTest(InputAction.CallbackContext context)
+        {
+            ImportModel("chocolate-related-monkey");
         }
 
         #endregion
