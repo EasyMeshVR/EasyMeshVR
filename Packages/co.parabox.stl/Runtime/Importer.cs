@@ -15,6 +15,7 @@ namespace Parabox.Stl
 	/// </summary>
 	public static class Importer
 	{
+		private static bool importThreadIsRunning = false;
 		private static CancellationTokenSource tokenSource = new CancellationTokenSource();
         const int MaxFacetsPerMesh16 = UInt16.MaxValue / 3;
         const int MaxFacetsPerMesh32 = int.MaxValue / 3;
@@ -37,6 +38,12 @@ namespace Parabox.Stl
 				return string.Format("{0:F2}: {1:F2}, {2:F2}, {3:F2}", normal, a, b, c);
 			}
 		}
+
+		public static void InitializeThreadParameters()
+        {
+			importThreadIsRunning = false;
+			tokenSource = new CancellationTokenSource();
+        }
 
 		public async static Task<Mesh[]> Import(byte[] stlData, CoordinateSpace space = CoordinateSpace.Right, UpAxis axis = UpAxis.Y, bool smooth = false, IndexFormat indexFormat = IndexFormat.UInt16)
         {
@@ -90,7 +97,12 @@ namespace Parabox.Stl
 
 		public static void CancelImportThread()
         {
-			tokenSource.Cancel();
+			if (importThreadIsRunning)
+			{
+				Debug.Log("Cancelling import thread...");
+				tokenSource.Cancel();
+				importThreadIsRunning = false;
+			}
         }
 
 		static IEnumerable<Facet> ImportBinary(string path)
@@ -195,9 +207,9 @@ namespace Parabox.Stl
 
 				while (sr.Peek() > 0 && !exit)
 				{
+					// Exit while loop early if a thread cancellation was requested
 					if (isInThread && tokenSource.Token.IsCancellationRequested)
                     {
-						Debug.Log("Cancelled import thread");
 						return null;
                     }
 
@@ -254,8 +266,11 @@ namespace Parabox.Stl
 		{
 			var res = await Task.Run(() =>
 			{
+				importThreadIsRunning = true;
 				return ImportAscii(path, stlData, true);
 			}, tokenSource.Token);
+
+			importThreadIsRunning = false;
 
 			return res;
 		}

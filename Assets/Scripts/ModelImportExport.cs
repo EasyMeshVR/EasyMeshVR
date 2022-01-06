@@ -6,7 +6,6 @@ using UnityEngine.Networking;
 using EasyMeshVR.Web;
 using Parabox.Stl;
 using Photon.Pun;
-using UnityEngine.InputSystem;
 
 namespace EasyMeshVR.Core
 {
@@ -25,9 +24,6 @@ namespace EasyMeshVR.Core
 
         [SerializeField]
         private Transform modelObjectInitialTransform;
-
-        [SerializeField]
-        private InputActionReference toggleReference = null;
 
         private ApiRequester apiRequester;
 
@@ -93,11 +89,20 @@ namespace EasyMeshVR.Core
 
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
+
+            // Uncomment to debug cloud export
+            // ExportModel(meshes, true);
         }
 
-        void UploadCallback()
+        void UploadCallback(string modelCode, string error)
         {
-            // TODO
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogErrorFormat("Error encountered when uploading model: {0}", error);
+                return;
+            }
+
+            Debug.LogFormat("Successfully uploaded model, your model code is {0}", modelCode);
         }
 
         #endregion
@@ -107,31 +112,21 @@ namespace EasyMeshVR.Core
         void Awake()
         {
             instance = this;
+            Importer.InitializeThreadParameters();
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            toggleReference.action.started += ActionTest; // TODO: remove later (debugging)
             apiRequester = GetComponent<ApiRequester>();
-            ImportModel("chocolate-related-monkey");
+
+            // Uncomment to debug cloud import
+            // ImportModel("chocolate-related-monkey");
         }
 
         void OnDisable()
         {
             Importer.CancelImportThread();
-        }
-
-        // TODO: remove later (debugging)
-        void OnDestroy()
-        {
-            toggleReference.action.started -= ActionTest;
-        }
-
-        // TODO: remove later (debugging)
-        private void ActionTest(InputAction.CallbackContext context)
-        {
-            ImportModel("chocolate-related-monkey");
         }
 
         #endregion
@@ -143,9 +138,28 @@ namespace EasyMeshVR.Core
             apiRequester.DownloadModel(modelCode, DownloadCallback);
         }
 
-        public void ExportModel()
+        public void ExportModel(Mesh[] meshes, bool isCloudUpload)
         {
-            // TODO
+            if (meshes == null)
+            {
+                Debug.LogWarning("Failed to export model meshes: meshes is null");
+                return;
+            }
+
+            // TODO: make Exporter writestring function async and use await to prevent main thread from blocking
+            string stlData = Exporter.WriteString(meshes);
+            Debug.Log(stlData);
+
+            if (isCloudUpload)
+            {
+                // Cloud upload
+                apiRequester.UploadModel(stlData, UploadCallback);
+            }
+            else
+            {
+                // Export to file on disk
+                // TODO
+            }
         }
 
         #endregion

@@ -4,11 +4,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using Newtonsoft.Json;
 
 namespace EasyMeshVR.Web
 {
     public class ApiRequester : MonoBehaviour
     {
+        #region Private Fields
+
+        [SerializeField]
+        private string FILE_SERVICE_ENDPOINT = "https://fzq7qh0yub.execute-api.us-east-2.amazonaws.com/file";
+
+        private const string NAME_CODE_QUERY_PARAM = "nameCode";
+        private const string BUCKET_PARAM = "bucket";
+        private const string X_AMZ_ALGORITHM_PARAM = "X-Amz-Algorithm";
+        private const string X_AMZ_CREDENTIAL_PARAM = "X-Amz-Credential";
+        private const string X_AMZ_DATE_PARAM = "X-Amz-Date";
+        private const string X_AMZ_SECURITY_TOKEN_PARAM = "X-Amz-Security-Token";
+        private const string X_AMZ_SIGNATURE_PARAM = "X-Amz-Signature";
+        private const string POLICY_PARAM = "Policy";
+        private const string KEY_PARAM = "key";
+        private const string FILE_PARAM = "file";
+
+        #endregion
+
         #region JSON Classes
 
         [Serializable]
@@ -20,18 +39,35 @@ namespace EasyMeshVR.Web
         [Serializable]
         public class PresignedPostJSON
         {
-            // TODO
+            public string nameCode;
+            public PresignedPostData data;
         }
 
-        #endregion
+        [Serializable]
+        public class PresignedPostData
+        {
+            public string url;
+            public PresignedPostFields fields;
+        }
 
-        #region Private Fields
-
-        [SerializeField]
-        private string FILE_SERVICE_ENDPOINT = "https://fzq7qh0yub.execute-api.us-east-2.amazonaws.com/file";
-
-        [SerializeField]
-        private string NAME_CODE_QUERY_PARAM = "nameCode";
+        [Serializable]
+        public class PresignedPostFields
+        {
+            public string bucket;
+            public string key;
+            [JsonProperty(X_AMZ_ALGORITHM_PARAM)]
+            public string xAmzAlgorithm;
+            [JsonProperty(X_AMZ_CREDENTIAL_PARAM)]
+            public string xAmzCredential;
+            [JsonProperty(X_AMZ_DATE_PARAM)]
+            public string xAmzDate;
+            [JsonProperty(X_AMZ_SECURITY_TOKEN_PARAM)]
+            public string xAmzSecurityToken;
+            [JsonProperty(POLICY_PARAM)]
+            public string policy;
+            [JsonProperty(X_AMZ_SIGNATURE_PARAM)]
+            public string xAmzSignature;
+        }
 
         #endregion
 
@@ -42,9 +78,9 @@ namespace EasyMeshVR.Web
             StartCoroutine(RequestPresignedGet(modelCode, callback));
         }
 
-        public void UploadModel()
+        public void UploadModel(string stlData, Action<string, string> callback = null)
         {
-            // TODO
+            StartCoroutine(RequestPresignedPost(stlData, callback));
         }
 
         #endregion
@@ -91,19 +127,18 @@ namespace EasyMeshVR.Web
             }
             else
             {
-                PresignedGetJSON presignedGetJSON = JsonUtility.FromJson<PresignedGetJSON>(webRequest.downloadHandler.text);
+                PresignedGetJSON presignedGetJSON = JsonConvert.DeserializeObject<PresignedGetJSON>(webRequest.downloadHandler.text);
                 StartCoroutine(FetchModelData(presignedGetJSON.url, callback));
             }
         }
 
         private IEnumerator FetchModelData(string presignedGetUrl, Action<DownloadHandler, string> callback = null)
         {
-            Uri uri = BuildUri(presignedGetUrl);
-            UnityWebRequest webRequest = UnityWebRequest.Get(uri);
+            UnityWebRequest webRequest = UnityWebRequest.Get(presignedGetUrl);
 
             yield return webRequest.SendWebRequest();
 
-            if (!string.IsNullOrEmpty(webRequest.error))
+            if (webRequest.result != UnityWebRequest.Result.Success)
             {
                 if (callback != null)
                 {
@@ -116,10 +151,56 @@ namespace EasyMeshVR.Web
             }
         }
 
-        private IEnumerator RequestPresignedPost()
+        private IEnumerator RequestPresignedPost(string stlData, Action<string, string> callback = null)
         {
-            // TODO
-            yield return 1;
+            UnityWebRequest webRequest = UnityWebRequest.Post(FILE_SERVICE_ENDPOINT, "");
+
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback.Invoke(null, webRequest.error);
+                }
+            }
+            else
+            {
+                PresignedPostJSON presignedPostJSON = JsonConvert.DeserializeObject<PresignedPostJSON>(webRequest.downloadHandler.text);
+                StartCoroutine(UploadModelData(presignedPostJSON, stlData, callback));
+            }
+        }
+
+        private IEnumerator UploadModelData(PresignedPostJSON presignedPostJSON, string stlData, Action<string, string> callback = null)
+        {
+            PresignedPostFields fields = presignedPostJSON.data.fields;
+
+            List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+            formData.Add(new MultipartFormDataSection(BUCKET_PARAM, fields.bucket));
+            formData.Add(new MultipartFormDataSection(X_AMZ_ALGORITHM_PARAM, fields.xAmzAlgorithm));
+            formData.Add(new MultipartFormDataSection(X_AMZ_CREDENTIAL_PARAM, fields.xAmzCredential));
+            formData.Add(new MultipartFormDataSection(X_AMZ_DATE_PARAM, fields.xAmzDate));
+            formData.Add(new MultipartFormDataSection(X_AMZ_SECURITY_TOKEN_PARAM, fields.xAmzSecurityToken));
+            formData.Add(new MultipartFormDataSection(KEY_PARAM, fields.key));
+            formData.Add(new MultipartFormDataSection(POLICY_PARAM, fields.policy));
+            formData.Add(new MultipartFormDataSection(X_AMZ_SIGNATURE_PARAM, fields.xAmzSignature));
+            formData.Add(new MultipartFormDataSection(FILE_PARAM, stlData)); // must be the last form field
+
+            UnityWebRequest webRequest = UnityWebRequest.Post(presignedPostJSON.data.url, formData);
+            
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                if (callback != null)
+                {
+                    callback.Invoke(null, webRequest.error);
+                }
+            }
+            else if (callback != null)
+            {
+                callback.Invoke(presignedPostJSON.nameCode, null);
+            }
         }
 
         #endregion
