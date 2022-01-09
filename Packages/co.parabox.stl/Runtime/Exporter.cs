@@ -3,11 +3,32 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Parabox.Stl
 {
 	public static class Exporter
 	{
+		private static bool exportThreadIsRunning = false;
+		private static CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+		public static void InitializeThreadParameters()
+		{
+			exportThreadIsRunning = false;
+			tokenSource = new CancellationTokenSource();
+		}
+
+		public static void CancelExportThread()
+		{
+			if (exportThreadIsRunning)
+			{
+				Debug.Log("Cancelling export thread...");
+				tokenSource.Cancel();
+				exportThreadIsRunning = false;
+			}
+		}
+
 		/// <summary>
 		/// Export a hierarchy of GameObjects to path with file type.
 		/// </summary>
@@ -212,10 +233,76 @@ namespace Parabox.Stl
 			return WriteString(new Mesh[] { mesh }, convertToRightHandedCoordinates);
 		}
 
+		public static string WriteString(Vector3[][] verts, Vector3[][] normals, int[][] triangles, int meshCount, bool isInThread = false, bool convertToRightHandedCoordinates = true)
+        {
+			StringBuilder sb = new StringBuilder();
+
+			string name = "Composite Mesh";
+
+			sb.AppendLine(string.Format("solid {0}", name));
+
+			for (int i = 0; i < meshCount; ++i)
+			{
+				Vector3[] v = verts[i];
+				Vector3[] n = normals[i];
+				int[] t = triangles[i];
+
+				if(convertToRightHandedCoordinates)
+				{
+					for(int j = 0, c = v.Length; j < c; j++)
+					{
+						// Exit while loop early if a thread cancellation was requested
+						if (isInThread && tokenSource.Token.IsCancellationRequested)
+						{
+							return null;
+						}
+
+						v[j] = Stl.ToCoordinateSpace(v[j], CoordinateSpace.Right);
+						n[j] = Stl.ToCoordinateSpace(n[j], CoordinateSpace.Right);
+					}
+
+					System.Array.Reverse(t);
+				}
+
+				int triLen = t.Length;
+
+				for(int j = 0; j < triLen; j+=3)
+				{
+					// Exit while loop early if a thread cancellation was requested
+					if (isInThread && tokenSource.Token.IsCancellationRequested)
+					{
+						return null;
+					}
+
+					int a = t[j];
+					int b = t[j+1];
+					int c = t[j+2];
+
+					Vector3 nrm = AvgNrm(n[a], n[b], n[c]);
+
+					sb.AppendLine(string.Format("facet normal {0} {1} {2}", nrm.x, nrm.y, nrm.z));
+
+					sb.AppendLine("outer loop");
+
+					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[a].x, v[a].y, v[a].z));
+					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[b].x, v[b].y, v[b].z));
+					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[c].x, v[c].y, v[c].z));
+
+					sb.AppendLine("endloop");
+
+					sb.AppendLine("endfacet");
+				}
+			}
+
+			sb.AppendLine(string.Format("endsolid {0}", name));
+
+			return sb.ToString();
+        }
+
 		/**
 		 * Write a set of meshes to an ASCII string in STL format.
 		 */
-		public static string WriteString(IList<Mesh> meshes, bool convertToRightHandedCoordinates = true)
+		public static string WriteString(IList<Mesh> meshes, bool isInThread = false, bool convertToRightHandedCoordinates = true)
 		{
 			StringBuilder sb = new StringBuilder();
 
@@ -233,6 +320,12 @@ namespace Parabox.Stl
 				{
 					for(int i = 0, c = v.Length; i < c; i++)
 					{
+						// Exit while loop early if a thread cancellation was requested
+						if (isInThread && tokenSource.Token.IsCancellationRequested)
+						{
+							return null;
+						}
+
 						v[i] = Stl.ToCoordinateSpace(v[i], CoordinateSpace.Right);
 						n[i] = Stl.ToCoordinateSpace(n[i], CoordinateSpace.Right);
 					}
@@ -244,6 +337,12 @@ namespace Parabox.Stl
 
 				for(int i = 0; i < triLen; i+=3)
 				{
+					// Exit while loop early if a thread cancellation was requested
+					if (isInThread && tokenSource.Token.IsCancellationRequested)
+					{
+						return null;
+					}
+
 					int a = t[i];
 					int b = t[i+1];
 					int c = t[i+2];
@@ -268,6 +367,29 @@ namespace Parabox.Stl
 
 			return sb.ToString();
 		}
+
+		public static async Task<string> WriteStringAsync(IList<Mesh> meshes, bool convertToRightHandedCoordinates = true)
+        {
+			Vector3[][] verts = new Vector3[meshes.Count][];
+			Vector3[][] normals = new Vector3[meshes.Count][];
+			int[][] triangles = new int[meshes.Count][];
+
+			for (int i = 0; i < meshes.Count; ++i)
+            {
+				verts[i] = meshes[i].vertices;
+				normals[i] = meshes[i].normals;
+				triangles[i] = meshes[i].triangles;
+            }
+
+			var result = await Task.Run(() =>
+			{
+				exportThreadIsRunning = true;
+				return WriteString(verts, normals, triangles, meshes.Count, true);
+			}, tokenSource.Token);
+
+			exportThreadIsRunning = false;
+			return result;
+        }
 
 		/**
 		 *	Average of 3 vectors.

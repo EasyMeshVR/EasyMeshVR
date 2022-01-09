@@ -113,6 +113,7 @@ namespace EasyMeshVR.Core
         {
             instance = this;
             Importer.InitializeThreadParameters();
+            Exporter.InitializeThreadParameters();
         }
 
         // Start is called before the first frame update
@@ -127,6 +128,7 @@ namespace EasyMeshVR.Core
         void OnDisable()
         {
             Importer.CancelImportThread();
+            Exporter.CancelExportThread();
         }
 
         #endregion
@@ -138,7 +140,7 @@ namespace EasyMeshVR.Core
             apiRequester.DownloadModel(modelCode, DownloadCallback);
         }
 
-        public void ExportModel(Mesh[] meshes, bool isCloudUpload)
+        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, Action<string, string> callback = null)
         {
             if (meshes == null)
             {
@@ -146,9 +148,7 @@ namespace EasyMeshVR.Core
                 return;
             }
 
-            // TODO: make Exporter writestring function async and use await to prevent main thread from blocking
-            string stlData = Exporter.WriteString(meshes);
-            Debug.Log(stlData);
+            string stlData = await Exporter.WriteStringAsync(meshes);
 
             if (isCloudUpload)
             {
