@@ -164,6 +164,9 @@ namespace EasyMeshVR.Multiplayer
         /// </summary>
         public void Connect(string roomCode)
         {
+            // Set offline mode to false just in case it was set to true before
+            PhotonNetwork.OfflineMode = false;
+
             multiplayerMenu.SetActive(false);
             launcherMenu.SetActive(false);
             connectingPanel.SetActive(true);
@@ -185,7 +188,6 @@ namespace EasyMeshVR.Multiplayer
             if (creatingRoom)
             {
                 Debug.Log("Creating room " + roomCode);
-                Debug.Log("roomCode |" + roomCode + "|");
 
                 creatingRoom = false;
                 PhotonNetwork.CreateRoom(roomCode, new RoomOptions

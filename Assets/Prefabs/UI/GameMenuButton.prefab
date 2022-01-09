@@ -209,6 +209,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3893042781257783495, guid: a435ebd5b403afc449e4abcc4252e348,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3893042781257783495, guid: a435ebd5b403afc449e4abcc4252e348,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameMenu, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 8026667090638807192, guid: a435ebd5b403afc449e4abcc4252e348,
         type: 3}
       propertyPath: m_Name

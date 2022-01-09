@@ -76,13 +76,16 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\WebSocket.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\CancelKey.cs" />
+    <Compile Include="Assets\Scripts\XRGrabNetworkInteractable.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LetterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
+    <Compile Include="Assets\Scripts\ApiRequester.cs" />
     <Compile Include="Assets\Scripts\Constants.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\BackspaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ClearKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\InputField.cs" />
+    <Compile Include="Assets\Scripts\ModelImportExport.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Keyboard.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Key.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
@@ -93,7 +96,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\XRGrabNetworkInteractable.cs" />
+    <Compile Include="Assets\Scripts\GameMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -108,6 +111,10 @@
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
     <None Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\websocket-sharp.dll" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\link.xml" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\Windows\Newtonsoft.Json.XML" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.XML" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.dll" />
     <None Include="Assets\ExternalAssets\BOXOPHOBIC\Skybox Cubemap Extended\Core\Shaders\Skybox Cubemap Blend.shader" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
@@ -120,9 +127,12 @@
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\ExternalAssets\Photon\PhotonUnityNetworking\readme.txt" />
     <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.dll" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\AOT\Newtonsoft.Json.dll" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\AOT\Newtonsoft.Json.XML" />
     <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Photon3Unity3D.dll" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Metro\Photon3Unity3D.dll" />
+    <None Include="Assets\ExternalAssets\JsonDotNet\Assemblies\Windows\Newtonsoft.Json.dll" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\ExternalAssets\Photon\PhotonLibs\Photon3Unity3D.xml" />
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
@@ -361,6 +371,9 @@
     </Reference>
     <Reference Include="websocket-sharp">
       <HintPath>Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\websocket-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Assets\JsonDotNet\Assemblies\Standalone\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.20f1\Editor\Data\NetStandard\ref\2.0.0\netstandard.dll</HintPath>
@@ -728,9 +741,6 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="Parabox.Stl.Editor">
-      <HintPath>Library\ScriptAssemblies\Parabox.Stl.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.EditorCoroutines.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
@@ -742,6 +752,9 @@
     </Reference>
     <Reference Include="Unity.XR.CoreUtils.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.XR.CoreUtils.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Toolchain.Win-x86_64-Linux-x86_64">
+      <HintPath>Library\ScriptAssemblies\Unity.Toolchain.Win-x86_64-Linux-x86_64.dll</HintPath>
     </Reference>
     <Reference Include="Unity.XR.ARSubsystems.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.XR.ARSubsystems.Editor.dll</HintPath>
@@ -800,9 +813,6 @@
     <Reference Include="Unity.InteractiveTutorials.Core">
       <HintPath>Library\ScriptAssemblies\Unity.InteractiveTutorials.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Parabox.Stl">
-      <HintPath>Library\ScriptAssemblies\Parabox.Stl.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.XR.OpenXR.TestHelpers">
       <HintPath>Library\ScriptAssemblies\Unity.XR.OpenXR.TestHelpers.dll</HintPath>
     </Reference>
@@ -860,6 +870,10 @@
       <Project>{959B93DF-1AFC-5B1B-1B9F-6F76D99A20C1}</Project>
       <Name>PunDemos.DemoHubEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="Parabox.Stl.Editor.csproj">
+      <Project>{40A1C716-F58B-D5CA-7BF2-D1107A54ED68}</Project>
+      <Name>Parabox.Stl.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.csproj">
       <Project>{1834D597-E12B-3D19-912B-3E4F8B0B9F95}</Project>
       <Name>PhotonUnityNetworking</Name>
@@ -887,6 +901,10 @@
     <ProjectReference Include="PhotonUnityNetworking.Utilities.csproj">
       <Project>{25A351B0-4EBE-8248-7BDA-E62B6B5B995B}</Project>
       <Name>PhotonUnityNetworking.Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="Parabox.Stl.csproj">
+      <Project>{EE6E5568-25DF-A318-C340-1BC13E987C1A}</Project>
+      <Name>Parabox.Stl</Name>
     </ProjectReference>
     <ProjectReference Include="Boxophobic.Utils.Scripts.csproj">
       <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>

@@ -5,19 +5,13 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using EasyMeshVR.Core;
-using Photon.Pun.UtilityScripts;
+using EasyMeshVR.Web;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace EasyMeshVR.Multiplayer
 {
     public class NetworkPlayerManager : MonoBehaviourPunCallbacks
     {
-        #region Public Fields
-
-        public static NetworkPlayerManager instance;
-
-        #endregion
-
         #region Private Fields
 
         [SerializeField]
@@ -28,6 +22,8 @@ namespace EasyMeshVR.Multiplayer
 
         private GameObject spawnedPlayerPrefab;
 
+        private ApiRequester apiRequester;
+
         private int myPlayerNumber = 0;
 
         private const string PLAYER_NUMBER_PROPERTY = "playerNumber";
@@ -35,11 +31,6 @@ namespace EasyMeshVR.Multiplayer
         #endregion
 
         #region MonoBehaviour Callbacks
-
-        void Awake()
-        {
-            instance = this;
-        }
 
         void OnValidate()
         {
@@ -86,11 +77,6 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
-        public static NetworkPlayerManager GetInstance()
-        {
-            return instance;
-        }
-
         public GameObject SpawnPlayer()
         {
             Transform spawnPoint = GetNextSpawnPoint();
@@ -130,8 +116,6 @@ namespace EasyMeshVR.Multiplayer
                 Hashtable customProperties = p.CustomProperties;
 
                 int otherPlayerNumber = (int)customProperties[PLAYER_NUMBER_PROPERTY];
-
-                Debug.Log("playernum " + otherPlayerNumber);
 
                 if (myPlayerNumber < otherPlayerNumber || myPlayerNumber > otherPlayerNumber)
                 {
