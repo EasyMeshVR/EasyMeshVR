@@ -122,7 +122,7 @@ namespace EasyMeshVR.Core
             apiRequester = GetComponent<ApiRequester>();
 
             // Uncomment to debug cloud import
-            // ImportModel("chocolate-related-monkey");
+            ImportModel("black-cheerful-roadrunner");
         }
 
         void OnDisable()

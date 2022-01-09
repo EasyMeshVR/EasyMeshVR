@@ -233,6 +233,55 @@ namespace Parabox.Stl
 			return WriteString(new Mesh[] { mesh }, convertToRightHandedCoordinates);
 		}
 
+		private static void WriteFacets(StringBuilder sb, Vector3[] v, Vector3[] n, int[] t, bool isInThread = false, bool convertToRightHandedCoordinates = true)
+        {
+			if (convertToRightHandedCoordinates)
+			{
+				for (int j = 0, c = v.Length; j < c; j++)
+				{
+					// Exit while loop early if a thread cancellation was requested
+					if (isInThread && tokenSource.Token.IsCancellationRequested)
+					{
+						return;
+					}
+
+					v[j] = Stl.ToCoordinateSpace(v[j], CoordinateSpace.Right);
+					n[j] = Stl.ToCoordinateSpace(n[j], CoordinateSpace.Right);
+				}
+
+				System.Array.Reverse(t);
+			}
+
+			int triLen = t.Length;
+
+			for (int j = 0; j < triLen; j += 3)
+			{
+				// Exit while loop early if a thread cancellation was requested
+				if (isInThread && tokenSource.Token.IsCancellationRequested)
+				{
+					return;
+				}
+
+				int a = t[j];
+				int b = t[j + 1];
+				int c = t[j + 2];
+
+				Vector3 nrm = AvgNrm(n[a], n[b], n[c]);
+
+				sb.AppendLine(string.Format("facet normal {0} {1} {2}", nrm.x, nrm.y, nrm.z));
+
+				sb.AppendLine("outer loop");
+
+				sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[a].x, v[a].y, v[a].z));
+				sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[b].x, v[b].y, v[b].z));
+				sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[c].x, v[c].y, v[c].z));
+
+				sb.AppendLine("endloop");
+
+				sb.AppendLine("endfacet");
+			}
+		}
+
 		public static string WriteString(Vector3[][] verts, Vector3[][] normals, int[][] triangles, int meshCount, bool isInThread = false, bool convertToRightHandedCoordinates = true)
         {
 			StringBuilder sb = new StringBuilder();
@@ -243,55 +292,7 @@ namespace Parabox.Stl
 
 			for (int i = 0; i < meshCount; ++i)
 			{
-				Vector3[] v = verts[i];
-				Vector3[] n = normals[i];
-				int[] t = triangles[i];
-
-				if(convertToRightHandedCoordinates)
-				{
-					for(int j = 0, c = v.Length; j < c; j++)
-					{
-						// Exit while loop early if a thread cancellation was requested
-						if (isInThread && tokenSource.Token.IsCancellationRequested)
-						{
-							return null;
-						}
-
-						v[j] = Stl.ToCoordinateSpace(v[j], CoordinateSpace.Right);
-						n[j] = Stl.ToCoordinateSpace(n[j], CoordinateSpace.Right);
-					}
-
-					System.Array.Reverse(t);
-				}
-
-				int triLen = t.Length;
-
-				for(int j = 0; j < triLen; j+=3)
-				{
-					// Exit while loop early if a thread cancellation was requested
-					if (isInThread && tokenSource.Token.IsCancellationRequested)
-					{
-						return null;
-					}
-
-					int a = t[j];
-					int b = t[j+1];
-					int c = t[j+2];
-
-					Vector3 nrm = AvgNrm(n[a], n[b], n[c]);
-
-					sb.AppendLine(string.Format("facet normal {0} {1} {2}", nrm.x, nrm.y, nrm.z));
-
-					sb.AppendLine("outer loop");
-
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[a].x, v[a].y, v[a].z));
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[b].x, v[b].y, v[b].z));
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[c].x, v[c].y, v[c].z));
-
-					sb.AppendLine("endloop");
-
-					sb.AppendLine("endfacet");
-				}
+				WriteFacets(sb, verts[i], normals[i], triangles[i], isInThread, convertToRightHandedCoordinates);
 			}
 
 			sb.AppendLine(string.Format("endsolid {0}", name));
@@ -312,55 +313,7 @@ namespace Parabox.Stl
 
 			foreach(Mesh mesh in meshes)
 			{
-				Vector3[] v = mesh.vertices;
-				Vector3[] n = mesh.normals;
-				int[] t = mesh.triangles;
-
-				if(convertToRightHandedCoordinates)
-				{
-					for(int i = 0, c = v.Length; i < c; i++)
-					{
-						// Exit while loop early if a thread cancellation was requested
-						if (isInThread && tokenSource.Token.IsCancellationRequested)
-						{
-							return null;
-						}
-
-						v[i] = Stl.ToCoordinateSpace(v[i], CoordinateSpace.Right);
-						n[i] = Stl.ToCoordinateSpace(n[i], CoordinateSpace.Right);
-					}
-
-					System.Array.Reverse(t);
-				}
-
-				int triLen = t.Length;
-
-				for(int i = 0; i < triLen; i+=3)
-				{
-					// Exit while loop early if a thread cancellation was requested
-					if (isInThread && tokenSource.Token.IsCancellationRequested)
-					{
-						return null;
-					}
-
-					int a = t[i];
-					int b = t[i+1];
-					int c = t[i+2];
-
-					Vector3 nrm = AvgNrm(n[a], n[b], n[c]);
-
-					sb.AppendLine(string.Format("facet normal {0} {1} {2}", nrm.x, nrm.y, nrm.z));
-
-					sb.AppendLine("outer loop");
-
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[a].x, v[a].y, v[a].z));
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[b].x, v[b].y, v[b].z));
-					sb.AppendLine(string.Format("\tvertex {0} {1} {2}", v[c].x, v[c].y, v[c].z));
-
-					sb.AppendLine("endloop");
-
-					sb.AppendLine("endfacet");
-				}
+				WriteFacets(sb, mesh.vertices, mesh.normals, mesh.triangles, isInThread, convertToRightHandedCoordinates);
 			}
 
 			sb.AppendLine(string.Format("endsolid {0}", name));
@@ -384,7 +337,7 @@ namespace Parabox.Stl
 			var result = await Task.Run(() =>
 			{
 				exportThreadIsRunning = true;
-				return WriteString(verts, normals, triangles, meshes.Count, true);
+				return WriteString(verts, normals, triangles, meshes.Count, true, convertToRightHandedCoordinates);
 			}, tokenSource.Token);
 
 			exportThreadIsRunning = false;
