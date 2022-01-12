@@ -40,17 +40,38 @@ public class MeshVisuals : MonoBehaviour
         vertices = mesh.vertices;
         triangles = mesh.triangles;
 
+        HashSet<Vector3> VertexPositions = new HashSet<Vector3>();
+        HashSet<Vector3> EdgePositions = new HashSet<Vector3>();
+
+
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
+            bool delVert = false;
+
             // Saves the position of the current vertex
             vertexPosition = vertices[i];
+
+            // Checks set of vertex positions if current vertex is a duplicate
+            if(i != 0)
+            {
+                foreach(Vector3 vert in VertexPositions)
+                {
+                    if(vertexPosition == vert)
+                    {
+                        delVert = true;
+                    }
+                }
+            }
+            
+            // Add Vertex position if unique
+            VertexPositions.Add(vertexPosition);
 
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex);
             newVertex.transform.SetParent(model.transform);
             newVertex.transform.localPosition = vertexPosition;
-
+            
             // --------------------------------------------------------------------------------------
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
@@ -82,6 +103,8 @@ public class MeshVisuals : MonoBehaviour
             // Connect a line from our starting vertex to each adjacent vertex
             foreach (int k in adjacentVertices)
             {
+                bool delEdge = false;
+
                 // Ignore adjacent vertices we've already dealt with
                 if (k < i)
                     continue;
@@ -98,7 +121,26 @@ public class MeshVisuals : MonoBehaviour
                 // Orient the edge to look at the vertices
                 newEdge.transform.LookAt(newVertex.transform, Vector3.up);
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
+
+                // Check if new edge position is unique
+                if(k != 0)
+                {
+                    foreach(Vector3 edge in EdgePositions)
+                    {
+                        if(newEdge.transform.position == edge) 
+                            delEdge = true;
+                    }
+                }
+                // Add if unique
+                EdgePositions.Add(newEdge.transform.position);
+
+                // Destroy duplicate edge
+                if(delEdge)
+                    Destroy(newEdge);
             }
+            // Destory duplicate vertex
+            if(delVert)
+                Destroy(newVertex);
         }
     }
 }
