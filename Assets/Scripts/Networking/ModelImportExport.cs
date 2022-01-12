@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.InputSystem;
 using EasyMeshVR.Web;
 using Parabox.Stl;
 using Photon.Pun;
+using EasyMeshVR.Multiplayer;
 
 namespace EasyMeshVR.Core
 {
@@ -20,10 +22,7 @@ namespace EasyMeshVR.Core
         #region Private Fields
 
         [SerializeField]
-        private string modelObjectName = "Model";
-
-        [SerializeField]
-        private Transform modelObjectInitialTransform;
+        private InputActionReference importModelInputActionRef;
 
         private ApiRequester apiRequester;
 
@@ -53,39 +52,24 @@ namespace EasyMeshVR.Core
 
             Mesh[] meshes = await Importer.Import(downloadHandler.data);
 
-            if (meshes == null)
+            // Synchronize the mesh imports by sending RPCs
+            NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
+
+            /*if (meshes == null || meshes.Length < 1)
             {
+                Debug.LogError("Meshes array is null or empty");
                 return;
             }
 
-            if (meshes.Length < 1)
-                return;
-
-            var parent = PhotonNetwork.Instantiate(modelObjectName, modelObjectInitialTransform.position, modelObjectInitialTransform.rotation);
-
-            if (meshes.Length < 2)
+            for (int i = 0; i < meshes.Length; ++i)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                Destroy(go.GetComponent<BoxCollider>());
-                go.transform.SetParent(parent.transform, false);
-                go.name = name;
-                meshes[0].name = "Mesh-" + name;
-                go.GetComponent<MeshFilter>().sharedMesh = meshes[0];
-            }
-            else
-            {
-                for (int i = 0, c = meshes.Length; i < c; i++)
-                {
-                    var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Destroy(go.GetComponent<BoxCollider>());
-                    go.transform.SetParent(parent.transform, false);
-                    go.name = name + "(" + i + ")";
+                GameObject go = PhotonNetwork.Instantiate(meshObjectName, Vector3.zero, Quaternion.identity);
+                go.name = go.name + "(" + i + ")";
 
-                    var mesh = meshes[i];
-                    mesh.name = "Mesh-" + name + "(" + i + ")";
-                    go.GetComponent<MeshFilter>().sharedMesh = mesh;
-                }
-            }
+                Mesh mesh = meshes[i];
+                mesh.name = "Mesh-" + name + "(" + i + ")";
+                go.GetComponent<MeshFilter>().sharedMesh = mesh;
+            }*/
 
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
@@ -112,8 +96,25 @@ namespace EasyMeshVR.Core
         void Awake()
         {
             instance = this;
+            importModelInputActionRef.action.started += TestImportModelCallback;
             Importer.InitializeThreadParameters();
             Exporter.InitializeThreadParameters();
+        }
+
+        // TODO: DEBUGGING delete later
+        void OnDestroy()
+        {
+            importModelInputActionRef.action.started -= TestImportModelCallback;
+        }
+
+        // TODO: DEBUGGING delete later
+        void TestImportModelCallback(InputAction.CallbackContext context)
+        {
+            // 6 MB
+            //ImportModel("black-cheerful-roadrunner");
+
+            // 80 KB
+            ImportModel("copper-retired-wolf");
         }
 
         // Start is called before the first frame update
