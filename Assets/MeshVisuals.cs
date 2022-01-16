@@ -31,6 +31,7 @@ public class MeshVisuals : MonoBehaviour
     Mesh mesh;
     Vector3[] vertices;
     Vector3 vertexPosition;
+    Vector3 edgePosition;
     int[] triangles;
 
     public void Awake()
@@ -40,32 +41,15 @@ public class MeshVisuals : MonoBehaviour
         vertices = mesh.vertices;
         triangles = mesh.triangles;
 
-        HashSet<Vector3> VertexPositions = new HashSet<Vector3>();
-        HashSet<Vector3> EdgePositions = new HashSet<Vector3>();
-
+        // Store unique vertex and edge positions (despite being called "Dupes")
+        HashSet<Vector3> vertexDupes = new HashSet<Vector3>();
+        HashSet<Vector3> edgeDupes = new HashSet<Vector3>();
 
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
-            bool delVert = false;
-
             // Saves the position of the current vertex
             vertexPosition = vertices[i];
-
-            // Checks set of vertex positions if current vertex is a duplicate
-            if(i != 0)
-            {
-                foreach(Vector3 vert in VertexPositions)
-                {
-                    if(vertexPosition == vert)
-                    {
-                        delVert = true;
-                    }
-                }
-            }
-            
-            // Add Vertex position if unique
-            VertexPositions.Add(vertexPosition);
 
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex);
@@ -78,7 +62,7 @@ public class MeshVisuals : MonoBehaviour
             HashSet<int> adjacentVertices = new HashSet<int>();
 
             // Loop through the triangles array and look for the adjacent vertices
-            for (int j = 0; j < triangles.Length; j+=3)
+            for (int j = 0; j < triangles.Length; j += 3)
             {
                 // Triangles are created in triplets
                 // Entering "0, 1, 2," in the triangles array would make a triangle
@@ -103,8 +87,6 @@ public class MeshVisuals : MonoBehaviour
             // Connect a line from our starting vertex to each adjacent vertex
             foreach (int k in adjacentVertices)
             {
-                bool delEdge = false;
-
                 // Ignore adjacent vertices we've already dealt with
                 if (k < i)
                     continue;
@@ -113,34 +95,35 @@ public class MeshVisuals : MonoBehaviour
                 GameObject newEdge = Instantiate(edge);
                 newEdge.transform.SetParent(model.transform);
 
+                // When we start moving vertices and edges, we have to constantly execute the
+                // code below to change the edge's length and keep it connected to the vertex
+
+                // Saves the position of the current edge
+                edgePosition = (vertices[i] + vertices[k]) / 2;
+
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
-                newEdge.transform.localPosition = (vertices[i] + vertices[k]) / 2;
+                newEdge.transform.localPosition = edgePosition;
                 newEdge.transform.localScale = new Vector3(newEdge.transform.localScale.x, edgeDistance, newEdge.transform.localScale.z);
 
                 // Orient the edge to look at the vertices
                 newEdge.transform.LookAt(newVertex.transform, Vector3.up);
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
 
-                // Check if new edge position is unique
-                if(k != 0)
-                {
-                    foreach(Vector3 edge in EdgePositions)
-                    {
-                        if(newEdge.transform.position == edge) 
-                            delEdge = true;
-                    }
-                }
-                // Add if unique
-                EdgePositions.Add(newEdge.transform.position);
-
-                // Destroy duplicate edge
-                if(delEdge)
+                // Detect and delete duplicate edges
+                if (edgeDupes.Contains(edgePosition))
                     Destroy(newEdge);
+
+                // Add the current edge to a HashSet for future dupey dupe detection
+                edgeDupes.Add(edgePosition);
             }
-            // Destory duplicate vertex
-            if(delVert)
+
+            // Detect and delete duplicate vertices
+            if (vertexDupes.Contains(vertexPosition))
                 Destroy(newVertex);
+
+            // Add the current vertex to a HashSet for future dupey dupe detection
+            vertexDupes.Add(vertexPosition);
         }
     }
 }
