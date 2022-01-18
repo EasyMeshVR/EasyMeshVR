@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+// This is for line 81
+using System.Linq;
 
 public class MeshRebuilder : MonoBehaviour
 {
+   
     // This was an attempt at detecting duplicate vertices and triangles early on and completely rebuilding the mesh data
     // It didn't end up working, sadge
     // Apparently, Unity (and stl) meshes reference EVERY vertex (duplicate or not) while building the triangles
@@ -25,8 +28,7 @@ public class MeshRebuilder : MonoBehaviour
     // There's some Debug statements you can uncomment to see exactly what I mean if this doesn't make sense (line 47-48, 89-90)
 
     // The mesh or model the vertices/edges are spawning on
-    public GameObject model;
-
+    //public GameObject model;
     // Holds the vertex and edge prefabs
     public GameObject vertex;
     public GameObject edge;
@@ -39,55 +41,100 @@ public class MeshRebuilder : MonoBehaviour
 
     public void Awake()
     {
+        // For importing in real time we would need the script to get the model automatically
+        GameObject model = gameObject;
+
         // Copy vertices and triangles
         mesh = GetComponent<MeshFilter>().mesh;
         vertices = mesh.vertices;
         triangles = mesh.triangles;
 
-        // for (int i = 0; i < triangles.Length; i += 3)
-            // Debug.Log(triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2])
+         for (int i = 0; i < triangles.Length; i += 3)
+             Debug.Log("original triangle " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
 
         HashSet<Vector3> vertexUnique = new HashSet<Vector3>();
-        Dictionary<int, Vector3> vertexDuplicate = new Dictionary<int, Vector3>();
+        //Dictionary<int, Vector3> vertexDuplicate = new Dictionary<int, Vector3>();
+        
+        // Stores indicies of every duplicate of a vertex (2 or more dupes)
+        Dictionary<List<int>, Vector3> vertexDuplicate = new Dictionary<List<int>, Vector3>();
+
+
         List<int> triangleUnique = new List<int>();
 
         // Loop over the vertices array, separating duplicates and uniques
         for (int i = 0; i < vertices.Length; i++)
         {
+            // List for each index to add 
+            List<int> dupeVert = new List<int>();
+
             // If the hashset already has the vertex, it's a duplicate
+           // if (vertexUnique.Contains(vertices[i]))
+             //   vertexDuplicate.Add(i, vertices[i]);
+          //  else
+               // vertexUnique.Add(vertices[i]);
+
+            // If the hashset already has the vertex, it's a duplicate
+
             if (vertexUnique.Contains(vertices[i]))
-                vertexDuplicate.Add(i, vertices[i]);
+            {
+                // If this is not the first duplicate of the vertex, get the previous list, remove the entry, add new index, readd entry
+                if(vertexDuplicate.ContainsValue(vertices[i]))
+                {
+                    List<int> indicies = vertexDuplicate.FirstOrDefault(x => x.Value == vertices[i]).Key;
+                    vertexDuplicate.Remove(indicies);
+                    indicies.Add(i);
+                    vertexDuplicate.Add(indicies, vertices[i]);
+                }
+                dupeVert.Add(i);
+                vertexDuplicate.Add(dupeVert, vertices[i]);
+            }
             else
                 vertexUnique.Add(vertices[i]);
         }
 
+      //  print("old verts " + vertices.Length);
+      //  print("unique " + vertexUnique.Count);
+     // foreach(Vector3 vert in vertexUnique)
+       // print("vertex at " + vert);
+
+       // foreach (KeyValuePair<List<int>, Vector3> kvp in vertexDuplicate)
+      //  {
+          //  foreach(int key in kvp.Key)
+            //    print("dupe index " + key);
+        //    print(" Vertex " +  kvp.Value  );
+      //  }
+
         // Loop over the triangles array
-        for (int i = 0; i < triangles.Length; i += 3)
+        for (int i = 0; i < triangles.Length; i++)
         {
-            // If one of the values in a triplet is a duplicate vertex, ignore it and move on
-            if (vertexDuplicate.ContainsKey(triangles[i])) // First index of triplet
+           // print(i);
+            // Check if vertex in triangles array is a duplicate, replace with original if it is
+           // print("vertex " + vertices[triangles[i]]);
+            if (vertexDuplicate.ContainsValue(vertices[triangles[i]]))
             {
-                continue;
-            }
-            else if (vertexDuplicate.ContainsKey(triangles[i + 1])) // Second index of triplet
-            {
-                continue;
-            }
-            else if (vertexDuplicate.ContainsKey(triangles[i + 2])) // Third index of triplet
-            {
-                continue;
+                // Need to loop through vertexUnique for imported meshes, for meshes in Unity the first set of vertices are unique
+                int j = 0;
+                foreach (Vector3 vertex in vertexUnique)
+                {
+                    if(vertex == vertices[triangles[i]])
+                    {
+                        triangleUnique.Add(j); 
+                        break;
+                    }
+                    j++;
+                }
             }
             else
-            {
-                // If one of the values in a triplet is not a duplicate, add it to a list
                 triangleUnique.Add(triangles[i]);
-                triangleUnique.Add(triangles[i + 1]);
-                triangleUnique.Add(triangles[i + 2]);
-            }
+            
         }
 
-        // for (int i = 0; i < triangleUnique.Count; i += 3)
-            // Debug.Log(triangleUnique[i] + ", " + triangleUnique[i + 1] + ", " + triangleUnique[i + 2])
+       // print("old trs " + triangles.Length);
+      //  print("unique " + triangleUnique.Count);
+
+
+        for (int i = 0; i < triangleUnique.Count; i += 3)
+             Debug.Log("unique triangle " + triangleUnique[i] + ", " + triangleUnique[i + 1] + ", " + triangleUnique[i + 2]);
 
         // Copy unique vertices to array
         Vector3[] newVertices = new Vector3[vertexUnique.Count];
@@ -95,6 +142,9 @@ public class MeshRebuilder : MonoBehaviour
         foreach (Vector3 vertex in vertexUnique)
             newVertices[v++] = vertex;
         vertices = newVertices;
+
+       // foreach(Vector3 vert in newVertices)
+          //  print("vertex at " + vert);
 
         // Copy unique triangles to array
         int[] newTriangles = new int[triangleUnique.Count];
@@ -105,8 +155,8 @@ public class MeshRebuilder : MonoBehaviour
 
         // Update the mesh filter with new unique vertex and triangle data
         mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        mesh.vertices = newVertices;
+        mesh.triangles = newTriangles;
         mesh.RecalculateNormals();
 
         // Repeats for every vertex stored in the mesh filter
