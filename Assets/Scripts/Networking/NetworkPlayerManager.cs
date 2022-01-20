@@ -69,6 +69,7 @@ namespace EasyMeshVR.Multiplayer
 
             if (spawnedPlayerPrefab != null)
             {
+                Debug.Log("Destroying player prefab");
                 PhotonNetwork.Destroy(spawnedPlayerPrefab);
             }
         }

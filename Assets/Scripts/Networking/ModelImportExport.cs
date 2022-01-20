@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.InputSystem;
 using EasyMeshVR.Web;
 using Parabox.Stl;
-using Photon.Pun;
 
 namespace EasyMeshVR.Core
 {
+    public enum ModelCodeType 
+    {
+        DIGIT, WORD
+    }
+
     public class ModelImportExport : MonoBehaviour
     {
         #region Public Fields
@@ -20,10 +25,10 @@ namespace EasyMeshVR.Core
         #region Private Fields
 
         [SerializeField]
-        private string modelObjectName = "Model";
+        private GameObject meshObjectPrefab;
 
         [SerializeField]
-        private Transform modelObjectInitialTransform;
+        private Transform meshObjectInitialTransform;
 
         private ApiRequester apiRequester;
 
@@ -53,45 +58,33 @@ namespace EasyMeshVR.Core
 
             Mesh[] meshes = await Importer.Import(downloadHandler.data);
 
-            if (meshes == null)
+            // Local instantiation of game objects with the imported meshes
+            if (meshes == null || meshes.Length < 1)
             {
+                Debug.LogError("Meshes array is null or empty");
                 return;
             }
 
-            if (meshes.Length < 1)
-                return;
+            GameObject parent = new GameObject("Model");
+            parent.transform.position = meshObjectInitialTransform.position;
+            parent.transform.rotation = meshObjectInitialTransform.rotation;
 
-            var parent = PhotonNetwork.Instantiate(modelObjectName, modelObjectInitialTransform.position, modelObjectInitialTransform.rotation);
-
-            if (meshes.Length < 2)
+            for (int i = 0; i < meshes.Length; ++i)
             {
-                var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                Destroy(go.GetComponent<BoxCollider>());
+                GameObject go = Instantiate(meshObjectPrefab);
                 go.transform.SetParent(parent.transform, false);
-                go.name = name;
-                meshes[0].name = "Mesh-" + name;
-                go.GetComponent<MeshFilter>().sharedMesh = meshes[0];
-            }
-            else
-            {
-                for (int i = 0, c = meshes.Length; i < c; i++)
-                {
-                    var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    Destroy(go.GetComponent<BoxCollider>());
-                    go.transform.SetParent(parent.transform, false);
-                    go.name = name + "(" + i + ")";
+                go.name = go.name + "(" + i + ")";
 
-                    var mesh = meshes[i];
-                    mesh.name = "Mesh-" + name + "(" + i + ")";
-                    go.GetComponent<MeshFilter>().sharedMesh = mesh;
-                }
+                Mesh mesh = meshes[i];
+                mesh.name = "Mesh-" + name + "(" + i + ")";
+                go.GetComponent<MeshFilter>().sharedMesh = mesh;
             }
 
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
 
             // Uncomment to debug cloud export
-            // ExportModel(meshes, true);
+            //ExportModel(meshes, true, ModelCodeType.WORD);
         }
 
         void UploadCallback(string modelCode, string error)
@@ -116,13 +109,9 @@ namespace EasyMeshVR.Core
             Exporter.InitializeThreadParameters();
         }
 
-        // Start is called before the first frame update
         void Start()
         {
             apiRequester = GetComponent<ApiRequester>();
-
-            // Uncomment to debug cloud import
-            // ImportModel("black-cheerful-roadrunner");
         }
 
         void OnDisable()
@@ -135,12 +124,12 @@ namespace EasyMeshVR.Core
 
         #region Public Methods
 
-        public void ImportModel(string modelCode)
+        public void ImportModel(string modelCode, Action<DownloadHandler, string> callback = null)
         {
             apiRequester.DownloadModel(modelCode, DownloadCallback);
         }
 
-        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, Action<string, string> callback = null)
+        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
         {
             if (meshes == null)
             {
@@ -153,7 +142,7 @@ namespace EasyMeshVR.Core
             if (isCloudUpload)
             {
                 // Cloud upload
-                apiRequester.UploadModel(stlData, UploadCallback);
+                apiRequester.UploadModel(stlData, modelCodeType.ToString(), UploadCallback);
             }
             else
             {
