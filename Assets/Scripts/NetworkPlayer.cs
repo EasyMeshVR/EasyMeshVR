@@ -8,6 +8,7 @@ using Photon.Realtime;
 
 namespace EasyMeshVR.Multiplayer
 {
+    [RequireComponent(typeof(PhotonView))]
     public class NetworkPlayer : MonoBehaviour
     {
         #region Private Fields
@@ -21,12 +22,7 @@ namespace EasyMeshVR.Multiplayer
         private Transform headOrigin;
         private Transform leftHandOrigin;
         private Transform rightHandOrigin;
-
-        #endregion
-
-        #region Public Fields
-
-        public PhotonView photonView { get; set; }
+        private PhotonView photonView;
 
         #endregion
 
