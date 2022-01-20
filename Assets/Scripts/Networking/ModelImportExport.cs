@@ -25,9 +25,6 @@ namespace EasyMeshVR.Core
         #region Private Fields
 
         [SerializeField]
-        private InputActionReference importModelInputActionRef;
-
-        [SerializeField]
         private GameObject meshObjectPrefab;
 
         [SerializeField]
@@ -61,10 +58,7 @@ namespace EasyMeshVR.Core
 
             Mesh[] meshes = await Importer.Import(downloadHandler.data);
 
-            // Synchronize the mesh imports by sending RPCs
-            // NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
-
-            // Local instantiation of mesh objects
+            // Local instantiation of game objects with the imported meshes
             if (meshes == null || meshes.Length < 1)
             {
                 Debug.LogError("Meshes array is null or empty");
@@ -85,7 +79,6 @@ namespace EasyMeshVR.Core
                 mesh.name = "Mesh-" + name + "(" + i + ")";
                 go.GetComponent<MeshFilter>().sharedMesh = mesh;
             }
-            // End of local instantiation
 
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
@@ -112,28 +105,10 @@ namespace EasyMeshVR.Core
         void Awake()
         {
             instance = this;
-            importModelInputActionRef.action.started += TestImportModelCallback;
             Importer.InitializeThreadParameters();
             Exporter.InitializeThreadParameters();
         }
 
-        // TODO: DEBUGGING delete later
-        void OnDestroy()
-        {
-            importModelInputActionRef.action.started -= TestImportModelCallback;
-        }
-
-        // TODO: DEBUGGING delete later
-        void TestImportModelCallback(InputAction.CallbackContext context)
-        {
-            // 6 MB
-            // ImportModel("494906");
-
-            // 80 KB
-            // ImportModel("gold-dominant-heron");
-        }
-
-        // Start is called before the first frame update
         void Start()
         {
             apiRequester = GetComponent<ApiRequester>();
