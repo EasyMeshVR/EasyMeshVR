@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using Parabox.Stl;
-using UnityEngine.Networking;
+using EasyMeshVR.Core;
+using UnityEngine.InputSystem;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -26,7 +26,11 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField]
         private Transform meshObjectInitialTransform;
 
-        private PhotonView photonView;
+        // For testing model import
+        [SerializeField]
+        private InputActionReference importModelInputActionRef;
+
+        PhotonView photonView;
 
         #endregion
 
@@ -35,6 +39,23 @@ namespace EasyMeshVR.Multiplayer
         void Awake()
         {
             instance = this;
+            importModelInputActionRef.action.started += TestImportModelCallback;
+        }
+
+        // TODO: DEBUGGING delete later
+        void OnDestroy()
+        {
+            importModelInputActionRef.action.started -= TestImportModelCallback;
+        }
+
+        // TODO: DEBUGGING delete later
+        void TestImportModelCallback(InputAction.CallbackContext context)
+        {
+            // 6 MB
+            SynchronizeMeshImport("494906");
+
+            // 80 KB
+            //SynchronizeMeshImport("gold-dominant-heron");
         }
 
         void Start()
@@ -43,45 +64,6 @@ namespace EasyMeshVR.Multiplayer
         }
 
         #endregion
-
-        /*async void DownloadCallback(DownloadHandler downloadHandler, string error)
-        {
-            if (!string.IsNullOrEmpty(error))
-            {
-                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
-                return;
-            }
-
-            Debug.Log("Importing model into scene...");
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            Mesh[] meshes = await Importer.Import(downloadHandler.data);
-
-            // Synchronize the mesh imports by sending RPCs
-            //NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
-
-            *//*if (meshes == null || meshes.Length < 1)
-            {
-                Debug.LogError("Meshes array is null or empty");
-                return;
-            }
-
-            for (int i = 0; i < meshes.Length; ++i)
-            {
-                GameObject go = PhotonNetwork.Instantiate(meshObjectName, Vector3.zero, Quaternion.identity);
-                go.name = go.name + "(" + i + ")";
-
-                Mesh mesh = meshes[i];
-                mesh.name = "Mesh-" + name + "(" + i + ")";
-                go.GetComponent<MeshFilter>().sharedMesh = mesh;
-            }*//*
-
-            watch.Stop();
-            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
-
-            // Uncomment to debug cloud export
-            // ExportModel(meshes, true);
-        }*/
 
         #region RPCs
 
@@ -93,11 +75,6 @@ namespace EasyMeshVR.Multiplayer
                 Debug.LogError("InstantiateMeshes RPC failed because input is null");
                 return;
             }
-            /*if (meshes == null || meshes.Length < 1)
-            {
-                Debug.LogError("Meshes array is null or empty");
-                return;
-            }*/
 
             GameObject parent = new GameObject("Model");
             parent.transform.position = meshObjectInitialTransform.position;
@@ -120,33 +97,25 @@ namespace EasyMeshVR.Multiplayer
             }
 
             Debug.LogFormat("Instantiating {0} meshes", verts.Length);
+        }
 
-            /*for (int i = 0; i < meshes.Length; ++i)
-            {
-                GameObject meshObject = Instantiate(meshObjectPrefab);
-                meshObject.transform.SetParent(parent.transform, false);
-
-                meshObject.name += "(" + i + ")";
-
-                Mesh mesh = meshes[i];
-                mesh.name = "Mesh-" + name + "(" + i + ")";
-                meshObject.GetComponent<MeshFilter>().sharedMesh = mesh;
-            }
-
-            Debug.LogFormat("Instantiating {0} meshes", meshes.Length);*/
+        [PunRPC]
+        void ImportModelFromWeb(string modelCode)
+        {
+            ModelImportExport.instance.ImportModel(modelCode);
         }
 
         #endregion
 
         #region Public Methods
 
-        public void SynchronizeMeshImport(Mesh[] meshes)
+        public void SynchronizeMeshImport(string modelCode)
         {
             // TODO: this does not work with large meshes (tested with a 6MB stl file size)
             // Find a way to send the data more compactly (binary compression?)
-            // or spaced out in multiple RPCs (maybe one for each mesh?)
+            // or spaced out in multiple RPCs (maybe one for each mesh using coroutines that fire off in fixed intervals?)
 
-            Vector3[][] verts = new Vector3[meshes.Length][];
+            /*Vector3[][] verts = new Vector3[meshes.Length][];
             Vector3[][] norms = new Vector3[meshes.Length][];
             int[][] tris = new int[meshes.Length][];
 
@@ -155,9 +124,14 @@ namespace EasyMeshVR.Multiplayer
                 verts[i] = meshes[i].vertices;
                 norms[i] = meshes[i].normals;
                 tris[i] = meshes[i].triangles;
+
+                Debug.LogFormat("Mesh {0} has {1} verts {2} norms {3} tris", i, verts[i].Length, norms[i].Length, tris[i].Length);
             }
 
-            photonView.RPC("InstantiateMeshes", RpcTarget.AllBufferedViaServer, verts, norms, tris);
+            photonView.RPC("InstantiateMeshes", RpcTarget.AllBufferedViaServer, verts, norms, tris);*/
+
+            // Instead we can tell all other clients to import the model from the web server as well
+            photonView.RPC("ImportModelFromWeb", RpcTarget.AllBufferedViaServer, modelCode);
         }
 
         #endregion

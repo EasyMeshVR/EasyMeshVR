@@ -1028,6 +1028,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
+      propertyPath: meshObjectPrefab
+      value: 
+      objectReference: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
+        type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
       propertyPath: inputAction.m_Name
       value: Input
       objectReference: {fileID: 0}
@@ -1052,6 +1058,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
         type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: meshObjectInitialTransform
+      value: 
+      objectReference: {fileID: 3792769190141423837}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
       propertyPath: importModelInputAction.m_Id
@@ -1581,6 +1592,17 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: importModelInputActionRef
+      value: 
+      objectReference: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: meshObjectInitialTransform
+      value: 
+      objectReference: {fileID: 3792769190141423837}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: XROrigin
@@ -1668,24 +1690,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74394877d94ba124799358359acb774c, type: 3}
---- !u!1 &8680544116246475859 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8680544116335626899, guid: 74394877d94ba124799358359acb774c,
-    type: 3}
-  m_PrefabInstance: {fileID: 8680544116246475858}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8680544116246475860
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8680544116246475859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ccba6fc37189614cb9391c26a5a19cb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  meshObjectPrefab: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
-    type: 3}
-  meshObjectInitialTransform: {fileID: 3792769190141423837}

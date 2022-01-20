@@ -6,11 +6,14 @@ using UnityEngine.Networking;
 using UnityEngine.InputSystem;
 using EasyMeshVR.Web;
 using Parabox.Stl;
-using Photon.Pun;
-using EasyMeshVR.Multiplayer;
 
 namespace EasyMeshVR.Core
 {
+    public enum ModelCodeType 
+    {
+        DIGIT, WORD
+    }
+
     public class ModelImportExport : MonoBehaviour
     {
         #region Public Fields
@@ -23,6 +26,12 @@ namespace EasyMeshVR.Core
 
         [SerializeField]
         private InputActionReference importModelInputActionRef;
+
+        [SerializeField]
+        private GameObject meshObjectPrefab;
+
+        [SerializeField]
+        private Transform meshObjectInitialTransform;
 
         private ApiRequester apiRequester;
 
@@ -53,29 +62,36 @@ namespace EasyMeshVR.Core
             Mesh[] meshes = await Importer.Import(downloadHandler.data);
 
             // Synchronize the mesh imports by sending RPCs
-            NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
+            // NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
 
-            /*if (meshes == null || meshes.Length < 1)
+            // Local instantiation of mesh objects
+            if (meshes == null || meshes.Length < 1)
             {
                 Debug.LogError("Meshes array is null or empty");
                 return;
             }
 
+            GameObject parent = new GameObject("Model");
+            parent.transform.position = meshObjectInitialTransform.position;
+            parent.transform.rotation = meshObjectInitialTransform.rotation;
+
             for (int i = 0; i < meshes.Length; ++i)
             {
-                GameObject go = PhotonNetwork.Instantiate(meshObjectName, Vector3.zero, Quaternion.identity);
+                GameObject go = Instantiate(meshObjectPrefab);
+                go.transform.SetParent(parent.transform, false);
                 go.name = go.name + "(" + i + ")";
 
                 Mesh mesh = meshes[i];
                 mesh.name = "Mesh-" + name + "(" + i + ")";
                 go.GetComponent<MeshFilter>().sharedMesh = mesh;
-            }*/
+            }
+            // End of local instantiation
 
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
 
             // Uncomment to debug cloud export
-            // ExportModel(meshes, true);
+            //ExportModel(meshes, true, ModelCodeType.WORD);
         }
 
         void UploadCallback(string modelCode, string error)
@@ -111,19 +127,16 @@ namespace EasyMeshVR.Core
         void TestImportModelCallback(InputAction.CallbackContext context)
         {
             // 6 MB
-            //ImportModel("black-cheerful-roadrunner");
+            // ImportModel("494906");
 
             // 80 KB
-            ImportModel("copper-retired-wolf");
+            // ImportModel("gold-dominant-heron");
         }
 
         // Start is called before the first frame update
         void Start()
         {
             apiRequester = GetComponent<ApiRequester>();
-
-            // Uncomment to debug cloud import
-            // ImportModel("black-cheerful-roadrunner");
         }
 
         void OnDisable()
@@ -136,12 +149,12 @@ namespace EasyMeshVR.Core
 
         #region Public Methods
 
-        public void ImportModel(string modelCode)
+        public void ImportModel(string modelCode, Action<DownloadHandler, string> callback = null)
         {
             apiRequester.DownloadModel(modelCode, DownloadCallback);
         }
 
-        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, Action<string, string> callback = null)
+        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
         {
             if (meshes == null)
             {
@@ -154,7 +167,7 @@ namespace EasyMeshVR.Core
             if (isCloudUpload)
             {
                 // Cloud upload
-                apiRequester.UploadModel(stlData, UploadCallback);
+                apiRequester.UploadModel(stlData, modelCodeType.ToString(), UploadCallback);
             }
             else
             {
