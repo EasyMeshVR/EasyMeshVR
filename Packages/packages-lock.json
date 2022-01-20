@@ -1,11 +1,10 @@
 {
   "dependencies": {
     "co.parabox.stl": {
-      "version": "https://github.com/karl-/pb_Stl.git",
+      "version": "file:co.parabox.stl",
       "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "f13d4ca646a24580dbd6984264215809fbec9247"
+      "source": "embedded",
+      "dependencies": {}
     },
     "com.unity.collab-proxy": {
       "version": "1.11.2",
@@ -138,6 +137,16 @@
     },
     "com.unity.toolchain.linux-x86_64": {
       "version": "0.1.19-preview",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "0.1.19-preview",
+        "com.unity.sysroot.linux-x86_64": "0.1.14-preview"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "0.1.21-preview",
       "depth": 0,
       "source": "registry",
       "dependencies": {
