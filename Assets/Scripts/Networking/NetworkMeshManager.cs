@@ -46,7 +46,7 @@ namespace EasyMeshVR.Multiplayer
         void TestImportModelCallback(InputAction.CallbackContext context)
         {
             // 6 MB
-            SynchronizeMeshImport("494906");
+            // SynchronizeMeshImport("494906");
 
             // 80 KB
             //SynchronizeMeshImport("gold-dominant-heron");
