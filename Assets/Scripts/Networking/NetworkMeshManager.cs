@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Parabox.Stl;
+using UnityEngine.Networking;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -11,6 +13,8 @@ namespace EasyMeshVR.Multiplayer
         #region Public Fields
 
         public static NetworkMeshManager instance;
+
+        public Mesh[] meshes = null;
 
         #endregion
 
@@ -39,6 +43,45 @@ namespace EasyMeshVR.Multiplayer
         }
 
         #endregion
+
+        /*async void DownloadCallback(DownloadHandler downloadHandler, string error)
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
+                return;
+            }
+
+            Debug.Log("Importing model into scene...");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            Mesh[] meshes = await Importer.Import(downloadHandler.data);
+
+            // Synchronize the mesh imports by sending RPCs
+            //NetworkMeshManager.instance.SynchronizeMeshImport(meshes);
+
+            *//*if (meshes == null || meshes.Length < 1)
+            {
+                Debug.LogError("Meshes array is null or empty");
+                return;
+            }
+
+            for (int i = 0; i < meshes.Length; ++i)
+            {
+                GameObject go = PhotonNetwork.Instantiate(meshObjectName, Vector3.zero, Quaternion.identity);
+                go.name = go.name + "(" + i + ")";
+
+                Mesh mesh = meshes[i];
+                mesh.name = "Mesh-" + name + "(" + i + ")";
+                go.GetComponent<MeshFilter>().sharedMesh = mesh;
+            }*//*
+
+            watch.Stop();
+            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
+
+            // Uncomment to debug cloud export
+            // ExportModel(meshes, true);
+        }*/
 
         #region RPCs
 
@@ -72,7 +115,7 @@ namespace EasyMeshVR.Multiplayer
                 mesh.vertices = verts[i];
                 mesh.normals = norms[i];
                 mesh.triangles = tris[i];
-                mesh.RecalculateNormals();
+
                 meshObject.GetComponent<MeshFilter>().sharedMesh = mesh;
             }
 
@@ -114,7 +157,7 @@ namespace EasyMeshVR.Multiplayer
                 tris[i] = meshes[i].triangles;
             }
 
-            photonView.RPC("InstantiateMeshes", RpcTarget.AllBuffered, verts, norms, tris);
+            photonView.RPC("InstantiateMeshes", RpcTarget.AllBufferedViaServer, verts, norms, tris);
         }
 
         #endregion
