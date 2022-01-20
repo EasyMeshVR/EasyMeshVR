@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Vertex
   - Edge
+  - Model
   layers:
   - Default
   - TransparentFX
