@@ -5,28 +5,8 @@ using System.Linq; // this is for line 79
 
 public class MeshRebuilder : MonoBehaviour
 {
-    // This was an attempt at detecting duplicate vertices and triangles early on and completely rebuilding the mesh data
-    // It didn't end up working, sadge
-    // Apparently, Unity (and stl) meshes reference EVERY vertex (duplicate or not) while building the triangles
-    // If we want to rebuild the mesh from scratch using only unique vertices, we have to build the triangles on our own
-    // I'd like to do this as it might make implementing our brushes and tools easier (especially something like knife or extrusion)
-    // But we'd either have to find some kind of algorithm or make one ourselves for doing that
+    GameObject model;
 
-    // What I attempted here is:
-    //  - line 50: Declare a HashSet to store unique vertices, a Dictionary to reference duplicate vertices, and a List for triangles
-    //  - line 55: Detect unique and duplicate vertices and separate them completely
-    //  - line 65: Loop over the triangles and keep all triangles triplets that DO NOT reference duplicate vertices
-    //  - line 93: Copy the unique vertices and triangles into an array and update the mesh filter
-
-    // Now, *technically*, it all worked, however, here's the kicker
-    //  - A normal cube (like the one made in MeshGenerator.cs) has 8 vertices and 12 triangles
-    //  - A cube made by Unity has 24 vertices and 12 triangles
-    //  - The issue with the Unity cube is that it doesn't duplicate triangles like it does vertices
-    //  - It's like it ends up evenly using the vertices to make the triangles, which is weird
-    // There's some Debug statements you can uncomment to see exactly what I mean if this doesn't make sense (line 47-48, 89-90)
-
-    // The mesh or model the vertices/edges are spawning on
-    //public GameObject model;
     // Holds the vertex and edge prefabs
     public GameObject vertex;
     public GameObject edge;
@@ -40,7 +20,7 @@ public class MeshRebuilder : MonoBehaviour
     public void Awake()
     {
         // For importing in real time we would need the script to get the model automatically
-        GameObject model = gameObject;
+        model = gameObject;
         model.tag = ("Model");
 
         // Copy vertices and triangles
@@ -48,15 +28,16 @@ public class MeshRebuilder : MonoBehaviour
         vertices = mesh.vertices;
         triangles = mesh.triangles;
 
-        for (int i = 0; i < triangles.Length; i += 3)
-            Debug.Log("original triangle " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+        // Start visualizing the mesh
+        RemoveDuplicates();
+        CreateVisuals();
+    }
 
+    void RemoveDuplicates()
+    {
+        // Filter out unique vertices and triangles, and store indices of every duplicate of a vertex (2 or more dupes)
         HashSet<Vector3> vertexUnique = new HashSet<Vector3>();
-        //Dictionary<int, Vector3> vertexDuplicate = new Dictionary<int, Vector3>();
-        
-        // Stores indicies of every duplicate of a vertex (2 or more dupes)
         Dictionary<List<int>, Vector3> vertexDuplicate = new Dictionary<List<int>, Vector3>();
-
         List<int> triangleUnique = new List<int>();
 
         // Loop over the vertices array, separating duplicates and uniques
@@ -64,14 +45,6 @@ public class MeshRebuilder : MonoBehaviour
         {
             // List for each index to add 
             List<int> dupeVert = new List<int>();
-
-            /*
-            // If the hashset already has the vertex, it's a duplicate
-            if (vertexUnique.Contains(vertices[i]))
-                vertexDuplicate.Add(i, vertices[i]);
-            else
-                vertexUnique.Add(vertices[i]);
-            */
 
             // If the hashset already has the vertex, it's a duplicate
             if (vertexUnique.Contains(vertices[i]))
@@ -93,26 +66,9 @@ public class MeshRebuilder : MonoBehaviour
             }
         }
 
-        /*
-        print("old verts " + vertices.Length);
-        print("unique " + vertexUnique.Count);
-        foreach(Vector3 vert in vertexUnique)
-            print("vertex at " + vert);
-
-        foreach (KeyValuePair<List<int>, Vector3> kvp in vertexDuplicate)
-        {
-            foreach(int key in kvp.Key)
-                print("dupe index " + key);
-            print(" Vertex " +  kvp.Value  );
-        }
-        */
-
         // Loop over the triangles array
         for (int i = 0; i < triangles.Length; i++)
         {
-            // print(i);
-            // print("vertex " + vertices[triangles[i]]);
-
             // Check if vertex in triangles array is a duplicate, replace with original if it is
             if (vertexDuplicate.ContainsValue(vertices[triangles[i]]))
             {
@@ -134,21 +90,12 @@ public class MeshRebuilder : MonoBehaviour
             }
         }
 
-        // print("old trs " + triangles.Length);
-        // print("unique " + triangleUnique.Count);
-
-        for (int i = 0; i < triangleUnique.Count; i += 3)
-             Debug.Log("unique triangle " + triangleUnique[i] + ", " + triangleUnique[i + 1] + ", " + triangleUnique[i + 2]);
-
         // Copy unique vertices to array
         Vector3[] newVertices = new Vector3[vertexUnique.Count];
         int v = 0;
         foreach (Vector3 vertex in vertexUnique)
             newVertices[v++] = vertex;
         vertices = newVertices;
-
-        foreach(Vector3 vert in newVertices)
-            print("vertex at " + vert);
 
         // Copy unique triangles to array
         int[] newTriangles = new int[triangleUnique.Count];
@@ -162,7 +109,10 @@ public class MeshRebuilder : MonoBehaviour
         mesh.vertices = newVertices;
         mesh.triangles = newTriangles;
         mesh.RecalculateNormals();
+    }
 
+    void CreateVisuals()
+    {
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
@@ -173,8 +123,6 @@ public class MeshRebuilder : MonoBehaviour
             GameObject newVertex = Instantiate(vertex);
             newVertex.transform.SetParent(model.transform);
             newVertex.transform.localPosition = vertexPosition;
-
-            // --------------------------------------------------------------------------------------
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4683308791261092279}
   - component: {fileID: 6080322365346342989}
   m_Layer: 0
-  m_Name: Cube DiffMat
+  m_Name: Cube (Unity)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
