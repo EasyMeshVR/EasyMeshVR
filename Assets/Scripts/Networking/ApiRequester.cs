@@ -15,7 +15,7 @@ namespace EasyMeshVR.Web
         [SerializeField]
         private string FILE_SERVICE_ENDPOINT = "https://fzq7qh0yub.execute-api.us-east-2.amazonaws.com/file";
 
-        private const string NAME_CODE_QUERY_PARAM = "nameCode";
+        private const string CODE_QUERY_PARAM = "code";
         private const string BUCKET_PARAM = "bucket";
         private const string X_AMZ_ALGORITHM_PARAM = "X-Amz-Algorithm";
         private const string X_AMZ_CREDENTIAL_PARAM = "X-Amz-Credential";
@@ -37,9 +37,15 @@ namespace EasyMeshVR.Web
         }
 
         [Serializable]
+        public class PresignedPostJSONRequestBody
+        {
+            public string codeType;
+        }
+
+        [Serializable]
         public class PresignedPostJSON
         {
-            public string nameCode;
+            public string code;
             public PresignedPostData data;
         }
 
@@ -78,9 +84,9 @@ namespace EasyMeshVR.Web
             StartCoroutine(RequestPresignedGet(modelCode, callback));
         }
 
-        public void UploadModel(string stlData, Action<string, string> callback = null)
+        public void UploadModel(string stlData, string codeType, Action<string, string> callback = null)
         {
-            StartCoroutine(RequestPresignedPost(stlData, callback));
+            StartCoroutine(RequestPresignedPost(stlData, codeType, callback));
         }
 
         #endregion
@@ -110,7 +116,7 @@ namespace EasyMeshVR.Web
         {
             Dictionary<string, string> queryParams = new Dictionary<string, string>()
             {
-                { NAME_CODE_QUERY_PARAM, modelCode }
+                { CODE_QUERY_PARAM, modelCode }
             };
 
             Uri uri = BuildUri(FILE_SERVICE_ENDPOINT, queryParams);
@@ -151,9 +157,22 @@ namespace EasyMeshVR.Web
             }
         }
 
-        private IEnumerator RequestPresignedPost(string stlData, Action<string, string> callback = null)
+        private IEnumerator RequestPresignedPost(string stlData, string codeType, Action<string, string> callback = null)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Post(FILE_SERVICE_ENDPOINT, "");
+            PresignedPostJSONRequestBody reqBody = new PresignedPostJSONRequestBody
+            {
+                codeType = codeType
+            };
+
+            string serializedReqBody = JsonConvert.SerializeObject(reqBody);
+
+            UnityWebRequest webRequest = new UnityWebRequest(FILE_SERVICE_ENDPOINT, UnityWebRequest.kHttpVerbPOST);
+            byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(serializedReqBody);
+            webRequest.uploadHandler = new UploadHandlerRaw(jsonToSend);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            //UnityWebRequest webRequest = UnityWebRequest.Post(FILE_SERVICE_ENDPOINT, serializedReqBody);
 
             yield return webRequest.SendWebRequest();
 
@@ -199,7 +218,7 @@ namespace EasyMeshVR.Web
             }
             else if (callback != null)
             {
-                callback.Invoke(presignedPostJSON.nameCode, null);
+                callback.Invoke(presignedPostJSON.code, null);
             }
         }
 

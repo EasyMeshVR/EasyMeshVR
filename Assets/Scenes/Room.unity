@@ -835,6 +835,22 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
+      propertyPath: inputAction.m_Id
+      value: 840cba6a-189c-483a-9d44-c39331bbf05d
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: meshObjectPrefab
+      value: 
+      objectReference: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
+        type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: inputAction.m_Name
+      value: Input
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
       propertyPath: prop.m_Action.m_Id
       value: 8e188964-72e2-404b-81c0-07ff609066b4
       objectReference: {fileID: 0}
@@ -847,6 +863,27 @@ PrefabInstance:
         type: 3}
       propertyPath: prop.m_Action.m_Name
       value: Prop
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: importModelInputActionRef
+      value: 
+      objectReference: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: meshObjectInitialTransform
+      value: 
+      objectReference: {fileID: 3792769190141423837}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: importModelInputAction.m_Id
+      value: a94b308e-3191-441e-89d7-6e3a5014ccbc
+      objectReference: {fileID: 0}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: importModelInputAction.m_Name
+      value: Import Model Input
       objectReference: {fileID: 0}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
@@ -865,6 +902,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94afc50164b53c14c9515ca90bee0de1, type: 3}
+--- !u!4 &3792769190141423837 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3792769190694460088, guid: 94afc50164b53c14c9515ca90bee0de1,
+    type: 3}
+  m_PrefabInstance: {fileID: 3792769190141423836}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6885944694426427361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1371,6 +1414,17 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: importModelInputActionRef
+      value: 
+      objectReference: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
+        type: 3}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: meshObjectInitialTransform
+      value: 
+      objectReference: {fileID: 3792769190141423837}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: XROrigin
