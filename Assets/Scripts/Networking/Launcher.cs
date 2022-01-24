@@ -19,7 +19,7 @@ namespace EasyMeshVR.Multiplayer
         private GameObject multiplayerMenu;
 
         [SerializeField]
-        private GameObject roomListMenu;
+        private RoomListMenu roomListMenu;
 
         [SerializeField]
         private GameObject settingsMenu;
@@ -78,7 +78,7 @@ namespace EasyMeshVR.Multiplayer
         {
             launcherMenu.SetActive(true);
             multiplayerMenu.SetActive(false);
-            roomListMenu.SetActive(false);
+            roomListMenu.gameObject.SetActive(false);
             settingsMenu.SetActive(false);
             connectingPanel.SetActive(false);
         }
@@ -120,7 +120,7 @@ namespace EasyMeshVR.Multiplayer
         public void OnClickedRoomList()
         {
             multiplayerMenu.SetActive(false);
-            roomListMenu.SetActive(true);
+            roomListMenu.gameObject.SetActive(true);
         }
 
         public void OnClickedSettings()
@@ -137,7 +137,7 @@ namespace EasyMeshVR.Multiplayer
 
         public void OnClickedBackRoomList()
         {
-            roomListMenu.SetActive(false);
+            roomListMenu.gameObject.SetActive(false);
             multiplayerMenu.SetActive(true);
         }
 
@@ -262,6 +262,12 @@ namespace EasyMeshVR.Multiplayer
         {
             base.OnJoinedLobby();
             Debug.Log("Client joined lobby");
+        }
+
+        public override void OnRoomListUpdate(List<RoomInfo> roomList)
+        {
+            base.OnRoomListUpdate(roomList);
+            roomListMenu.UpdateRoomlist(roomList);
         }
 
         public override void OnDisconnected(DisconnectCause cause)

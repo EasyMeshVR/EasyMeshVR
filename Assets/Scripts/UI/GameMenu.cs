@@ -61,7 +61,6 @@ namespace EasyMeshVR.UI
         public override void OnLeftRoom()
         {
             Debug.Log("The local player has left the room");
-            PhotonNetwork.OfflineMode = false;
             StartCoroutine(AsyncLoadLauncherScene());
         }
 
