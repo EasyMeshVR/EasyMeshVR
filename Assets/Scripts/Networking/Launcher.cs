@@ -58,6 +58,11 @@ namespace EasyMeshVR.Multiplayer
         /// </summary>
         string roomCode;
 
+        /// <summary>
+        /// Keeps track of whether the user is in the process of joining a single player room.
+        /// </summary>
+        bool joiningSinglePlayer;
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -84,17 +89,29 @@ namespace EasyMeshVR.Multiplayer
 
         public void OnClickedSinglePlayer()
         {
-            // Here we first turn PhotonNetwork.OfflineMode = true and then create
-            // the offline room using Photon
-            PhotonNetwork.OfflineMode = true;
-            CreateSinglePlayerRoom();
+            joiningSinglePlayer = true;
+
+            if (PhotonNetwork.IsConnected)
+            {
+                Debug.Log("Player previously made a connection to the multiplayer server, disconnecting now...");
+                PhotonNetwork.Disconnect();
+            }
+            else
+            {
+                CreateSinglePlayerRoom();
+            }
         }
 
         public void OnClickedMultiPlayer()
         {
             // Set offline mode to false just in case it was set to true before
+            joiningSinglePlayer = false;
             PhotonNetwork.OfflineMode = false;
-            PhotonNetwork.ConnectUsingSettings();
+
+            if (!PhotonNetwork.IsConnected)
+            {
+                PhotonNetwork.ConnectUsingSettings();
+            }
 
             launcherMenu.SetActive(false);
             multiplayerMenu.SetActive(true);
@@ -205,6 +222,12 @@ namespace EasyMeshVR.Multiplayer
 
         public void CreateSinglePlayerRoom()
         {
+            joiningSinglePlayer = false;
+
+            // Here we first turn PhotonNetwork.OfflineMode = true and then create
+            // the offline room using Photon
+            PhotonNetwork.OfflineMode = true;
+
             PhotonNetwork.CreateRoom(null, new RoomOptions {
                 MaxPlayers = 1,
                 IsVisible = false,
@@ -220,7 +243,7 @@ namespace EasyMeshVR.Multiplayer
         {
             Debug.Log("Connected client to master server");
 
-            if (!PhotonNetwork.InLobby)
+            if (!PhotonNetwork.OfflineMode && !PhotonNetwork.InLobby)
             {
                 PhotonNetwork.JoinLobby();
             }
@@ -243,13 +266,21 @@ namespace EasyMeshVR.Multiplayer
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            launcherMenu.SetActive(true);
-            multiplayerMenu.SetActive(false);
-            isConnecting = false;
-            creatingRoom = false;
-            roomCode = string.Empty;
-            PhotonNetwork.OfflineMode = false;
-            Debug.LogFormat("Disconnected from room with reason: {0}", cause);
+            if (joiningSinglePlayer)
+            {
+                Debug.Log("Disconnected client from master server, now creating singleplayer room...");
+                CreateSinglePlayerRoom();
+            }
+            else
+            {
+                launcherMenu.SetActive(true);
+                multiplayerMenu.SetActive(false);
+                isConnecting = false;
+                creatingRoom = false;
+                roomCode = string.Empty;
+                PhotonNetwork.OfflineMode = false;
+                Debug.LogFormat("Disconnected from room with reason: {0}", cause);
+            }
         }
 
         public override void OnCreatedRoom()
@@ -271,8 +302,6 @@ namespace EasyMeshVR.Multiplayer
                 PhotonNetwork.LoadLevel(SceneManagerHelper.ActiveSceneBuildIndex + 1);
             }
         }
-
-        
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {

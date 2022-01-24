@@ -30,7 +30,10 @@ namespace EasyMeshVR.Multiplayer
 
             if (PhotonNetwork.IsConnected)
             {
-                PhotonNetwork.JoinLobby();
+                if (!PhotonNetwork.InLobby)
+                {
+                    PhotonNetwork.JoinLobby();
+                }
             }
             else
             {
@@ -61,17 +64,6 @@ namespace EasyMeshVR.Multiplayer
                 roomEntry.playerCount = roomInfo.PlayerCount;
                 //roomEntries.Add(roomEntry);
             }
-        }
-
-        public override void OnConnectedToMaster()
-        {
-            PhotonNetwork.JoinLobby();
-        }
-
-        public override void OnJoinedLobby()
-        {
-            base.OnJoinedLobby();
-            Debug.Log("Joined Lobby");
         }
 
         #endregion

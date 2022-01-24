@@ -17,9 +17,7 @@ namespace EasyMeshVR.UI
 
         public void OnClickedQuitButton()
         {
-            // TODO: FIX quit to main menu button doesnt work when leaving as a client from a multiplayer room
-            gameObject.SetActive(false);
-            PhotonNetwork.LeaveRoom();
+            PhotonNetwork.LeaveRoom(false);
         }
 
         public void OnClickedCancelQuitButton()
