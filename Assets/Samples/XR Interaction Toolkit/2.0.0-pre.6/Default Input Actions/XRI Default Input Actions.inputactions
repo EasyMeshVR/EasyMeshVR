@@ -1155,6 +1155,107 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Locomotion",
+            "id": "960314f8-9bd0-4bbc-b30b-074596c6f3ab",
+            "actions": [
+                {
+                    "name": "LGrabCanvas",
+                    "type": "Button",
+                    "id": "201640c7-26a2-410a-acb2-ffb73239d680",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RGrabCanvas",
+                    "type": "Button",
+                    "id": "7958f035-6b2b-43f3-b58f-e66e6e480eb0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FlipYLock",
+                    "type": "Button",
+                    "id": "7c2c641d-df9b-466a-871c-cd8c9212b1b8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7b331537-e5a1-4b49-beee-44b8639291b1",
+                    "path": "<ValveIndexController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LGrabCanvas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ad168f11-34e0-455e-8fe4-6ce2bba7bfd2",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LGrabCanvas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "73ca3768-951d-4ced-abdd-19c7b3a763bb",
+                    "path": "<ValveIndexController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RGrabCanvas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c26d944-60f2-415c-bc35-6100a70e34dd",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RGrabCanvas",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8cb9075b-9862-46c8-b42b-7a4d76197109",
+                    "path": "<ValveIndexController>/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FlipYLock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8926004e-e1aa-43ed-9f60-2a5e9d697cdc",
+                    "path": "<XRController>/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FlipYLock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
