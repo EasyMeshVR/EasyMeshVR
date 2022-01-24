@@ -279,6 +279,7 @@ GameObject:
   - component: {fileID: 3790179380568807263}
   - component: {fileID: 3790179380568807262}
   - component: {fileID: 9005231278258985646}
+  - component: {fileID: 6641900527052179306}
   m_Layer: 5
   m_Name: RoomEntry
   m_TagString: Untagged
@@ -336,6 +337,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3790179380568807260}
   m_CullTransparentMesh: 1
+--- !u!114 &6641900527052179306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3790179380568807260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977e2c9f6b944994185f6a5163b26104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tmpRoomName: {fileID: 3790179379722961659}
+  tmpPlayerCount: {fileID: 3790179380399221660}
 --- !u!1001 &3790179381443456043
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
-using Photon.Realtime;
 
 namespace EasyMeshVR.UI
 {
     public class GameMenu : MonoBehaviourPunCallbacks
     {
+        #region Private Fields
+
         [SerializeReference]
         GameObject activeMenuPanel;
 
@@ -16,25 +17,14 @@ namespace EasyMeshVR.UI
         GameObject toolsPanel;
 
         [SerializeReference]
-        GameObject savePanel;
+        MainMenu mainMenuPanel;
 
         [SerializeReference]
         GameObject settingsPanel;
 
-        [SerializeReference]
-        GameObject quitPanel;
+        #endregion
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+        #region Public Methods
 
         /*
         * Left side panel buttons
@@ -45,10 +35,10 @@ namespace EasyMeshVR.UI
             Debug.Log("clicked tools");
         }
 
-        public void OnClickedSaveButton()
+        public void OnClickedMainMenuButton()
         {
-            SwapActivePanels(savePanel);
-            Debug.Log("clicked save");
+            SwapActivePanels(mainMenuPanel.gameObject);
+            Debug.Log("clicked exit");
         }
 
         public void OnClickedSettingsButton()
@@ -57,26 +47,9 @@ namespace EasyMeshVR.UI
             Debug.Log("clicked settings");
         }
 
-        public void OnClickedExitButton()
-        {
-            SwapActivePanels(quitPanel);
-            Debug.Log("clicked exit");
-        }
+        #endregion
 
-        /*
-         * Right side main panel buttons
-         */
-        public void OnClickedQuitButton()
-        {
-            // TODO: FIX quit to main menu button doesnt work when leaving as a client from a multiplayer room
-            gameObject.SetActive(false);
-            PhotonNetwork.LeaveRoom();
-        }
-
-        public void OnClickedCancelQuitButton()
-        {
-            SwapActivePanels(toolsPanel);
-        }
+        #region Private Methods
 
         private void SwapActivePanels(GameObject targetPanel)
         {
@@ -87,8 +60,21 @@ namespace EasyMeshVR.UI
 
         public override void OnLeftRoom()
         {
-            Debug.Log("loading level launcher");
-            PhotonNetwork.LoadLevel(0);
+            Debug.Log("The local player has left the room");
+            PhotonNetwork.OfflineMode = false;
+            StartCoroutine(AsyncLoadLauncherScene());
         }
+
+        private IEnumerator AsyncLoadLauncherScene()
+        {
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(0);
+
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
+        }
+
+        #endregion
     }
 }

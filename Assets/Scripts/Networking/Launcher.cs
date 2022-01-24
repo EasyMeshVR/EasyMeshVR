@@ -92,6 +92,10 @@ namespace EasyMeshVR.Multiplayer
 
         public void OnClickedMultiPlayer()
         {
+            // Set offline mode to false just in case it was set to true before
+            PhotonNetwork.OfflineMode = false;
+            PhotonNetwork.ConnectUsingSettings();
+
             launcherMenu.SetActive(false);
             multiplayerMenu.SetActive(true);
         }
@@ -164,9 +168,6 @@ namespace EasyMeshVR.Multiplayer
         /// </summary>
         public void Connect(string roomCode)
         {
-            // Set offline mode to false just in case it was set to true before
-            PhotonNetwork.OfflineMode = false;
-
             multiplayerMenu.SetActive(false);
             launcherMenu.SetActive(false);
             connectingPanel.SetActive(true);
@@ -219,6 +220,11 @@ namespace EasyMeshVR.Multiplayer
         {
             Debug.Log("Connected client to master server");
 
+            if (!PhotonNetwork.InLobby)
+            {
+                PhotonNetwork.JoinLobby();
+            }
+
             // We don't want to do anything if we are not attempting to join/create a room.
             // The case where isConnecting is false is typically when you lost or quit the game,
             // when this level is loaded, OnConnectedToMaster will be called, in that case we don't want to do anything.
@@ -229,10 +235,10 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
-        public override void OnLeftRoom()
+        public override void OnJoinedLobby()
         {
-            Debug.Log("The local client has left the room");
-            PhotonNetwork.OfflineMode = false;
+            base.OnJoinedLobby();
+            Debug.Log("Client joined lobby");
         }
 
         public override void OnDisconnected(DisconnectCause cause)
@@ -265,6 +271,8 @@ namespace EasyMeshVR.Multiplayer
                 PhotonNetwork.LoadLevel(SceneManagerHelper.ActiveSceneBuildIndex + 1);
             }
         }
+
+        
 
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
