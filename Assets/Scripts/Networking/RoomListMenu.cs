@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using Photon.Pun;
 using Photon.Realtime;
 using EasyMeshVR.UI;
@@ -26,22 +27,20 @@ namespace EasyMeshVR.Multiplayer
         // Start is called before the first frame update
         void Start()
         {
-            if (roomEntries == null)
-                roomEntries = new Dictionary<string, RoomEntry>();
+
         }
 
         #endregion
 
         #region Public Functions
 
+        public void OnJoinButtonClicked(string roomCode)
+        {
+            PhotonNetwork.JoinRoom(roomCode);
+        }
+
         public void UpdateRoomlist(List<RoomInfo> roomList)
         {
-            if (roomEntries == null)
-            {
-                Debug.Log("roomEntries dictionary is null, creating it...");
-                roomEntries = new Dictionary<string, RoomEntry>();
-            }
-
             Debug.Log("Receieved room list of length " + roomList.Count);
 
             foreach (RoomInfo roomInfo in roomList)
@@ -77,6 +76,7 @@ namespace EasyMeshVR.Multiplayer
                         roomEntry.roomName = roomInfo.Name;
                         roomEntry.maxPlayers = roomInfo.MaxPlayers;
                         roomEntry.playerCount = roomInfo.PlayerCount;
+                        roomEntry.AddJoinButtonOnClickAction(() => PhotonNetwork.JoinRoom(roomInfo.Name));
                         roomEntries.Add(roomInfo.Name, roomEntry);
                     }
                 }

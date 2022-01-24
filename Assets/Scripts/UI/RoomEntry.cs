@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 namespace EasyMeshVR.UI
@@ -9,7 +10,7 @@ namespace EasyMeshVR.UI
     {
         #region Public Fields
 
-        public string roomName 
+        public string roomName
         {
             get
             {
@@ -47,7 +48,19 @@ namespace EasyMeshVR.UI
         [SerializeField]
         private TMP_Text tmpPlayerCount;
 
+        [SerializeField]
+        private Button joinButton;
+
         private int _playerCount;
+
+        #endregion
+
+        #region Public Methods
+
+        public void AddJoinButtonOnClickAction(UnityEngine.Events.UnityAction onClickAction)
+        {
+            joinButton.onClick.AddListener(onClickAction);
+        }
 
         #endregion
     }
