@@ -14,6 +14,7 @@ public class PulleyLocomotion : MonoBehaviour
 
     [SerializeField] private ControllersMidpoint ControllersMidpointObject;
     [SerializeField] private Transform EditingSpaceTF;
+    [SerializeField] private bool lockRotationAroundYAxis = true;
 
     private void Awake()
     {
@@ -35,28 +36,31 @@ public class PulleyLocomotion : MonoBehaviour
         flipYLock.action.canceled -= FlipYLock;
     }
 
+    private void Update()
+    {
+        if (isGrippedL && isGrippedR)
+            if (lockRotationAroundYAxis) // Locks rotation around Y axis
+                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+    }
+
     private void LGrabStart(InputAction.CallbackContext context)
     {
         isGrippedL = true;
-        if (isGrippedR) // Both grips active, use midpoint
-        {
-            gameObject.transform.parent = ControllersMidpointObject.transform;
-        }
+        if (isGrippedR) // Both grips active, parent to midpoint
+            transform.parent = ControllersMidpointObject.transform;
     }
 
     private void RGrabStart(InputAction.CallbackContext context)
     {
         isGrippedR = true;
-        if (isGrippedL) // Both grips active, use midpoint
-        {
-            gameObject.transform.parent = ControllersMidpointObject.transform;
-        }
+        if (isGrippedL) // Both grips active, parent to midpoint
+            transform.parent = ControllersMidpointObject.transform;
     }
 
     private void LGrabEnd(InputAction.CallbackContext context)
     {
         isGrippedL = false;
-        gameObject.transform.parent = null;
+        transform.parent = null;
     }
 
     private void RGrabEnd(InputAction.CallbackContext context)
@@ -67,24 +71,8 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void FlipYLock(InputAction.CallbackContext context)
     {
-        ControllersMidpointObject.FlipYLock();
-    }
-
-    private void ScaleAround(Transform targetTF, Vector3 pivot, Vector3 newScale)
-    {
-        Vector3 A = targetTF.localPosition;
-        Vector3 B = pivot;
-
-        Vector3 C = A - B; // diff from object pivot to desired pivot/origin
-
-        float RS = newScale.x / targetTF.localScale.x; // relataive scale factor
-
-        // calc final position post-scale
-        Vector3 FP = B + C * RS;
-
-        // finally, actually perform the scale/translation
-        targetTF.localScale = newScale;
-        targetTF.localPosition = FP;
+        if (isGrippedL & isGrippedR)
+            lockRotationAroundYAxis = !lockRotationAroundYAxis;
     }
 }
 
