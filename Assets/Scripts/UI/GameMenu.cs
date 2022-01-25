@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
+using EasyMeshVR.Core;
 
 namespace EasyMeshVR.UI
 {
@@ -56,22 +56,6 @@ namespace EasyMeshVR.UI
             activeMenuPanel.SetActive(false);
             targetPanel.SetActive(true);
             activeMenuPanel = targetPanel;
-        }
-
-        public override void OnLeftRoom()
-        {
-            Debug.Log("The local player has left the room");
-            StartCoroutine(AsyncLoadLauncherScene());
-        }
-
-        private IEnumerator AsyncLoadLauncherScene()
-        {
-            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(0);
-
-            while (!asyncLoad.isDone)
-            {
-                yield return null;
-            }
         }
 
         #endregion

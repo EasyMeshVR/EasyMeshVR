@@ -352,7 +352,10 @@ MonoBehaviour:
   maxPlayers: 0
   tmpRoomName: {fileID: 3790179379722961659}
   tmpPlayerCount: {fileID: 3790179380399221660}
+  joinButtonText: {fileID: 2545451892191405327}
   joinButton: {fileID: 2545451891685369820}
+  openRoomTextColor: {r: 0.45490196, g: 0.9137255, b: 0.4627451, a: 1}
+  fullRoomTextColor: {r: 0.9137255, g: 0.33333334, b: 0.34901962, a: 1}
 --- !u!1001 &3790179381443456043
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -498,5 +501,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2545451892191405327 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1714234364723218724, guid: 98a67c56fdd60cc4eb96ba78ac9e9065,
+    type: 3}
+  m_PrefabInstance: {fileID: 3790179381443456043}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

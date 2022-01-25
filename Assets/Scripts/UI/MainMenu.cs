@@ -17,7 +17,8 @@ namespace EasyMeshVR.UI
 
         public void OnClickedQuitButton()
         {
-            PhotonNetwork.LeaveRoom(false);
+            //PhotonNetwork.LeaveRoom(false);
+            PhotonNetwork.LeaveRoom();
         }
 
         public void OnClickedCancelQuitButton()

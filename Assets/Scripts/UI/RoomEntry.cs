@@ -22,7 +22,6 @@ namespace EasyMeshVR.UI
             }
         }
 
-        // TODO: create separate TMP_Text fields for maxPlayer and playerCount fields
         public int playerCount
         {
             get
@@ -32,11 +31,22 @@ namespace EasyMeshVR.UI
             set
             {
                 _playerCount = value;
-                tmpPlayerCount.text = "Players: " + value + "/" + maxPlayers;
+                UpdatePlayerCountText();
             }
         }
 
-        public int maxPlayers;
+        public int maxPlayers
+        {
+            get
+            {
+                return _maxPlayers;
+            }
+            set
+            {
+                _maxPlayers = value;
+                UpdatePlayerCountText();
+            }
+        }
 
         #endregion
 
@@ -49,9 +59,22 @@ namespace EasyMeshVR.UI
         private TMP_Text tmpPlayerCount;
 
         [SerializeField]
+        private TMP_Text joinButtonText;
+
+        [SerializeField]
         private Button joinButton;
 
+        [SerializeField]
+        private Color openRoomTextColor;
+
+        [SerializeField]
+        private Color fullRoomTextColor;
+
         private int _playerCount;
+        private int _maxPlayers;
+
+        const string JOIN_BTN_TEXT = "JOIN";
+        const string FULL_ROOM_JOIN_BTN_TEXT = "FULL";
 
         #endregion
 
@@ -60,6 +83,28 @@ namespace EasyMeshVR.UI
         public void AddJoinButtonOnClickAction(UnityEngine.Events.UnityAction onClickAction)
         {
             joinButton.onClick.AddListener(onClickAction);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void UpdatePlayerCountText()
+        {
+            tmpPlayerCount.text = "Players: " + _playerCount + "/" + _maxPlayers;
+
+            if (_playerCount >= _maxPlayers)
+            {
+                tmpPlayerCount.color = fullRoomTextColor;
+                joinButtonText.text = FULL_ROOM_JOIN_BTN_TEXT;
+                joinButton.enabled = false;
+            }
+            else
+            {
+                tmpPlayerCount.color = openRoomTextColor;
+                joinButtonText.text = JOIN_BTN_TEXT;
+                joinButton.enabled = true;
+            }
         }
 
         #endregion

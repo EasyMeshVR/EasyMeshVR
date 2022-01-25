@@ -74,8 +74,8 @@ namespace EasyMeshVR.Multiplayer
                         GameObject roomEntryObject = Instantiate(roomEntryPrefab, roomListContent.transform);
                         RoomEntry roomEntry = roomEntryObject.GetComponent<RoomEntry>();
                         roomEntry.roomName = roomInfo.Name;
-                        roomEntry.maxPlayers = roomInfo.MaxPlayers;
                         roomEntry.playerCount = roomInfo.PlayerCount;
+                        roomEntry.maxPlayers = roomInfo.MaxPlayers;
                         roomEntry.AddJoinButtonOnClickAction(() => PhotonNetwork.JoinRoom(roomInfo.Name));
                         roomEntries.Add(roomInfo.Name, roomEntry);
                     }

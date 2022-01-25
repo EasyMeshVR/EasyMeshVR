@@ -13,6 +13,9 @@ namespace EasyMeshVR.Multiplayer
         #region Private Fields
 
         [SerializeField]
+        private GameObject activePanel;
+
+        [SerializeField]
         private GameObject launcherMenu;
 
         [SerializeField]
@@ -26,6 +29,9 @@ namespace EasyMeshVR.Multiplayer
 
         [SerializeField]
         private GameObject connectingPanel;
+
+        [SerializeField]
+        private GameObject connectingToServerPanel;
 
         [SerializeField]
         private TMP_InputField createRoomInputField;
@@ -63,6 +69,8 @@ namespace EasyMeshVR.Multiplayer
         /// </summary>
         bool joiningSinglePlayer;
 
+        bool isConnectingForFirstTime;
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -76,11 +84,13 @@ namespace EasyMeshVR.Multiplayer
 
         void Start()
         {
-            launcherMenu.SetActive(true);
+            launcherMenu.SetActive(false);
             multiplayerMenu.SetActive(false);
             roomListMenu.gameObject.SetActive(false);
             settingsMenu.SetActive(false);
             connectingPanel.SetActive(false);
+            connectingToServerPanel.SetActive(false);
+            activePanel.SetActive(true);
         }
 
         #endregion
@@ -110,41 +120,38 @@ namespace EasyMeshVR.Multiplayer
 
             if (!PhotonNetwork.IsConnected)
             {
-                PhotonNetwork.ConnectUsingSettings();
+                SwapActivePanel(connectingToServerPanel);
+                isConnectingForFirstTime = PhotonNetwork.ConnectUsingSettings();
             }
-
-            launcherMenu.SetActive(false);
-            multiplayerMenu.SetActive(true);
+            else
+            {
+                SwapActivePanel(multiplayerMenu);
+            }
         }
 
         public void OnClickedRoomList()
         {
-            multiplayerMenu.SetActive(false);
-            roomListMenu.gameObject.SetActive(true);
+            SwapActivePanel(roomListMenu.gameObject);
         }
 
         public void OnClickedSettings()
         {
-            launcherMenu.SetActive(false);
-            settingsMenu.SetActive(true);
+            SwapActivePanel(settingsMenu);
         }
 
         public void OnClickedBackMultiplayer()
         {
-            launcherMenu.SetActive(true);
-            multiplayerMenu.SetActive(false);
+            SwapActivePanel(launcherMenu);
         }
 
         public void OnClickedBackRoomList()
         {
-            roomListMenu.gameObject.SetActive(false);
-            multiplayerMenu.SetActive(true);
+            SwapActivePanel(multiplayerMenu);
         }
 
         public void OnClickedBackSettings()
         {
-            settingsMenu.SetActive(false);
-            launcherMenu.SetActive(true);
+            SwapActivePanel(launcherMenu);
         }
 
         public void OnClickedQuit()
@@ -185,14 +192,19 @@ namespace EasyMeshVR.Multiplayer
         /// </summary>
         public void Connect(string roomCode)
         {
-            multiplayerMenu.SetActive(false);
-            launcherMenu.SetActive(false);
-            connectingPanel.SetActive(true);
+            SwapActivePanel(connectingPanel);
             this.roomCode = roomCode;
 
             if (PhotonNetwork.IsConnected)
             {
-                JoinOrCreateRoom();
+                if (PhotonNetwork.IsConnectedAndReady)
+                {
+                    JoinOrCreateRoom();
+                }
+                else
+                {
+                    isConnecting = true;
+                }
             }
             else
             {
@@ -247,21 +259,26 @@ namespace EasyMeshVR.Multiplayer
             {
                 PhotonNetwork.JoinLobby();
             }
-
-            // We don't want to do anything if we are not attempting to join/create a room.
-            // The case where isConnecting is false is typically when you lost or quit the game,
-            // when this level is loaded, OnConnectedToMaster will be called, in that case we don't want to do anything.
-            if (isConnecting)
-            {
-                JoinOrCreateRoom();
-                isConnecting = false;
-            }
         }
 
         public override void OnJoinedLobby()
         {
             base.OnJoinedLobby();
             Debug.Log("Client joined lobby");
+
+            if (isConnectingForFirstTime)
+            {
+                isConnectingForFirstTime = false;
+                SwapActivePanel(multiplayerMenu);
+            }
+            // We don't want to do anything if we are not attempting to join/create a room.
+            // The case where isConnecting is false is typically when you lost or quit the game,
+            // when this level is loaded, OnConnectedToMaster will be called, in that case we don't want to do anything.
+            else if (isConnecting)
+            {
+                JoinOrCreateRoom();
+                isConnecting = false;
+            }
         }
 
         public override void OnRoomListUpdate(List<RoomInfo> roomList)
@@ -279,13 +296,12 @@ namespace EasyMeshVR.Multiplayer
             }
             else
             {
-                launcherMenu.SetActive(true);
-                multiplayerMenu.SetActive(false);
+                SwapActivePanel(launcherMenu);
                 isConnecting = false;
                 creatingRoom = false;
                 roomCode = string.Empty;
                 PhotonNetwork.OfflineMode = false;
-                Debug.LogFormat("Disconnected from room with reason: {0}", cause);
+                Debug.LogFormat("Disconnected from server with reason: {0}", cause);
             }
         }
 
@@ -312,17 +328,24 @@ namespace EasyMeshVR.Multiplayer
         public override void OnJoinRoomFailed(short returnCode, string message)
         {
             Debug.LogWarningFormat("Failed to join room with reason: {0}", message);
-            multiplayerMenu.SetActive(true);
-            launcherMenu.SetActive(false);
-            connectingPanel.SetActive(false);
+            SwapActivePanel(multiplayerMenu);
         }
 
         public override void OnCreateRoomFailed(short returnCode, string message)
         {
             Debug.LogWarningFormat("Failed to create room with reason: {0}", message);
-            multiplayerMenu.SetActive(true);
-            launcherMenu.SetActive(false);
-            connectingPanel.SetActive(false);
+            SwapActivePanel(multiplayerMenu);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void SwapActivePanel(GameObject targetPanel)
+        {
+            activePanel.SetActive(false);
+            targetPanel.SetActive(true);
+            activePanel = targetPanel;
         }
 
         #endregion
