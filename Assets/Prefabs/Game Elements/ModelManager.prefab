@@ -46,8 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshObjectPrefab: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
     type: 3}
-  modelObject: {fileID: 3055027374399779878, guid: e0ffe0cbfd5dba945bd2d7aac3fa2d62,
-    type: 3}
+  modelObject: {fileID: 0}
 --- !u!114 &588212837
 MonoBehaviour:
   m_ObjectHideFlags: 0

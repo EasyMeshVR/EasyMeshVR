@@ -43,6 +43,12 @@ namespace EasyMeshVR.UI
         private GameObject localSavePanel;
 
         [SerializeField]
+        private TMP_Text exportModelButtonText;
+
+        [SerializeField]
+        private Button exportModelButton;
+
+        [SerializeField]
         private Color subOptionDefaultColor;
 
         [SerializeField]
@@ -50,32 +56,49 @@ namespace EasyMeshVR.UI
 
         #endregion
 
+        #region MonoBehaviourCallbacks
+
+        void Start()
+        {
+            // Set colors of sub-option buttons
+            SetSubOptionButtonColor(cloudUploadSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(cloudDownloadSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(localSaveSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(newModelSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(activeSubOptionButton, subOptionSelectedColor);
+
+            // Disable all MainMenu panels except the active one
+            cloudUploadPanel.SetActive(false);
+            cloudDownloadPanel.SetActive(false);
+            newModelPanel.SetActive(false);
+            localSavePanel.SetActive(false);
+            activePanel.SetActive(true);
+        }
+
+        #endregion
+
         #region Sub Options Button Methods
 
         public void OnClickedCloudUploadSubOption()
         {
-            Debug.Log("clicked cloud upload button");
             SwapActiveSubOptionButton(cloudUploadSubOption);
             SwapActivePanel(cloudUploadPanel);
         }
 
         public void OnClickedCloudDownloadSubOption()
         {
-            Debug.Log("clicked cloud download button");
             SwapActiveSubOptionButton(cloudDownloadSubOption);
-            SwapActivePanel(cloudDownloadSubOption);
+            SwapActivePanel(cloudDownloadPanel);
         }
 
         public void OnClickedNewModelSubOption()
         {
-            Debug.Log("clicked new model button");
             SwapActiveSubOptionButton(newModelSubOption);
             SwapActivePanel(newModelPanel);
         }
 
         public void OnClickedLocalSaveSubOption()
         {
-            Debug.Log("clicked local save button");
             SwapActiveSubOptionButton(localSaveSubOption);
             SwapActivePanel(localSavePanel);
         }
@@ -86,6 +109,9 @@ namespace EasyMeshVR.UI
 
         public void OnClickedExportModel()
         {
+            exportModelButtonText.text = "Exporting...";
+            exportModelButton.enabled = false;
+
             Debug.Log("Exporting current model mesh to the cloud...");
             ModelImportExport.instance.ExportModel(true, ModelCodeType.DIGIT, ExportCallback);
         }
@@ -111,13 +137,17 @@ namespace EasyMeshVR.UI
 
         private void ExportCallback(string modelCode, string error)
         {
+            exportModelButton.enabled = true;
+
             if (!string.IsNullOrEmpty(error))
             {
                 Debug.LogErrorFormat("Error encountered when uploading model: {0}", error);
+                exportModelButtonText.text = error;
                 return;
             }
 
             Debug.LogFormat("Successfully uploaded model, your model code is {0}", modelCode);
+            exportModelButtonText.text = modelCode;
         }
 
         #endregion
@@ -133,9 +163,14 @@ namespace EasyMeshVR.UI
 
         private void SwapActiveSubOptionButton(GameObject targetSubOptionButton)
         {
-            activeSubOptionButton.GetComponent<Image>().color = subOptionDefaultColor;
-            targetSubOptionButton.GetComponent<Image>().color = subOptionSelectedColor;
+            SetSubOptionButtonColor(activeSubOptionButton, subOptionDefaultColor);
+            SetSubOptionButtonColor(targetSubOptionButton, subOptionSelectedColor);
             activeSubOptionButton = targetSubOptionButton;
+        }
+
+        private void SetSubOptionButtonColor(GameObject subOptionButton, Color color)
+        {
+            subOptionButton.GetComponent<Image>().color = color;
         }
 
         #endregion

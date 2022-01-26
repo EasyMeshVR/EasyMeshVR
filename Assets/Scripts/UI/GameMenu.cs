@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
-using EasyMeshVR.Core;
+using UnityEngine.UI;
 
 namespace EasyMeshVR.UI
 {
@@ -10,41 +10,75 @@ namespace EasyMeshVR.UI
     {
         #region Private Fields
 
-        [SerializeReference]
+        [SerializeField]
         GameObject activeMenuPanel;
 
-        [SerializeReference]
+        [SerializeField]
+        GameObject activeMainOption;
+
+        [SerializeField]
         GameObject toolsPanel;
 
-        [SerializeReference]
+        [SerializeField]
         MainMenu mainMenuPanel;
 
-        [SerializeReference]
+        [SerializeField]
         GameObject settingsPanel;
+
+        [SerializeField]
+        GameObject mainMenuOption;
+
+        [SerializeField]
+        GameObject toolsOption;
+
+        [SerializeField]
+        GameObject settingsOption;
+
+        [SerializeField]
+        Color mainOptionDefaultColor;
+
+        [SerializeField]
+        Color mainOptionSelectedColor;
 
         #endregion
 
-        #region Public Methods
+        #region MonoBehaviour Callbacks
 
-        /*
-        * Left side panel buttons
-        */
+        void Start()
+        {
+            // Set the colors of the main option buttons
+            SetMainOptionColor(mainMenuOption, mainOptionDefaultColor);
+            SetMainOptionColor(toolsOption, mainOptionDefaultColor);
+            SetMainOptionColor(settingsOption, mainOptionDefaultColor);
+            SetMainOptionColor(activeMainOption, mainOptionSelectedColor);
+
+            // Disable all panels except the active one
+            toolsPanel.SetActive(false);
+            mainMenuPanel.gameObject.SetActive(false);
+            settingsPanel.SetActive(false);
+            activeMenuPanel.SetActive(true);
+        }
+
+        #endregion
+
+        #region Main Options Bar Button Methods
+
         public void OnClickedToolsButton()
         {
+            SwapActiveMainOption(toolsOption);
             SwapActivePanels(toolsPanel);
-            Debug.Log("clicked tools");
         }
 
         public void OnClickedMainMenuButton()
         {
+            SwapActiveMainOption(mainMenuOption);
             SwapActivePanels(mainMenuPanel.gameObject);
-            Debug.Log("clicked exit");
         }
 
         public void OnClickedSettingsButton()
         {
+            SwapActiveMainOption(settingsOption);
             SwapActivePanels(settingsPanel);
-            Debug.Log("clicked settings");
         }
 
         #endregion
@@ -56,6 +90,18 @@ namespace EasyMeshVR.UI
             activeMenuPanel.SetActive(false);
             targetPanel.SetActive(true);
             activeMenuPanel = targetPanel;
+        }
+
+        private void SwapActiveMainOption(GameObject targetMainOption)
+        {
+            SetMainOptionColor(activeMainOption, mainOptionDefaultColor);
+            SetMainOptionColor(targetMainOption, mainOptionSelectedColor);
+            activeMainOption = targetMainOption;
+        }
+
+        private void SetMainOptionColor(GameObject mainOption, Color color)
+        {
+            mainOption.GetComponent<Image>().color = color;
         }
 
         #endregion

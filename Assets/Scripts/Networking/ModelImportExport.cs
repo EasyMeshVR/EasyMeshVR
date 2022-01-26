@@ -107,12 +107,19 @@ namespace EasyMeshVR.Core
 
         public async void ExportModel(bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
         {
-            Mesh[] meshes = modelObject.GetComponentsInChildren<Mesh>();
+            MeshFilter[] meshFilters = modelObject.GetComponentsInChildren<MeshFilter>();
 
-            if (meshes == null)
+            if (meshFilters == null || meshFilters.Length == 0)
             {
                 Debug.LogWarning("Failed to export model meshes: meshes is null");
+                callback.Invoke(null, "No Mesh Found");
                 return;
+            }   
+            
+            Mesh[] meshes = new Mesh[meshFilters.Length];
+            for (int i = 0; i < meshFilters.Length; ++i)
+            {
+                meshes[i] = meshFilters[i].sharedMesh;
             }
 
             string stlData = await Exporter.WriteStringAsync(meshes);
