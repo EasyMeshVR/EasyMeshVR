@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcbd986d5fcb9e469d1b64085de6219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modelObjectName: Model
-  modelObjectInitialTransform: {fileID: 3792769190694460088}
+  meshObjectPrefab: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
+    type: 3}
+  modelObject: {fileID: 3055027374399779878, guid: e0ffe0cbfd5dba945bd2d7aac3fa2d62,
+    type: 3}
 --- !u!114 &588212837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -59,4 +61,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FILE_SERVICE_ENDPOINT: https://fzq7qh0yub.execute-api.us-east-2.amazonaws.com/file
-  NAME_CODE_QUERY_PARAM: nameCode

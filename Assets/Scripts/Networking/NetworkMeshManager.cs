@@ -12,9 +12,7 @@ namespace EasyMeshVR.Multiplayer
     {
         #region Public Fields
 
-        public static NetworkMeshManager instance;
-
-        public Mesh[] meshes = null;
+        public static NetworkMeshManager instance { get; private set; }
 
         #endregion
 
@@ -46,10 +44,10 @@ namespace EasyMeshVR.Multiplayer
         void TestImportModelCallback(InputAction.CallbackContext context)
         {
             // 6 MB
-            // SynchronizeMeshImport("494906");
+            //SynchronizeMeshImport("494906");
 
             // 80 KB
-            //SynchronizeMeshImport("gold-dominant-heron");
+            SynchronizeMeshImport("gold-dominant-heron");
         }
 
         void Start()
