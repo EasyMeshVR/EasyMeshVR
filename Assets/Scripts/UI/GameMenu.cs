@@ -1,82 +1,89 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Photon.Pun;
-using Photon.Realtime;
+using UnityEngine.UI;
 
 namespace EasyMeshVR.UI
 {
     public class GameMenu : MonoBehaviourPunCallbacks
     {
-        [SerializeReference]
+        #region Private Fields
+
+        [SerializeField]
         GameObject activeMenuPanel;
 
-        [SerializeReference]
+        [SerializeField]
+        GameObject activeMainOption;
+
+        [SerializeField]
         GameObject toolsPanel;
 
-        [SerializeReference]
-        GameObject savePanel;
+        [SerializeField]
+        MainMenu mainMenuPanel;
 
-        [SerializeReference]
+        [SerializeField]
         GameObject settingsPanel;
 
-        [SerializeReference]
-        GameObject quitPanel;
+        [SerializeField]
+        GameObject mainMenuOption;
 
-        // Start is called before the first frame update
+        [SerializeField]
+        GameObject toolsOption;
+
+        [SerializeField]
+        GameObject settingsOption;
+
+        [SerializeField]
+        Color mainOptionDefaultColor;
+
+        [SerializeField]
+        Color mainOptionSelectedColor;
+
+        #endregion
+
+        #region MonoBehaviour Callbacks
+
         void Start()
         {
+            // Set the colors of the main option buttons
+            SetMainOptionColor(mainMenuOption, mainOptionDefaultColor);
+            SetMainOptionColor(toolsOption, mainOptionDefaultColor);
+            SetMainOptionColor(settingsOption, mainOptionDefaultColor);
+            SetMainOptionColor(activeMainOption, mainOptionSelectedColor);
 
+            // Disable all panels except the active one
+            toolsPanel.SetActive(false);
+            mainMenuPanel.gameObject.SetActive(false);
+            settingsPanel.SetActive(false);
+            activeMenuPanel.SetActive(true);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
+        #endregion
 
-        }
+        #region Main Options Bar Button Methods
 
-        /*
-        * Left side panel buttons
-        */
         public void OnClickedToolsButton()
         {
+            SwapActiveMainOption(toolsOption);
             SwapActivePanels(toolsPanel);
-            Debug.Log("clicked tools");
         }
 
-        public void OnClickedSaveButton()
+        public void OnClickedMainMenuButton()
         {
-            SwapActivePanels(savePanel);
-            Debug.Log("clicked save");
+            SwapActiveMainOption(mainMenuOption);
+            SwapActivePanels(mainMenuPanel.gameObject);
         }
 
         public void OnClickedSettingsButton()
         {
+            SwapActiveMainOption(settingsOption);
             SwapActivePanels(settingsPanel);
-            Debug.Log("clicked settings");
         }
 
-        public void OnClickedExitButton()
-        {
-            SwapActivePanels(quitPanel);
-            Debug.Log("clicked exit");
-        }
+        #endregion
 
-        /*
-         * Right side main panel buttons
-         */
-        public void OnClickedQuitButton()
-        {
-            // TODO: FIX quit to main menu button doesnt work when leaving as a client from a multiplayer room
-            gameObject.SetActive(false);
-            PhotonNetwork.LeaveRoom();
-        }
-
-        public void OnClickedCancelQuitButton()
-        {
-            SwapActivePanels(toolsPanel);
-        }
+        #region Private Methods
 
         private void SwapActivePanels(GameObject targetPanel)
         {
@@ -85,10 +92,18 @@ namespace EasyMeshVR.UI
             activeMenuPanel = targetPanel;
         }
 
-        public override void OnLeftRoom()
+        private void SwapActiveMainOption(GameObject targetMainOption)
         {
-            Debug.Log("loading level launcher");
-            PhotonNetwork.LoadLevel(0);
+            SetMainOptionColor(activeMainOption, mainOptionDefaultColor);
+            SetMainOptionColor(targetMainOption, mainOptionSelectedColor);
+            activeMainOption = targetMainOption;
         }
+
+        private void SetMainOptionColor(GameObject mainOption, Color color)
+        {
+            mainOption.GetComponent<Image>().color = color;
+        }
+
+        #endregion
     }
 }

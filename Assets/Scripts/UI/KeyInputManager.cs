@@ -62,10 +62,6 @@ namespace EasyMeshVR.UI
             {
                 inputField.text = text;
             }
-            else
-            {
-                Debug.LogError("Attempted to change the text of an inputField without having a reference!");
-            }
         }
 
         public void Submit()

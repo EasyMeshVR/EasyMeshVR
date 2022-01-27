@@ -18,7 +18,7 @@ namespace EasyMeshVR.Core
     {
         #region Public Fields
 
-        public static ModelImportExport instance;
+        public static ModelImportExport instance { get; private set; }
 
         #endregion
 
@@ -28,18 +28,9 @@ namespace EasyMeshVR.Core
         private GameObject meshObjectPrefab;
 
         [SerializeField]
-        private Transform meshObjectInitialTransform;
+        private GameObject modelObject;
 
         private ApiRequester apiRequester;
-
-        #endregion
-
-        #region Private Constructor
-
-        private ModelImportExport()
-        {
-
-        }
 
         #endregion
 
@@ -65,14 +56,14 @@ namespace EasyMeshVR.Core
                 return;
             }
 
-            GameObject parent = new GameObject("Model");
+            /*GameObject parent = new GameObject("Model");
             parent.transform.position = meshObjectInitialTransform.position;
             parent.transform.rotation = meshObjectInitialTransform.rotation;
-
+*/
             for (int i = 0; i < meshes.Length; ++i)
             {
                 GameObject go = Instantiate(meshObjectPrefab);
-                go.transform.SetParent(parent.transform, false);
+                go.transform.SetParent(modelObject.transform, false);
                 go.name = go.name + "(" + i + ")";
 
                 Mesh mesh = meshes[i];
@@ -87,17 +78,6 @@ namespace EasyMeshVR.Core
             //ExportModel(meshes, true, ModelCodeType.WORD);
         }
 
-        void UploadCallback(string modelCode, string error)
-        {
-            if (!string.IsNullOrEmpty(error))
-            {
-                Debug.LogErrorFormat("Error encountered when uploading model: {0}", error);
-                return;
-            }
-
-            Debug.LogFormat("Successfully uploaded model, your model code is {0}", modelCode);
-        }
-
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -107,10 +87,6 @@ namespace EasyMeshVR.Core
             instance = this;
             Importer.InitializeThreadParameters();
             Exporter.InitializeThreadParameters();
-        }
-
-        void Start()
-        {
             apiRequester = GetComponent<ApiRequester>();
         }
 
@@ -129,12 +105,21 @@ namespace EasyMeshVR.Core
             apiRequester.DownloadModel(modelCode, DownloadCallback);
         }
 
-        public async void ExportModel(Mesh[] meshes, bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
+        public async void ExportModel(bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
         {
-            if (meshes == null)
+            MeshFilter[] meshFilters = modelObject.GetComponentsInChildren<MeshFilter>();
+
+            if (meshFilters == null || meshFilters.Length == 0)
             {
                 Debug.LogWarning("Failed to export model meshes: meshes is null");
+                callback.Invoke(null, "No Mesh Found");
                 return;
+            }   
+            
+            Mesh[] meshes = new Mesh[meshFilters.Length];
+            for (int i = 0; i < meshFilters.Length; ++i)
+            {
+                meshes[i] = meshFilters[i].sharedMesh;
             }
 
             string stlData = await Exporter.WriteStringAsync(meshes);
@@ -142,7 +127,7 @@ namespace EasyMeshVR.Core
             if (isCloudUpload)
             {
                 // Cloud upload
-                apiRequester.UploadModel(stlData, modelCodeType.ToString(), UploadCallback);
+                apiRequester.UploadModel(stlData, modelCodeType.ToString(), callback);
             }
             else
             {

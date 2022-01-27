@@ -18,6 +18,7 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField] private Transform rightHand;
         [SerializeField] private Animator leftHandAnimator;
         [SerializeField] private Animator rightHandAnimator;
+        [SerializeField] private Canvas playerNameCanvas;
 
         private Transform headOrigin;
         private Transform leftHandOrigin;
@@ -40,15 +41,14 @@ namespace EasyMeshVR.Multiplayer
 
             if (photonView.IsMine)
             {
+                // Disabling Renderers for the local player's avatar
                 foreach (var renderer in GetComponentsInChildren<Renderer>())
                 {
                     renderer.enabled = false;
                 }
 
-                foreach (var canvas in GetComponentsInChildren<Canvas>())
-                {
-                    canvas.enabled = false;
-                }
+                // Disable Canvas of the player's name above his head
+                playerNameCanvas.enabled = false;
             }
         }
 
