@@ -107,6 +107,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
+    <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
