@@ -1,5 +1,81 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2064648579527617714
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3310484370765828302}
+  - component: {fileID: 9020192814405270841}
+  - component: {fileID: 8710678017461016819}
+  m_Layer: 5
+  m_Name: MultiplayerSubPanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &3310484370765828302
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064648579527617714}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 6716959112629620823}
+  m_Father: {fileID: 1654788789507520023}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.343515}
+  m_SizeDelta: {x: 0.28715098, y: 0.18759}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &9020192814405270841
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064648579527617714}
+  m_CullTransparentMesh: 1
+--- !u!114 &8710678017461016819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2064648579527617714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.20392159, g: 0.20392159, b: 0.20392159, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &2621626966823831503
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,7 +160,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &2621626966823831501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,10 +209,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28c88fcb9aa8441478c7bbdd412064ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeMenuPanel: {fileID: 0}
+  activeMenuPanel: {fileID: 5745084498275745268}
   activeMainOption: {fileID: 841537452826059644}
   toolsPanel: {fileID: 783952430360441777}
-  generalOptionsMenuPanel: {fileID: 0}
+  generalOptionsMenuPanel: {fileID: 6086802594943246960}
   settingsPanel: {fileID: 1175255606821270360}
   mainMenuOption: {fileID: 841537452826059644}
   toolsOption: {fileID: 7382632697512472667}
@@ -1031,6 +1107,7 @@ GameObject:
   - component: {fileID: 8612661852115994606}
   - component: {fileID: 3245291888145888538}
   - component: {fileID: 8784363422754183164}
+  - component: {fileID: 6086802594943246960}
   m_Layer: 5
   m_Name: GameOptionsPanel
   m_TagString: Untagged
@@ -1053,6 +1130,7 @@ RectTransform:
   - {fileID: 2083812074223818273}
   - {fileID: 1962718077359436285}
   - {fileID: 2106662800498823035}
+  - {fileID: 3310484370765828302}
   m_Father: {fileID: 2621626967575812712}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1125,6 +1203,32 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &6086802594943246960
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5745084498275745268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b469e7ebfb701da4094d15327ae4b079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activePanel: {fileID: 5075742081707199436}
+  activeSubOption: {fileID: 8813601491628440064}
+  saveQuitSubOption: {fileID: 8813601491628440064}
+  cloudUploadDownloadSubOption: {fileID: 2184116706743491091}
+  clearCanvasSubOption: {fileID: 687979031452016613}
+  multiplayerSubOption: {fileID: 2069494818528882789}
+  saveQuitPanel: {fileID: 5075742081707199436}
+  cloudUploadDownloadPanel: {fileID: 6574446538481158962}
+  clearCanvasPanel: {fileID: 7808210513202787947}
+  multiplayerPanel: {fileID: 2064648579527617714}
+  exportModelButtonText: {fileID: 9068949866100513649}
+  exportModelButton: {fileID: 2941135545492101059}
+  subOptionDefaultColor: {r: 0.7764706, g: 0.78039217, b: 0.8156863, a: 0.39215687}
+  subOptionSelectedColor: {r: 0.28235295, g: 0.5176471, b: 0.8156863, a: 1}
 --- !u!1 &6574446538481158962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,8 +1611,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: EasyMeshVR.UI.MainMenu, Assembly-CSharp
+      - m_Target: {fileID: 6086802594943246960}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
         m_MethodName: OnClickedExportModel
         m_Mode: 1
         m_Arguments:
@@ -1779,16 +1883,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickedSaveQuitSubOption
+      objectReference: {fileID: 0}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: LocalSaveButton
+      value: SaveQuitButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
+--- !u!1 &8813601491628440064 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 215353405613616173}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1917393468742767879 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
@@ -1940,13 +2060,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnClickedCancelQuitButton
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EasyMeshVR.UI.GameMenuManager, Assembly-CSharp
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -2966,15 +3091,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: debed493e9bbe1740b3079ec75dd414a, type: 3}
---- !u!224 &6029606178831530066 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4912486357244661535, guid: debed493e9bbe1740b3079ec75dd414a,
-    type: 3}
-  m_PrefabInstance: {fileID: 1693879644509812557}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &783952430360441777 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2116962421010957564, guid: debed493e9bbe1740b3079ec75dd414a,
+    type: 3}
+  m_PrefabInstance: {fileID: 1693879644509812557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &6029606178831530066 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4912486357244661535, guid: debed493e9bbe1740b3079ec75dd414a,
     type: 3}
   m_PrefabInstance: {fileID: 1693879644509812557}
   m_PrefabAsset: {fileID: 0}
@@ -3411,13 +3536,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: OnClickedQuitButton
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: EasyMeshVR.UI.GameMenuManager, Assembly-CSharp
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -3737,11 +3867,169 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db93e9054fc91204790133b5db7f90f7, type: 3}
+--- !u!114 &9068949866100513649 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
+    type: 3}
+  m_PrefabInstance: {fileID: 5578953380027598592}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &5434675027043433722 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
     type: 3}
   m_PrefabInstance: {fileID: 5578953380027598592}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6570991650473126829
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 3310484370765828302}
+    m_Modifications:
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0.2871266
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0.128795
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.1435633
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.0643975
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_text
+      value: 'TODO: Multiplayer list of active players with the ability to kick others
+        if ur the host'
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_margin.w
+      value: -0.0059814453
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_margin.x
+      value: 0.007873535
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_margin.z
+      value: 0.010009766
+      objectReference: {fileID: 0}
+    - target: {fileID: 6199534218055225997, guid: db93e9054fc91204790133b5db7f90f7,
+        type: 3}
+      propertyPath: m_Name
+      value: ConfirmClearText
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: db93e9054fc91204790133b5db7f90f7, type: 3}
+--- !u!224 &6716959112629620823 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 434514552703335418, guid: db93e9054fc91204790133b5db7f90f7,
+    type: 3}
+  m_PrefabInstance: {fileID: 6570991650473126829}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6651013238165057276
 PrefabInstance:
@@ -4380,8 +4668,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickedMultiplayerSubOption
+      objectReference: {fileID: 0}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -4390,6 +4688,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
+--- !u!1 &2069494818528882789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 7211801798337914440}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8967672352378740578 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
@@ -4531,16 +4835,32 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickedCloudUploadDownloadSubOption
+      objectReference: {fileID: 0}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: CloudUploadButton
+      value: CloudUploadDownloadButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
+--- !u!1 &2184116706743491091 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 7413680929281510462}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &9116493450298897684 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
@@ -4702,8 +5022,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
+      objectReference: {fileID: 6086802594943246960}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnClickedClearCanvasSubOption
+      objectReference: {fileID: 0}
+    - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EasyMeshVR.UI.GeneralOptionsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -4712,6 +5042,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
+--- !u!1 &687979031452016613 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 8151819188168935880}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7586297801014898914 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
@@ -4874,7 +5210,7 @@ PrefabInstance:
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: GeneralOptionsButton
+      value: GameOptionsButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
