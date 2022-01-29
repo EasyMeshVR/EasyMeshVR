@@ -116,6 +116,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: NormalText
       objectReference: {fileID: 0}
+    - target: {fileID: 1960195930419623044, guid: cb811e105b5bd164e84ebd119c87acd3,
+        type: 3}
+      propertyPath: m_text
+      value: Player Name
+      objectReference: {fileID: 0}
     - target: {fileID: 1960195930419623045, guid: cb811e105b5bd164e84ebd119c87acd3,
         type: 3}
       propertyPath: m_Pivot.x
@@ -154,7 +159,7 @@ PrefabInstance:
     - target: {fileID: 1960195930419623045, guid: cb811e105b5bd164e84ebd119c87acd3,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 62.498
+      value: 62.5
       objectReference: {fileID: 0}
     - target: {fileID: 1960195930419623045, guid: cb811e105b5bd164e84ebd119c87acd3,
         type: 3}
@@ -236,6 +241,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7649882155354089680}
     m_Modifications:
+    - target: {fileID: 1291752650784973104, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_GlobalPointSize
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1291752650784973104, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_OnSelect.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1291752650784973104, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_OnDeselect.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1291752650784973105, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
       propertyPath: m_Pivot.x
@@ -274,7 +294,7 @@ PrefabInstance:
     - target: {fileID: 1291752650784973105, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 75
+      value: 62.5
       objectReference: {fileID: 0}
     - target: {fileID: 1291752650784973105, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
@@ -346,6 +366,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: InputField
       objectReference: {fileID: 0}
+    - target: {fileID: 1291752651266172412, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_Padding.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1291752651266172412, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_Padding.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1291752651266172412, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_Padding.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1291752651266172412, guid: 2967a3643dec1ff4f93c1599675debd5,
+        type: 3}
+      propertyPath: m_Padding.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1291752651927431060, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
       propertyPath: m_text
@@ -354,7 +394,7 @@ PrefabInstance:
     - target: {fileID: 1291752651927431060, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
       propertyPath: m_fontSize
-      value: 12.05
+      value: 9.75
       objectReference: {fileID: 0}
     - target: {fileID: 1291752651927431060, guid: 2967a3643dec1ff4f93c1599675debd5,
         type: 3}
