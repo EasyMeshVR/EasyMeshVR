@@ -74,7 +74,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Example\DemoScene.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Placement.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\OLDTransRotateScale.cs" />
-    <Compile Include="Assets\Scripts\UI\MainMenu.cs" />
+    <Compile Include="Assets\Scripts\UI\GeneralOptionsMenu.cs" />
     <Compile Include="Assets\Scripts\Networking\Launcher.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenuManager.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Mallet.cs" />

@@ -20,7 +20,7 @@ namespace EasyMeshVR.UI
         GameObject toolsPanel;
 
         [SerializeField]
-        MainMenu mainMenuPanel;
+        GeneralOptionsMenu generalOptionsMenuPanel;
 
         [SerializeField]
         GameObject settingsPanel;
@@ -54,7 +54,7 @@ namespace EasyMeshVR.UI
 
             // Disable all panels except the active one
             toolsPanel.SetActive(false);
-            mainMenuPanel.gameObject.SetActive(false);
+            generalOptionsMenuPanel.gameObject.SetActive(false);
             settingsPanel.SetActive(false);
             activeMenuPanel.SetActive(true);
         }
@@ -69,10 +69,10 @@ namespace EasyMeshVR.UI
             SwapActivePanels(toolsPanel);
         }
 
-        public void OnClickedMainMenuButton()
+        public void OnClickedGeneralOptionsButton()
         {
             SwapActiveMainOption(mainMenuOption);
-            SwapActivePanels(mainMenuPanel.gameObject);
+            SwapActivePanels(generalOptionsMenuPanel.gameObject);
         }
 
         public void OnClickedSettingsButton()
