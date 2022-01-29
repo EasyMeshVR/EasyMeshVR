@@ -8,7 +8,8 @@ using EasyMeshVR.Core;
 
 namespace EasyMeshVR.UI
 {
-    public class MainMenu : MonoBehaviour
+    public class GeneralOptionsMenu
+        : MonoBehaviour
     {
         #region Private Fields
 
@@ -16,31 +17,31 @@ namespace EasyMeshVR.UI
         private GameObject activePanel;
 
         [SerializeField]
-        private GameObject activeSubOptionButton;
+        private GameObject activeSubOption;
 
         [SerializeField]
-        private GameObject cloudUploadSubOption;
+        private GameObject saveQuitSubOption;
 
         [SerializeField]
-        private GameObject cloudDownloadSubOption;
+        private GameObject cloudUploadDownloadSubOption;
 
         [SerializeField]
-        private GameObject newModelSubOption;
+        private GameObject clearCanvasSubOption;
 
         [SerializeField]
-        private GameObject localSaveSubOption;
+        private GameObject multiplayerSubOption;
 
         [SerializeField]
-        private GameObject cloudUploadPanel;
+        private GameObject saveQuitPanel;
 
         [SerializeField]
-        private GameObject cloudDownloadPanel;
+        private GameObject cloudUploadDownloadPanel;
 
         [SerializeField]
-        private GameObject newModelPanel;
+        private GameObject clearCanvasPanel;
 
         [SerializeField]
-        private GameObject localSavePanel;
+        private GameObject multiplayerPanel;
 
         [SerializeField]
         private TMP_Text exportModelButtonText;
@@ -61,17 +62,17 @@ namespace EasyMeshVR.UI
         void Start()
         {
             // Set colors of sub-option buttons
-            SetSubOptionButtonColor(cloudUploadSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(cloudDownloadSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(localSaveSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(newModelSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(activeSubOptionButton, subOptionSelectedColor);
+            SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(clearCanvasSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(multiplayerSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(activeSubOption, subOptionSelectedColor);
 
             // Disable all MainMenu panels except the active one
-            cloudUploadPanel.SetActive(false);
-            cloudDownloadPanel.SetActive(false);
-            newModelPanel.SetActive(false);
-            localSavePanel.SetActive(false);
+            saveQuitPanel.SetActive(false);
+            cloudUploadDownloadPanel.SetActive(false);
+            clearCanvasPanel.SetActive(false);
+            multiplayerPanel.SetActive(false);
             activePanel.SetActive(true);
         }
 
@@ -79,28 +80,28 @@ namespace EasyMeshVR.UI
 
         #region Sub Options Button Methods
 
-        public void OnClickedCloudUploadSubOption()
+        public void OnClickedSaveQuitSubOption()
         {
-            SwapActiveSubOptionButton(cloudUploadSubOption);
-            SwapActivePanel(cloudUploadPanel);
+            SwapActiveSubOptionButton(saveQuitSubOption);
+            SwapActivePanel(saveQuitPanel);
         }
 
-        public void OnClickedCloudDownloadSubOption()
+        public void OnClickedCloudUploadDownloadSubOption()
         {
-            SwapActiveSubOptionButton(cloudDownloadSubOption);
-            SwapActivePanel(cloudDownloadPanel);
+            SwapActiveSubOptionButton(cloudUploadDownloadSubOption);
+            SwapActivePanel(cloudUploadDownloadPanel);
         }
 
-        public void OnClickedNewModelSubOption()
+        public void OnClickedClearCanvasSubOption()
         {
-            SwapActiveSubOptionButton(newModelSubOption);
-            SwapActivePanel(newModelPanel);
+            SwapActiveSubOptionButton(clearCanvasSubOption);
+            SwapActivePanel(clearCanvasPanel);
         }
 
-        public void OnClickedLocalSaveSubOption()
+        public void OnClickedMultiplayerSubOption()
         {
-            SwapActiveSubOptionButton(localSaveSubOption);
-            SwapActivePanel(localSavePanel);
+            SwapActiveSubOptionButton(multiplayerSubOption);
+            SwapActivePanel(multiplayerPanel);
         }
 
         #endregion
@@ -118,11 +119,10 @@ namespace EasyMeshVR.UI
 
         #endregion
 
-        #region Settings Panel Methods
+        #region Save Quit Button Methods
 
         public void OnClickedQuitButton()
         {
-            //PhotonNetwork.LeaveRoom(false);
             PhotonNetwork.LeaveRoom();
         }
 
@@ -161,11 +161,11 @@ namespace EasyMeshVR.UI
             activePanel = targetPanel;
         }
 
-        private void SwapActiveSubOptionButton(GameObject targetSubOptionButton)
+        private void SwapActiveSubOptionButton(GameObject targetSubOption)
         {
-            SetSubOptionButtonColor(activeSubOptionButton, subOptionDefaultColor);
-            SetSubOptionButtonColor(targetSubOptionButton, subOptionSelectedColor);
-            activeSubOptionButton = targetSubOptionButton;
+            SetSubOptionButtonColor(activeSubOption, subOptionDefaultColor);
+            SetSubOptionButtonColor(targetSubOption, subOptionSelectedColor);
+            activeSubOption = targetSubOption;
         }
 
         private void SetSubOptionButtonColor(GameObject subOptionButton, Color color)

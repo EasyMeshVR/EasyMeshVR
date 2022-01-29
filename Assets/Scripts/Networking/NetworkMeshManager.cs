@@ -47,7 +47,7 @@ namespace EasyMeshVR.Multiplayer
             //SynchronizeMeshImport("494906");
 
             // 80 KB
-            //SynchronizeMeshImport("olive-labour-puffin");
+            SynchronizeMeshImport("moccasin-tremendous-shark");
         }
 
         void Start()
