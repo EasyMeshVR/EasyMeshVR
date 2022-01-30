@@ -68,12 +68,7 @@ namespace EasyMeshVR.Multiplayer
             XROrigin.transform.position = spawnPoint.position;
             XROrigin.transform.rotation = spawnPoint.rotation;
 
-            object[] instantiationData =
-            {
-                PhotonNetwork.LocalPlayer.NickName
-            };
-
-            return PhotonNetwork.Instantiate(Constants.NETWORK_PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity, 0, instantiationData);
+            return PhotonNetwork.Instantiate(Constants.NETWORK_PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
         }
 
         #endregion

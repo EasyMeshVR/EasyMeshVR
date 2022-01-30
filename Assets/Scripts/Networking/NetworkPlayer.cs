@@ -24,9 +24,9 @@ namespace EasyMeshVR.Multiplayer
         private Transform headOrigin;
         private Transform leftHandOrigin;
         private Transform rightHandOrigin;
-
+        private Transform mainCameraTransform;
         private PhotonView photonView;
-
+        
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -35,6 +35,7 @@ namespace EasyMeshVR.Multiplayer
         void Start()
         {
             photonView = GetComponent<PhotonView>();
+            mainCameraTransform = Camera.main.transform;
 
             XROrigin origin = FindObjectOfType<XROrigin>();
             headOrigin = origin.transform.Find("Camera Offset/Main Camera");
@@ -42,8 +43,7 @@ namespace EasyMeshVR.Multiplayer
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
 
             // Set player's name text
-            string playerName = (string)photonView.InstantiationData[0];
-            playerNameText.text = playerName;
+            playerNameText.text = photonView.Owner.NickName;
 
             if (photonView.IsMine)
             {
@@ -53,7 +53,7 @@ namespace EasyMeshVR.Multiplayer
                     renderer.enabled = false;
                 }
 
-                // Disable Canvas of the player's name above his head
+                // Disable Canvas of the player's name above the head of the local player
                 playerNameCanvas.enabled = false;
             }
         }
@@ -70,6 +70,12 @@ namespace EasyMeshVR.Multiplayer
                 UpdateHandAnimation(InputDevices.GetDeviceAtXRNode(XRNode.LeftHand), leftHandAnimator);
                 UpdateHandAnimation(InputDevices.GetDeviceAtXRNode(XRNode.RightHand), rightHandAnimator);
             }
+        }
+
+        void LateUpdate()
+        {
+            playerNameCanvas.transform.LookAt(
+                playerNameCanvas.transform.position + mainCameraTransform.rotation * Vector3.forward);
         }
 
         #endregion
