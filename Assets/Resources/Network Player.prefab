@@ -81,6 +81,7 @@ MonoBehaviour:
   leftHandAnimator: {fileID: 3267005434965479635}
   rightHandAnimator: {fileID: 7376840665451898350}
   playerNameCanvas: {fileID: 6233472594560948969}
+  playerNameText: {fileID: 8483653956014972165}
 --- !u!114 &4917410187082462601
 MonoBehaviour:
   m_ObjectHideFlags: 0

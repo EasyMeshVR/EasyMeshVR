@@ -80,6 +80,18 @@ namespace EasyMeshVR.Multiplayer
             // This makes sure we can use PhotonNetwork.LoadLevel() on the master client and
             // all clients in the same room sync their level automatically
             PhotonNetwork.AutomaticallySyncScene = true;
+
+            // Player's nickname is set when the launcher scene is started
+            string playerName = PlayerPrefs.GetString(Constants.PLAYER_NAME_PREF_KEY, Constants.PLAYER_NAME_PREF_DEFAULT);
+
+            if (string.IsNullOrEmpty(playerName))
+            {
+                PhotonNetwork.LocalPlayer.NickName = Constants.PLAYER_NAME_PREF_DEFAULT;
+            }
+            else
+            {
+                PhotonNetwork.LocalPlayer.NickName = playerName;
+            }
         }
 
         void Start()

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.XR;
 using Unity.XR.CoreUtils;
 using Photon.Pun;
-using Photon.Realtime;
+using TMPro;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -19,10 +19,12 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField] private Animator leftHandAnimator;
         [SerializeField] private Animator rightHandAnimator;
         [SerializeField] private Canvas playerNameCanvas;
+        [SerializeField] private TMP_Text playerNameText;
 
         private Transform headOrigin;
         private Transform leftHandOrigin;
         private Transform rightHandOrigin;
+
         private PhotonView photonView;
 
         #endregion
@@ -38,6 +40,10 @@ namespace EasyMeshVR.Multiplayer
             headOrigin = origin.transform.Find("Camera Offset/Main Camera");
             leftHandOrigin = origin.transform.Find("Camera Offset/LeftHand Controller");
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
+
+            // Set player's name text
+            string playerName = (string)photonView.InstantiationData[0];
+            playerNameText.text = playerName;
 
             if (photonView.IsMine)
             {
