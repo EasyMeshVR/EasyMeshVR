@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EasyMeshVR.Core;
 using UnityEngine.InputSystem;
+using UnityEngine.Networking;
+using Parabox.Stl;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -22,7 +25,8 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField]
         private InputActionReference importModelInputActionRef;
 
-        PhotonView photonView;
+        private PhotonView photonView;
+        private Action<bool> importCallback = null;
 
         #endregion
 
@@ -62,15 +66,62 @@ namespace EasyMeshVR.Multiplayer
         [PunRPC]
         void ImportModelFromWeb(string modelCode)
         {
-            ModelImportExport.instance.ImportModel(modelCode);
+            ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+        }
+
+        #endregion
+
+        #region Model Import Callback
+
+        async void DownloadCallback(DownloadHandler downloadHandler, string error)
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
+
+                if (importCallback != null)
+                {
+                    importCallback.Invoke(false);
+                }
+                return;
+            }
+
+            Debug.Log("Importing model into scene...");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            Mesh[] meshes = await Importer.Import(downloadHandler.data);
+
+            // Local instantiation of game objects with the imported meshes
+            if (meshes == null || meshes.Length < 1)
+            {
+                Debug.LogError("Meshes array is null or empty");
+
+                if (importCallback != null)
+                {
+                    importCallback.Invoke(false);
+                }
+                return;
+            }
+
+            ModelImportExport.instance.CreateMeshObjects(meshes);
+
+            watch.Stop();
+            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
+
+            if (importCallback != null)
+            {
+                importCallback.Invoke(true);
+            }
         }
 
         #endregion
 
         #region Public Methods
 
-        public void SynchronizeMeshImport(string modelCode)
+        public void SynchronizeMeshImport(string modelCode, Action<bool> callback = null)
         {
+            importCallback = callback;
+
             // We tell all clients to import the model from the web server given the model code.
             // RpcTarget.AllBufferedViaServer makes it so every player (including the one calling this function)
             // executes the ImportModelFromWeb RPC and it's buffered by the Photon server so that any future

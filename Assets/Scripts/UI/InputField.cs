@@ -32,12 +32,12 @@ namespace EasyMeshVR.UI
         // with the index finger when hovering over a canvas UI (casting a ray/line from the index finger)
         public void InputFieldSelected()
         {
-            KeyInputManager.GetInstance().InputFieldSelected(inputField);
+            KeyInputManager.instance.InputFieldSelected(inputField);
         }
 
         public void InputFieldDeselected()
         {
-            KeyInputManager.GetInstance().InputFieldDeselected(inputField);
+            KeyInputManager.instance.InputFieldDeselected(inputField);
         }
 
         #endregion

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\HandCollider.cs" />
+    <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
     <Compile Include="Assets\Scripts\UI\RoomEntry.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\PulleyLocomotion.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
-    <Compile Include="Assets\Scripts\HandPresence.cs" />
+    <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\French.cs" />
@@ -90,7 +91,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LetterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\Scripts\Networking\ApiRequester.cs" />
-    <Compile Include="Assets\Scripts\Constants.cs" />
+    <Compile Include="Assets\Scripts\Misc\Constants.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\BackspaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ClearKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
@@ -102,12 +103,12 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Controller.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
     <Compile Include="Assets\Scripts\UI\KeyInputManager.cs" />
-    <Compile Include="Assets\Scripts\SceneLoader.cs" />
+    <Compile Include="Assets\Scripts\Misc\SceneLoader.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
+    <Compile Include="Assets\Scripts\Misc\KeyboardOffset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
