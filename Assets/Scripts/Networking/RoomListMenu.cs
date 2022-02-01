@@ -34,11 +34,6 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Functions
 
-        public void OnJoinButtonClicked(string roomCode)
-        {
-            PhotonNetwork.JoinRoom(roomCode);
-        }
-
         public void UpdateRoomlist(List<RoomInfo> roomList)
         {
             Debug.Log("Receieved room list of length " + roomList.Count);

@@ -5,7 +5,6 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using EasyMeshVR.Core;
-using EasyMeshVR.Web;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace EasyMeshVR.Multiplayer
@@ -20,9 +19,10 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField]
         private GameObject XROrigin;
 
-        private GameObject spawnedPlayerPrefab;
+        [SerializeField]
+        private GameObject networkPlayerPrefab;
 
-        private ApiRequester apiRequester;
+        private GameObject spawnedPlayerPrefab;
 
         private int myPlayerNumber = 0;
 
@@ -50,19 +50,6 @@ namespace EasyMeshVR.Multiplayer
 
         #region Pun Callbacks
 
-        public override void OnCreatedRoom()
-        {
-            Debug.Log("Created room");
-            base.OnCreatedRoom();
-
-        }
-
-        public override void OnJoinedRoom()
-        {
-            Debug.Log("Player joined room");
-            base.OnJoinedRoom();
-        }
-
         public override void OnLeftRoom()
         {
             base.OnLeftRoom();
@@ -84,7 +71,7 @@ namespace EasyMeshVR.Multiplayer
             XROrigin.transform.position = spawnPoint.position;
             XROrigin.transform.rotation = spawnPoint.rotation;
 
-            return PhotonNetwork.Instantiate(Constants.NETWORK_PLAYER_PREFAB_NAME, Vector3.zero, Quaternion.identity);
+            return PhotonNetwork.Instantiate(networkPlayerPrefab.name, Vector3.zero, Quaternion.identity);
         }
 
         #endregion

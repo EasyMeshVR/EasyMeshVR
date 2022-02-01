@@ -51,6 +51,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   XROrigin: {fileID: 0}
+  networkPlayerPrefab: {fileID: 441580124532819812, guid: 11f49a51b5906c2439630214350f1bdc,
+    type: 3}
 --- !u!114 &629846860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -85,7 +87,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ccba6fc37189614cb9391c26a5a19cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshes: []
-  meshObjectPrefab: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
+  importModelInputActionRef: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  meshObjectInitialTransform: {fileID: 0}
