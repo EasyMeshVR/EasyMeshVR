@@ -17,7 +17,12 @@ public class MeshRebuilder : MonoBehaviour
     Vector3 vertexPosition;
     int[] triangles;
 
-    public void Awake()
+    // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
+    // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
+    public static Dictionary<GameObject, List<int>> visuals = new Dictionary<GameObject, List<int>>();
+
+    // Setup
+    void Awake()
     {
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
@@ -33,6 +38,8 @@ public class MeshRebuilder : MonoBehaviour
         CreateVisuals();
     }
 
+    // Deletes the duplicate vertices Unity and STL files create
+    // Re-references those duplicate vertices in the triangles array with unique ones only
     void RemoveDuplicates()
     {
         // Filter out unique vertices and triangles, and store indices of every duplicate of a vertex (2 or more dupes)
@@ -111,18 +118,15 @@ public class MeshRebuilder : MonoBehaviour
         mesh.RecalculateNormals();
     }
 
+    // Actually create the vertex and edge GameObject interactables
     void CreateVisuals()
     {
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
-            // Saves the position of the current vertex
-            vertexPosition = vertices[i];
-
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
-            GameObject newVertex = Instantiate(vertex);
-            newVertex.transform.SetParent(model.transform);
-            newVertex.transform.localPosition = vertexPosition;
+            GameObject newVertex = Instantiate(vertex, model.transform);
+            newVertex.transform.localPosition = vertices[i];
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();
@@ -158,8 +162,7 @@ public class MeshRebuilder : MonoBehaviour
                     continue;
 
                 // Same as vertex, create a new edge object and set its parent
-                GameObject newEdge = Instantiate(edge);
-                newEdge.transform.SetParent(model.transform);
+                GameObject newEdge = Instantiate(edge, model.transform);
 
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
@@ -169,6 +172,12 @@ public class MeshRebuilder : MonoBehaviour
                 // Orient the edge to look at the vertices
                 newEdge.transform.LookAt(newVertex.transform, Vector3.up);
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
+
+                // Add edge and it's connecting vertices to a dictionary reference for use in other scripts
+                List<int> conVerts = new List<int>();
+                conVerts.Add(i);
+                conVerts.Add(k);
+                visuals.Add(newEdge, conVerts);
             }
         }
     }

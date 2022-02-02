@@ -10,20 +10,22 @@ public class MoveVertices : MonoBehaviour
 
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
 
-    [SerializeField] Material unselected;
-    [SerializeField] Material hovered;
-    [SerializeField] Material selected;
+    [SerializeField] Material unselected;   // gray
+    [SerializeField] Material hovered;      // orange
+    [SerializeField] Material selected;     // light blue
 
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
     Vector3[] vertices;
 
-    Vector3 originalPosition = new Vector3();
-    int selectedVertex = new int();
+    // Vertex lookup
+    Vector3 originalPosition;
+    int selectedVertex;
 
     bool grabHeld = false;
 
+    // Get all references we need and add control listeners
     void OnEnable()
     {
         // Get the editing model's MeshFilter
@@ -40,19 +42,18 @@ public class MoveVertices : MonoBehaviour
         grabInteractable.hoverEntered.AddListener(HoverOver);
         grabInteractable.hoverExited.AddListener(HoverExit);
 
-        // This needs to be a whileSelected kind of thing, rather than just once when it's pressed
+        // This checks if the grab has been pressed or released
+        // Needs to be updated to trigger/button pinch controls
         grabInteractable.selectEntered.AddListener(GrabPulled);
         grabInteractable.selectExited.AddListener(GrabReleased);
     }
 
+    // We don't need the control listeners if OnDisable() is ever called
     void OnDisable()
     {
         grabInteractable.hoverEntered.RemoveListener(HoverOver);
-
         grabInteractable.hoverExited.RemoveListener(HoverExit);
-
         grabInteractable.selectEntered.RemoveListener(GrabPulled);
-
         grabInteractable.selectExited.RemoveListener(GrabReleased);
     }
 
@@ -61,6 +62,9 @@ public class MoveVertices : MonoBehaviour
     void HoverOver(HoverEnterEventArgs arg0)
     {
         materialSwap.material = hovered;
+
+        // Keep mesh filter updated with most recent mesh data changes
+        vertices = mesh.vertices;
 
         // Finds the correspoinding vertex on the mesh based off the GameObject's position
         // Using localPosition since it's a parent of the model
@@ -86,8 +90,6 @@ public class MoveVertices : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        materialSwap.material = selected;
-
         grabHeld = true;
     }
 
@@ -102,22 +104,44 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        vertices = mesh.vertices;
-
         if (grabHeld)
         {
+            materialSwap.material = selected;
+
             // Update the mesh filter's vertices to the vertex GameObject's position
-            // This doesn't work too well, it sets the mesh's vertex to way higher than where the GameObject is
-            // I think this has something to do with local vs world space, but transform.localPosition doesn't work either
-            vertices[selectedVertex] = transform.position;
+            // Subtracts model's offset if it's not directly on (0,0,0)
+            vertices[selectedVertex] = transform.localPosition - model.transform.position;
+
             UpdateMesh();
         }
     }
 
+    // Update MeshFilter and re-draw in-game visuals
     void UpdateMesh()
     {
+        // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
+        // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
+        foreach (var kvp in MeshRebuilder.visuals)
+        {
+            // Dictionary created in MeshRebuilder.cs
+            // Dictionary<GameObject, List<int>>
+            // GameObject = edge, List<int> = vertex 1 (origin), vertex 2
+
+            // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
+            if (kvp.Value[0] == selectedVertex || kvp.Value[1] == selectedVertex)
+            {
+                // Set the edge's position to between the two vertices and scale it appropriately
+                float edgeDistance = 0.5f * Vector3.Distance(vertices[kvp.Value[0]], vertices[kvp.Value[1]]);
+                kvp.Key.transform.localPosition = (vertices[kvp.Value[0]] + vertices[kvp.Value[1]]) / 2;
+                kvp.Key.transform.localScale = new Vector3(kvp.Key.transform.localScale.x, edgeDistance, kvp.Key.transform.localScale.z);
+
+                // Orient the edge to look at the vertices (specifically the one we're currently holding)
+                kvp.Key.transform.LookAt(transform, Vector3.up);
+                kvp.Key.transform.rotation *= Quaternion.Euler(90, 0, 0);
+            }
+        }
     }
 }
