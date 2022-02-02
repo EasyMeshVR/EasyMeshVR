@@ -103,6 +103,7 @@ namespace EasyMeshVR.Multiplayer
                 return;
             }
 
+            ModelImportExport.instance.DestroyMeshObjects();
             ModelImportExport.instance.CreateMeshObjects(meshes);
 
             watch.Stop();
@@ -122,15 +123,15 @@ namespace EasyMeshVR.Multiplayer
         {
             importCallback = callback;
 
+            // We account for the case where we import a model then delete it and import a new one,
+            // we would have to clear the previous buffered RPCs for importing that were sent by NetworkMeshManager
+            // whenever we import a new model so new players won't have to import old models for nothing
+            PhotonNetwork.RemoveBufferedRPCs(methodName: "ImportModelFromWeb");
+
             // We tell all clients to import the model from the web server given the model code.
             // RpcTarget.AllBufferedViaServer makes it so every player (including the one calling this function)
             // executes the ImportModelFromWeb RPC and it's buffered by the Photon server so that any future
             // players that join can import the model themselves.
-
-            // NOTE: we will need to account for the case where we import a model then delete it and import a new one,
-            // we would have to clear the previous buffered RPCs that were sent by NetworkMeshManager (assuming deletion also happens here)
-            // whenever we import a new model so new players won't have to import/delete old models for nothing
-            // (we can use PhotonNetwork.RemoveRPCs(photonView))
             photonView.RPC("ImportModelFromWeb", RpcTarget.AllBufferedViaServer, modelCode);
         }
 

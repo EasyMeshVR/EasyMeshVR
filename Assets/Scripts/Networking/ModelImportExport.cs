@@ -55,25 +55,30 @@ namespace EasyMeshVR.Core
 
         public void ImportModel(string modelCode, Action<DownloadHandler, string> callback = null)
         {
-            DestroyMeshObjects();
             apiRequester.DownloadModel(modelCode, callback);
         }
 
         public async void ExportModel(bool isCloudUpload, ModelCodeType modelCodeType, Action<string, string> callback = null)
         {
-            MeshFilter[] meshFilters = modelObject.GetComponentsInChildren<MeshFilter>();
-
-            if (meshFilters == null || meshFilters.Length == 0)
+            if (modelObject.transform.childCount == 0)
             {
-                Debug.LogWarning("Failed to export model meshes: meshes is null");
-                callback.Invoke(null, "No Mesh Found");
+                callback.Invoke(null, "No mesh found");
                 return;
-            }   
-            
-            Mesh[] meshes = new Mesh[meshFilters.Length];
-            for (int i = 0; i < meshFilters.Length; ++i)
+            }
+
+            Mesh[] meshes = new Mesh[modelObject.transform.childCount];
+
+            for (int i = 0; i < modelObject.transform.childCount; ++i)
             {
-                meshes[i] = meshFilters[i].sharedMesh;
+                MeshFilter mf = modelObject.transform.GetChild(i).GetComponent<MeshFilter>();
+
+                if (!mf || !mf.sharedMesh)
+                {
+                    callback.Invoke(null, "Error: child of the editing space model has no mesh filter component.");
+                    return;
+                }
+
+                meshes[i] = mf.sharedMesh;
             }
 
             string stlData = await Exporter.WriteStringAsync(meshes);
