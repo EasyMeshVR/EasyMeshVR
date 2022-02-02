@@ -7,6 +7,8 @@ TagManager:
   - Vertex
   - Edge
   - Model
+  - EditingSpace
+  - NetworkPlayer
   layers:
   - Default
   - TransparentFX

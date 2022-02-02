@@ -988,7 +988,7 @@ GameObject:
   - component: {fileID: 2063562610}
   m_Layer: 0
   m_Name: EditingSpace
-  m_TagString: Untagged
+  m_TagString: EditingSpace
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

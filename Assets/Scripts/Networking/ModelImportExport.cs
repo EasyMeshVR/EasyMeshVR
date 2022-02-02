@@ -118,9 +118,14 @@ namespace EasyMeshVR.Core
 
         public void DestroyMeshObjects()
         {
+            // This will delete all the mesh-related game objects under the modelObject prefab
+            // but we make sure we don't delete the Network Players that were parented in the editing space
             foreach (Transform child in modelObject.transform)
             {
-                Destroy(child.gameObject);
+                if(!child.gameObject.CompareTag(Constants.NETWORK_PLAYER_TAG))
+                {
+                    Destroy(child.gameObject);
+                }
             }
         }
 
