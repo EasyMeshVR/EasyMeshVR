@@ -102,13 +102,14 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
+        vertices = mesh.vertices;
+
         if (grabHeld)
         {
             // Update the mesh filter's vertices to the vertex GameObject's position
             // This doesn't work too well, it sets the mesh's vertex to way higher than where the GameObject is
             // I think this has something to do with local vs world space, but transform.localPosition doesn't work either
             vertices[selectedVertex] = transform.position;
-
             UpdateMesh();
         }
     }
@@ -117,5 +118,6 @@ public class MoveVertices : MonoBehaviour
     {
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
+
     }
 }
