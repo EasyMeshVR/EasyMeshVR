@@ -60,6 +60,8 @@ public class MoveVertices : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
+        vertices = mesh.vertices;
+
         materialSwap.material = hovered;
 
         // Finds the correspoinding vertex on the mesh based off the GameObject's position
@@ -102,7 +104,6 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        vertices = mesh.vertices;
 
         if (grabHeld)
         {
