@@ -21,10 +21,6 @@ namespace EasyMeshVR.Multiplayer
 
         #region Private Fields
 
-        // TODO: DEBUGGING delete later: For testing model import
-        [SerializeField]
-        private InputActionReference importModelInputActionRef;
-
         private PhotonView photonView;
         private Action<bool> importCallback = null;
 
@@ -35,23 +31,6 @@ namespace EasyMeshVR.Multiplayer
         void Awake()
         {
             instance = this;
-            importModelInputActionRef.action.started += TestImportModelCallback; // TODO: DEBUGGING delete later
-        }
-
-        // TODO: DEBUGGING cloud import by using a test input action
-        void OnDestroy()
-        {
-            importModelInputActionRef.action.started -= TestImportModelCallback;
-        }
-
-        // TODO: DEBUGGING delete later
-        void TestImportModelCallback(InputAction.CallbackContext context)
-        {
-            // 6 MB
-            //SynchronizeMeshImport("494906");
-
-            // 80 KB
-            SynchronizeMeshImport("moccasin-tremendous-shark");
         }
 
         void Start()
