@@ -7,6 +7,7 @@ namespace EasyMeshVR.Core
     public static class Constants
     {
         public const byte MAX_PLAYERS_PER_ROOM = 4;
-        public const string NETWORK_PLAYER_PREFAB_NAME = "Network Player";
+        public const string PLAYER_NAME_PREF_KEY = "PLAYER_NAME";
+        public const string PLAYER_NAME_PREF_DEFAULT = "Player";
     }
 }

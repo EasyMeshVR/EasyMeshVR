@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
+  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1120,12 +1120,6 @@ PrefabInstance:
       objectReference: {fileID: 3055027374135145770}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 94afc50164b53c14c9515ca90bee0de1, type: 3}
---- !u!4 &3792769190141423837 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3792769190694460088, guid: 94afc50164b53c14c9515ca90bee0de1,
-    type: 3}
-  m_PrefabInstance: {fileID: 3792769190141423836}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6885944694426427361
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1186,6 +1180,11 @@ PrefabInstance:
     - target: {fileID: 1133263688535421401, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1133634235919845480, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: XRRigOffset.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2275416013097359359, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
@@ -1648,19 +1647,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 629846860, guid: 74394877d94ba124799358359acb774c, type: 3}
       propertyPath: sceneViewId
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
-        type: 3}
-      propertyPath: importModelInputActionRef
-      value: 
-      objectReference: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
-        type: 3}
-    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
-        type: 3}
-      propertyPath: meshObjectInitialTransform
-      value: 
-      objectReference: {fileID: 3792769190141423837}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: XROrigin
