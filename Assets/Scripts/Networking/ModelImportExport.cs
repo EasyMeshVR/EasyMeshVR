@@ -66,7 +66,7 @@ namespace EasyMeshVR.Core
                 return;
             }
 
-            Mesh[] meshes = new Mesh[modelObject.transform.childCount];
+            List<Mesh> meshes = new List<Mesh>();
 
             for (int i = 0; i < modelObject.transform.childCount; ++i)
             {
@@ -74,11 +74,10 @@ namespace EasyMeshVR.Core
 
                 if (!mf || !mf.sharedMesh)
                 {
-                    callback.Invoke(null, "Error: child of the editing space model has no mesh filter component.");
-                    return;
+                    continue;
                 }
 
-                meshes[i] = mf.sharedMesh;
+                meshes.Add(mf.sharedMesh);
             }
 
             string stlData = await Exporter.WriteStringAsync(meshes);

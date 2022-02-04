@@ -149,9 +149,12 @@ namespace EasyMeshVR.Multiplayer
             {
                 case Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE:
                     Debug.Log("Importing model from web...");
-                    object[] data = (object[])photonEvent.CustomData;
-                    string modelCode = (string)data[0];
-                    ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+                    if (photonEvent.CustomData != null)
+                    {
+                        object[] data = (object[])photonEvent.CustomData;
+                        string modelCode = (string)data[0];
+                        ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+                    }
                     break;
                 default:
                     break;
