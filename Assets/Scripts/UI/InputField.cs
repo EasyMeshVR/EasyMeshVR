@@ -8,6 +8,8 @@ namespace EasyMeshVR.UI
     public class InputField : MonoBehaviour
     {
         #region Private Fields
+        [SerializeField]
+        private TMP_Text text;
 
         private TMP_InputField inputField;
 
@@ -18,6 +20,11 @@ namespace EasyMeshVR.UI
         void Start()
         {
             inputField = GetComponent<TMP_InputField>();
+        }
+
+        void Update()
+        {
+            
         }
 
         #endregion
@@ -32,12 +39,22 @@ namespace EasyMeshVR.UI
         // with the index finger when hovering over a canvas UI (casting a ray/line from the index finger)
         public void InputFieldSelected()
         {
-            KeyInputManager.GetInstance().InputFieldSelected(inputField);
+            KeyInputManager.instance.InputFieldSelected(inputField);
         }
 
         public void InputFieldDeselected()
         {
-            KeyInputManager.GetInstance().InputFieldDeselected(inputField);
+            KeyInputManager.instance.InputFieldDeselected(inputField);
+        }
+
+        public void DestroyCaret()
+        {
+            TMP_SelectionCaret caret = inputField.GetComponentInChildren<TMP_SelectionCaret>();
+
+            if (caret && caret.gameObject)
+            {
+                Destroy(caret.gameObject);
+            }
         }
 
         #endregion

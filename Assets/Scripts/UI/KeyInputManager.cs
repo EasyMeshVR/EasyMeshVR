@@ -16,9 +16,7 @@ namespace EasyMeshVR.UI
 
         private TMP_InputField inputField;
 
-        private static KeyInputManager instance;
-
-        private KeyInputManager() { }
+        public static KeyInputManager instance { get; private set; }
 
         #endregion
 
@@ -36,11 +34,6 @@ namespace EasyMeshVR.UI
         #endregion
 
         #region Public Methods
-
-        public static KeyInputManager GetInstance()
-        {
-            return instance;
-        }
 
         public void InputFieldSelected(TMP_InputField inputField)
         {

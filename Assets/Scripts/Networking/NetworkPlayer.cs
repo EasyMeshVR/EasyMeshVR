@@ -5,6 +5,7 @@ using UnityEngine.XR;
 using Unity.XR.CoreUtils;
 using Photon.Pun;
 using TMPro;
+using EasyMeshVR.Core;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -26,6 +27,7 @@ namespace EasyMeshVR.Multiplayer
         private Transform rightHandOrigin;
         private Transform mainCameraTransform;
         private PhotonView photonView;
+        private GameObject editingSpace;
         
         #endregion
 
@@ -41,6 +43,9 @@ namespace EasyMeshVR.Multiplayer
             headOrigin = origin.transform.Find("Camera Offset/Main Camera");
             leftHandOrigin = origin.transform.Find("Camera Offset/LeftHand Controller");
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
+
+            editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
+            gameObject.transform.parent = editingSpace.transform;
 
             // Set player's name text
             playerNameText.text = photonView.Owner.NickName;

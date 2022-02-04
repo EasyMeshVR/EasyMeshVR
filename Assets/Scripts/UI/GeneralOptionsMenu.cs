@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 using EasyMeshVR.Core;
+using EasyMeshVR.Multiplayer;
 
 namespace EasyMeshVR.UI
 {
@@ -48,6 +49,9 @@ namespace EasyMeshVR.UI
 
         [SerializeField]
         private Button exportModelButton;
+
+        [SerializeField]
+        private TMP_InputField importModelInputField;
 
         [SerializeField]
         private Color subOptionDefaultColor;
@@ -108,6 +112,17 @@ namespace EasyMeshVR.UI
 
         #region Cloud Upload Panel Methods
 
+        public void OnClickedImportModel()
+        {
+            if (string.IsNullOrWhiteSpace(importModelInputField.text))
+            {
+                Debug.Log("Cannot import a model with empty code!");
+                return;
+            }
+
+            NetworkMeshManager.instance.SynchronizeMeshImport(importModelInputField.text, ImportCallback);
+        }
+
         public void OnClickedExportModel()
         {
             exportModelButtonText.text = "Exporting...";
@@ -134,6 +149,17 @@ namespace EasyMeshVR.UI
         #endregion
 
         #region Import/Export Callbacks
+
+        private void ImportCallback(bool success)
+        {
+            if (!success)
+            {
+                Debug.Log("Error encountered while importing mesh!");
+                return;
+            }
+
+            Debug.Log("GeneralOptionsMenu: Successfully improted model into scene");
+        }
 
         private void ExportCallback(string modelCode, string error)
         {
