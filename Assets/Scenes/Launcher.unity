@@ -7041,6 +7041,12 @@ PrefabInstance:
       propertyPath: connectingToServerPanel
       value: 
       objectReference: {fileID: 941080795}
+    - target: {fileID: 4464429107473009940, guid: 4694306fd5c3a8f4ba73a75cb74a8e34,
+        type: 3}
+      propertyPath: networkMeshManagerPrefab
+      value: 
+      objectReference: {fileID: 4765794057800116097, guid: fd2e566464c4ab9458308a381bf06f6e,
+        type: 3}
     - target: {fileID: 4464429107473009941, guid: 4694306fd5c3a8f4ba73a75cb74a8e34,
         type: 3}
       propertyPath: m_Name
