@@ -5,7 +5,12 @@ using System.Linq; // this is for line 79
 
 public class MeshRebuilder : MonoBehaviour
 {
+    public static MeshRebuilder instance { get; private set; }
+
+    [SerializeField]
+    public GameObject editingSpace;
     GameObject model;
+    
 
     // Holds the vertex and edge prefabs
     public GameObject vertex;
@@ -24,6 +29,8 @@ public class MeshRebuilder : MonoBehaviour
     // Setup
     void Awake()
     {
+        instance = this;
+
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
         model.tag = ("Model");

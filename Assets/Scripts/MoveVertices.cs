@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using EasyMeshVR.Core;
 
 public class MoveVertices : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
+    GameObject editingSpace;
 
     // Mesh data
     Mesh mesh;
@@ -29,6 +32,7 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
+        editingSpace = MeshRebuilder.instance.editingSpace;
         model = GameObject.FindGameObjectWithTag("Model");
         mesh = model.GetComponent<MeshFilter>().mesh;
 
@@ -110,7 +114,13 @@ public class MoveVertices : MonoBehaviour
 
             // Update the mesh filter's vertices to the vertex GameObject's position
             // Subtracts model's offset if it's not directly on (0,0,0)
-            vertices[selectedVertex] = transform.localPosition - model.transform.position;
+            //vertices[selectedVertex] = transform.localPosition - model.transform.position;
+
+            // TODO: this doesn't respond well with scaling
+            //Vector3 scaled = Vector3.Scale(editingSpace.transform.localScale, transform.localPosition);
+            Vector3 translated = transform.position - model.transform.position;
+            Vector3 rotated = Quaternion.Inverse(model.transform.rotation) * translated;
+            vertices[selectedVertex] = rotated;
 
             UpdateMesh();
         }
