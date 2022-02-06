@@ -1256,6 +1256,76 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Tools",
+            "id": "f77a6cc1-55dd-47ff-99cc-7b8a7465a122",
+            "actions": [
+                {
+                    "name": "Use Tool Secondary",
+                    "type": "Button",
+                    "id": "f5e9cc62-f9cd-465a-8bf0-fbb89f772554",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Use Tool Primary",
+                    "type": "Button",
+                    "id": "ee85ea3d-1cad-41e1-bd8c-aea8699aa461",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "73d24b27-40d9-406f-be37-2f9afabc22da",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>/secondarybutton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1b9d8292-2ad6-4be2-9fd5-431d94e2061e",
+                    "path": "<ValveIndexController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "dbd20067-8149-4ab5-8a2e-0376796b0890",
+                    "path": "<ValveIndexController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae0e08d7-5400-4d82-8728-3786dc04d3b5",
+                    "path": "<XRController>{RightHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
