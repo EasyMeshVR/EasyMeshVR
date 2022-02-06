@@ -9,10 +9,16 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] GameObject model;
 
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
+    [SerializeField] LockVertex lockVertex;
+
+
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
+    [SerializeField] Material locked;     // red
+
 
     // Mesh data
     Mesh mesh;
@@ -61,7 +67,15 @@ public class MoveVertices : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
-        materialSwap.material = hovered;
+        if(lockVertex.isLocked)
+        {
+            grabInteractable.enabled = false;
+            return;
+        }
+
+            grabInteractable.enabled = true;
+
+            materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         vertices = mesh.vertices;
@@ -84,13 +98,15 @@ public class MoveVertices : MonoBehaviour
     // Set material back to Unselected
     void HoverExit(HoverExitEventArgs arg0)
     {
-        materialSwap.material = unselected;
+        if(!lockVertex.isLocked)
+            materialSwap.material = unselected;
     }
 
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        grabHeld = true;
+        if(!lockVertex.isLocked)
+            grabHeld = true;
     }
 
     // Stop updating the mesh data
