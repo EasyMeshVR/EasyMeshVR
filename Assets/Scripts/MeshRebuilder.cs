@@ -26,8 +26,6 @@ public class MeshRebuilder : MonoBehaviour
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
     public static Dictionary<GameObject, List<int>> visuals = new Dictionary<GameObject, List<int>>();
 
-    public List<Vertex> vertexObjects = new List<Vertex>();
-
     // Setup
     void Awake()
     {
@@ -137,9 +135,9 @@ public class MeshRebuilder : MonoBehaviour
             GameObject newVertex = Instantiate(vertex, model.transform);
             newVertex.transform.localPosition = vertices[i];
 
+            // Set the id of the Vertex component to be the index in the vertices array
             Vertex vertexObj = newVertex.GetComponent<Vertex>();
             vertexObj.id = i;
-            vertexObjects.Add(vertexObj);
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();
