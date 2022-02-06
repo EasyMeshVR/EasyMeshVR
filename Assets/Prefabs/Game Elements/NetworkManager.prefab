@@ -87,5 +87,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ccba6fc37189614cb9391c26a5a19cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  importModelInputActionRef: {fileID: -8190802506402135661, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}

@@ -318,6 +318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 109434732395451517}
   - component: {fileID: 109434732388006827}
+  - component: {fileID: 7857922960900258541}
   m_Layer: 0
   m_Name: Custom Left Hand Model
   m_TagString: Untagged
@@ -361,6 +362,21 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &7857922960900258541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109434732395284509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09f8a52d75a9f084e936aedc929cdc60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameMenu: {fileID: 1701958012641712486}
+  toggleGameMenuRef: {fileID: -8914037960180322770, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
 --- !u!1 &109434732395284511
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,6 +1149,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -0.031065
       objectReference: {fileID: 0}
+    - target: {fileID: 1960597897035708833, guid: 9214a351db0fcd049b12cd40122568e4,
+        type: 3}
+      propertyPath: m_CaretColor.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1962718077359436285, guid: 9214a351db0fcd049b12cd40122568e4,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1278,6 +1299,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3062271608815195565, guid: 9214a351db0fcd049b12cd40122568e4,
+        type: 3}
+      propertyPath: m_margin.x
+      value: 0.0053744325
+      objectReference: {fileID: 0}
     - target: {fileID: 4071412578921459955, guid: 9214a351db0fcd049b12cd40122568e4,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -1387,6 +1413,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.031065
+      objectReference: {fileID: 0}
+    - target: {fileID: 5187167131622518184, guid: 9214a351db0fcd049b12cd40122568e4,
+        type: 3}
+      propertyPath: m_margin.x
+      value: 0.005371229
       objectReference: {fileID: 0}
     - target: {fileID: 5403079569517670892, guid: 9214a351db0fcd049b12cd40122568e4,
         type: 3}
@@ -1656,3 +1687,15 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 8935671294574985138}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1701958012641712486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7755040750242916052, guid: 9214a351db0fcd049b12cd40122568e4,
+    type: 3}
+  m_PrefabInstance: {fileID: 8935671294574985138}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28c88fcb9aa8441478c7bbdd412064ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

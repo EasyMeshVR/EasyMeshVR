@@ -29,7 +29,7 @@ namespace EasyMeshVR.UI
 
         public void UpdatePlayerNamePref(string playerName)
         {
-            if (string.IsNullOrEmpty(playerName))
+            if (string.IsNullOrWhiteSpace(playerName))
             {
                 PlayerPrefs.SetString(Constants.PLAYER_NAME_PREF_KEY, Constants.PLAYER_NAME_PREF_DEFAULT);
                 return;

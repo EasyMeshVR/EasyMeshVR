@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Photon.Pun;
 
 namespace EasyMeshVR.UI
 {
-    [RequireComponent(typeof(PhotonView))]
     public class GameMenuManager : MonoBehaviour
     {
         #region Private Fields
@@ -17,8 +15,6 @@ namespace EasyMeshVR.UI
 
         [SerializeField]
         InputActionReference toggleGameMenuRef;
-
-        PhotonView photonView;
 
         #endregion
 
@@ -40,7 +36,6 @@ namespace EasyMeshVR.UI
 
         void Start()
         {
-            photonView = GetComponent<PhotonView>();
             gameMenu.gameObject.SetActive(false);
         }
 
@@ -50,7 +45,7 @@ namespace EasyMeshVR.UI
 
         private void ToggleGameMenuAction(InputAction.CallbackContext context)
         {
-            if (photonView.IsMine && !IsLauncherActiveScene())
+            if (!IsLauncherActiveScene())
             {
                 gameMenu.gameObject.SetActive(!gameMenu.gameObject.activeInHierarchy);
             }

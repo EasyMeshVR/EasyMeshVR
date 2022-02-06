@@ -84,7 +84,7 @@ namespace EasyMeshVR.Multiplayer
             // Player's nickname is set when the launcher scene is started
             string playerName = PlayerPrefs.GetString(Constants.PLAYER_NAME_PREF_KEY, Constants.PLAYER_NAME_PREF_DEFAULT);
 
-            if (string.IsNullOrEmpty(playerName))
+            if (string.IsNullOrWhiteSpace(playerName))
             {
                 PhotonNetwork.LocalPlayer.NickName = Constants.PLAYER_NAME_PREF_DEFAULT;
             }

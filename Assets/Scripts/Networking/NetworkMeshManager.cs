@@ -1,14 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using EasyMeshVR.Core;
-using UnityEngine.InputSystem;
+using UnityEngine.Networking;
+using Parabox.Stl;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
 
 namespace EasyMeshVR.Multiplayer
 {
     [RequireComponent(typeof(PhotonView))]
-    public class NetworkMeshManager : MonoBehaviour
+    public class NetworkMeshManager : MonoBehaviour, IOnEventCallback
     {
         #region Public Fields
 
@@ -18,11 +22,8 @@ namespace EasyMeshVR.Multiplayer
 
         #region Private Fields
 
-        // TODO: DEBUGGING delete later: For testing model import
-        [SerializeField]
-        private InputActionReference importModelInputActionRef;
-
-        PhotonView photonView;
+        private PhotonView photonView;
+        private Action<bool> importCallback = null;
 
         #endregion
 
@@ -31,28 +32,21 @@ namespace EasyMeshVR.Multiplayer
         void Awake()
         {
             instance = this;
-            importModelInputActionRef.action.started += TestImportModelCallback; // TODO: DEBUGGING delete later
-        }
-
-        // TODO: DEBUGGING cloud import by using a test input action
-        void OnDestroy()
-        {
-            importModelInputActionRef.action.started -= TestImportModelCallback;
-        }
-
-        // TODO: DEBUGGING delete later
-        void TestImportModelCallback(InputAction.CallbackContext context)
-        {
-            // 6 MB
-            //SynchronizeMeshImport("494906");
-
-            // 80 KB
-            SynchronizeMeshImport("moccasin-tremendous-shark");
         }
 
         void Start()
         {
             photonView = GetComponent<PhotonView>();
+        }
+
+        void OnEnable()
+        {
+            PhotonNetwork.AddCallbackTarget(this);
+        }
+
+        void OnDisable()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         #endregion
@@ -62,25 +56,109 @@ namespace EasyMeshVR.Multiplayer
         [PunRPC]
         void ImportModelFromWeb(string modelCode)
         {
-            ModelImportExport.instance.ImportModel(modelCode);
+            ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+        }
+
+        #endregion
+
+        #region Model Import Callback
+
+        async void DownloadCallback(DownloadHandler downloadHandler, string error)
+        {
+            if (!string.IsNullOrEmpty(error))
+            {
+                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
+
+                if (importCallback != null)
+                {
+                    importCallback.Invoke(false);
+                }
+                return;
+            }
+
+            Debug.Log("Importing model into scene...");
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            Mesh[] meshes = await Importer.Import(downloadHandler.data);
+
+            // Local instantiation of game objects with the imported meshes
+            if (meshes == null || meshes.Length < 1)
+            {
+                Debug.LogError("Meshes array is null or empty");
+
+                if (importCallback != null)
+                {
+                    importCallback.Invoke(false);
+                }
+                return;
+            }
+
+            ModelImportExport.instance.DestroyMeshObjects();
+            ModelImportExport.instance.CreateMeshObjects(meshes);
+
+            watch.Stop();
+            Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
+
+            if (importCallback != null)
+            {
+                importCallback.Invoke(true);
+            }
         }
 
         #endregion
 
         #region Public Methods
 
-        public void SynchronizeMeshImport(string modelCode)
+        public void SynchronizeMeshImport(string modelCode, Action<bool> callback = null)
         {
-            // We tell all clients to import the model from the web server given the model code.
-            // RpcTarget.AllBufferedViaServer makes it so every player (including the one calling this function)
-            // executes the ImportModelFromWeb RPC and it's buffered by the Photon server so that any future
-            // players that join can import the model themselves.
+            importCallback = callback;
 
-            // NOTE: we will need to account for the case where we import a model then delete it and import a new one,
-            // we would have to clear the previous buffered RPCs that were sent by NetworkMeshManager (assuming deletion also happens here)
-            // whenever we import a new model so new players won't have to import/delete old models for nothing
-            // (we can use PhotonNetwork.RemoveRPCs(photonView))
-            photonView.RPC("ImportModelFromWeb", RpcTarget.AllBufferedViaServer, modelCode);
+            // We clear the previous buffered event for importing a model so that newly joining
+            // players are not importing older models.
+            RaiseEventOptions raiseRemoveImportModelEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.RemoveFromRoomCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, raiseRemoveImportModelEventOptions, SendOptions.SendReliable);
+
+            // We tell all clients to import the model from the web server given the model code.
+            // EventCaching.AddToRoomCacheGloabl caches the event globally so that it persists until the room is closed (all players leave),
+            // so that new players can import the current model in the scene.
+            RaiseEventOptions raiseImportModelEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCacheGlobal
+            };
+
+            object[] content = new object[] { modelCode };
+
+            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, raiseImportModelEventOptions, SendOptions.SendReliable);
+        }
+
+        #endregion
+
+        #region Pun Callbacks
+
+        public void OnEvent(EventData photonEvent)
+        {
+            byte eventCode = photonEvent.Code;
+
+            switch (eventCode)
+            {
+                case Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE:
+                    Debug.Log("Importing model from web...");
+                    if (photonEvent.CustomData != null)
+                    {
+                        object[] data = (object[])photonEvent.CustomData;
+                        string modelCode = (string)data[0];
+                        ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         #endregion
