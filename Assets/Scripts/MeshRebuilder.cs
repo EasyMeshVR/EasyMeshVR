@@ -11,7 +11,6 @@ public class MeshRebuilder : MonoBehaviour
     public GameObject editingSpace;
     GameObject model;
     
-
     // Holds the vertex and edge prefabs
     public GameObject vertex;
     public GameObject edge;
@@ -24,13 +23,14 @@ public class MeshRebuilder : MonoBehaviour
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
-    public static Dictionary<GameObject, List<int>> visuals = new Dictionary<GameObject, List<int>>();
+    public static Dictionary<GameObject, List<int>> visuals;
 
     // Setup
     void Awake()
     {
+        visuals = new Dictionary<GameObject, List<int>>();
         instance = this;
-
+        
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
         model.tag = ("Model");
