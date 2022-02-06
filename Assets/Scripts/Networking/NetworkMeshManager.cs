@@ -134,14 +134,14 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, importModelEventOptions, SendOptions.SendReliable);
         }
 
-        public void SynchronizeMeshVertexPull(Vector3 vertex, int index)
+        public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false)
         {
-            Debug.Log("syncing mesh vertex pull");
+            EventCaching cachingOption = (isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
 
             RaiseEventOptions meshVertexPullEventOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCacheGlobal
+                CachingOption = cachingOption
             };
 
             object[] content = new object[] { vertex, index };

@@ -99,7 +99,7 @@ public class MoveVertices : MonoBehaviour
         int id = arg0.interactableObject.transform.GetComponent<Vertex>().id;
 
         // Synchronize the position of the mesh vertex by sending an event to the other players
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[id], id);
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[id], id, true);
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -112,6 +112,8 @@ public class MoveVertices : MonoBehaviour
             // Update the mesh filter's vertices to the vertex GameObject's position
             UpdateVertex(transform, selectedVertex);
             UpdateMesh(selectedVertex);
+
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, false);
         }
     }
 

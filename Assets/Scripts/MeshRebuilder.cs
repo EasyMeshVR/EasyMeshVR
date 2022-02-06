@@ -231,7 +231,6 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                     MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
                     vertexObj.transform.localPosition = vertex;
                     vertices[index] = vertex;
-                    // moveVertices.UpdateVertex(vertexObj.transform, index);
                     moveVertices.UpdateMesh(index);
                 }
                 break;
