@@ -21,6 +21,7 @@ public class MoveVertices : MonoBehaviour
     Mesh mesh;
     MeshRenderer materialSwap;
     Vector3[] vertices;
+    Vertex thisvertex;
 
     // Vertex lookup
     Vector3 originalPosition;
@@ -35,6 +36,7 @@ public class MoveVertices : MonoBehaviour
         editingSpace = MeshRebuilder.instance.editingSpace;
         model = GameObject.FindGameObjectWithTag("Model");
         mesh = model.GetComponent<MeshFilter>().mesh;
+        thisvertex = GetComponent<Vertex>();
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
@@ -70,19 +72,24 @@ public class MoveVertices : MonoBehaviour
         // Keep mesh filter updated with most recent mesh data changes
         vertices = mesh.vertices;
 
+        // The selected vertex is just the saved id of this vertex representing its index
+        // in the vertices array
+        selectedVertex = thisvertex.id;
+
+        // Old way of finding what vertex we just hovered over
         // Finds the correspoinding vertex on the mesh based off the GameObject's position
         // Using localPosition since it's a parent of the model
-        originalPosition = transform.localPosition;
+        //originalPosition = transform.localPosition;
 
         // Use its original position to find the reference in the vertices array so we can access it quicker later
         // i.e. we get its index instead of having to compare its Vector3 over and over again
-        for (int i = 0; i < vertices.Length; i++)
+        /*for (int i = 0; i < vertices.Length; i++)
         {
             if (vertices[i] == originalPosition)
             {
                 selectedVertex = i;
             }
-        }
+        }*/
     }
 
     // Set material back to Unselected
@@ -113,14 +120,20 @@ public class MoveVertices : MonoBehaviour
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertex GameObject's position
-            // Subtracts model's offset if it's not directly on (0,0,0)
-            //vertices[selectedVertex] = transform.localPosition - model.transform.position;
 
-            // TODO: this doesn't respond well with scaling
-            //Vector3 scaled = Vector3.Scale(editingSpace.transform.localScale, transform.localPosition);
-            Vector3 translated = transform.position - model.transform.position;
-            Vector3 rotated = Quaternion.Inverse(model.transform.rotation) * translated;
-            vertices[selectedVertex] = rotated;
+            // Calculate inverse scale vector
+            Vector3 editingSpaceScale = editingSpace.transform.localScale;
+            Vector3 inverseScale = new Vector3(
+                1.0f / editingSpaceScale.x, 
+                1.0f / editingSpaceScale.y, 
+                1.0f / editingSpaceScale.z
+            );
+
+            // Translate, Scale, and Rotate the vertex position based on the current transform
+            // of the editingSpace object.
+            vertices[selectedVertex] =
+                Quaternion.Inverse(editingSpace.transform.rotation)
+                * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
 
             UpdateMesh();
         }
