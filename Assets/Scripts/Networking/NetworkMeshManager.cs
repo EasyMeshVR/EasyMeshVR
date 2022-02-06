@@ -51,16 +51,6 @@ namespace EasyMeshVR.Multiplayer
 
         #endregion
 
-        #region RPCs
-
-        [PunRPC]
-        void ImportModelFromWeb(string modelCode)
-        {
-            ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
-        }
-
-        #endregion
-
         #region Model Import Callback
 
         async void DownloadCallback(DownloadHandler downloadHandler, string error)
@@ -115,18 +105,25 @@ namespace EasyMeshVR.Multiplayer
 
             // We clear the previous buffered event for importing a model so that newly joining
             // players are not importing older models.
-            RaiseEventOptions raiseRemoveImportModelEventOptions = new RaiseEventOptions
+            RaiseEventOptions removeImportModelEventOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.All,
                 CachingOption = EventCaching.RemoveFromRoomCache
             };
 
-            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, raiseRemoveImportModelEventOptions, SendOptions.SendReliable);
+            RaiseEventOptions removeMeshVertexPullEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.RemoveFromRoomCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, null, removeMeshVertexPullEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, removeImportModelEventOptions, SendOptions.SendReliable);
 
             // We tell all clients to import the model from the web server given the model code.
             // EventCaching.AddToRoomCacheGloabl caches the event globally so that it persists until the room is closed (all players leave),
             // so that new players can import the current model in the scene.
-            RaiseEventOptions raiseImportModelEventOptions = new RaiseEventOptions
+            RaiseEventOptions importModelEventOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.All,
                 CachingOption = EventCaching.AddToRoomCacheGlobal
@@ -134,7 +131,21 @@ namespace EasyMeshVR.Multiplayer
 
             object[] content = new object[] { modelCode };
 
-            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, raiseImportModelEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, importModelEventOptions, SendOptions.SendReliable);
+        }
+
+        public void SynchronizeMeshVertexPull(Vector3 vertex, int index)
+        {
+            Debug.Log("syncing mesh vertex pull");
+
+            RaiseEventOptions meshVertexPullEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCacheGlobal
+            };
+
+            object[] content = new object[] { vertex, index };
+            PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, content, meshVertexPullEventOptions, SendOptions.SendReliable);
         }
 
         #endregion

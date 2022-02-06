@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using EasyMeshVR.Core;
+using EasyMeshVR.Multiplayer;
 
 public class MoveVertices : MonoBehaviour
 {
@@ -20,7 +20,7 @@ public class MoveVertices : MonoBehaviour
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
-    Vector3[] vertices;
+    // Vector3[] vertices;
     Vertex thisvertex;
 
     // Vertex lookup
@@ -42,7 +42,7 @@ public class MoveVertices : MonoBehaviour
         materialSwap = GetComponent<MeshRenderer>();
 
         // Copy the vertices
-        vertices = mesh.vertices;
+        // vertices = MeshRebuilder.instance.vertices;
 
         // Hover listeners to change vertex color
         grabInteractable.hoverEntered.AddListener(HoverOver);
@@ -70,26 +70,11 @@ public class MoveVertices : MonoBehaviour
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        vertices = mesh.vertices;
+        MeshRebuilder.instance.vertices = mesh.vertices;
 
         // The selected vertex is just the saved id of this vertex representing its index
         // in the vertices array
         selectedVertex = thisvertex.id;
-
-        // Old way of finding what vertex we just hovered over
-        // Finds the correspoinding vertex on the mesh based off the GameObject's position
-        // Using localPosition since it's a parent of the model
-        //originalPosition = transform.localPosition;
-
-        // Use its original position to find the reference in the vertices array so we can access it quicker later
-        // i.e. we get its index instead of having to compare its Vector3 over and over again
-        /*for (int i = 0; i < vertices.Length; i++)
-        {
-            if (vertices[i] == originalPosition)
-            {
-                selectedVertex = i;
-            }
-        }*/
     }
 
     // Set material back to Unselected
@@ -110,6 +95,11 @@ public class MoveVertices : MonoBehaviour
         materialSwap.material = unselected;
 
         grabHeld = false;
+
+        int id = arg0.interactableObject.transform.GetComponent<Vertex>().id;
+
+        // Synchronize the position of the mesh vertex by sending an event to the other players
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[id], id);
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -120,28 +110,33 @@ public class MoveVertices : MonoBehaviour
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertex GameObject's position
-
-            // Calculate inverse scale vector
-            Vector3 editingSpaceScale = editingSpace.transform.localScale;
-            Vector3 inverseScale = new Vector3(
-                1.0f / editingSpaceScale.x, 
-                1.0f / editingSpaceScale.y, 
-                1.0f / editingSpaceScale.z
-            );
-
-            // Translate, Scale, and Rotate the vertex position based on the current transform
-            // of the editingSpace object.
-            vertices[selectedVertex] =
-                Quaternion.Inverse(editingSpace.transform.rotation)
-                * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
-
-            UpdateMesh();
+            UpdateVertex(transform, selectedVertex);
+            UpdateMesh(selectedVertex);
         }
     }
 
-    // Update MeshFilter and re-draw in-game visuals
-    void UpdateMesh()
+    public void UpdateVertex(Transform transform, int index)
     {
+        // Calculate inverse scale vector
+        Vector3 editingSpaceScale = editingSpace.transform.localScale;
+        Vector3 inverseScale = new Vector3(
+            1.0f / editingSpaceScale.x,
+            1.0f / editingSpaceScale.y,
+            1.0f / editingSpaceScale.z
+        );
+
+        // Translate, Scale, and Rotate the vertex position based on the current transform
+        // of the editingSpace object.
+        MeshRebuilder.instance.vertices[index] =
+            Quaternion.Inverse(editingSpace.transform.rotation)
+            * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
+    }
+
+    // Update MeshFilter and re-draw in-game visuals
+    public void UpdateMesh(int index)
+    {
+        Vector3[] vertices = MeshRebuilder.instance.vertices;
+
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
@@ -154,7 +149,7 @@ public class MoveVertices : MonoBehaviour
             // GameObject = edge, List<int> = vertex 1 (origin), vertex 2
 
             // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
-            if (kvp.Value[0] == selectedVertex || kvp.Value[1] == selectedVertex)
+            if (kvp.Value[0] == index || kvp.Value[1] == index)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[kvp.Value[0]], vertices[kvp.Value[1]]);
