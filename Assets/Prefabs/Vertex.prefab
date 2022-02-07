@@ -286,6 +286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 0}
   grabInteractable: {fileID: -5545353866714102486}
+  lockVertex: {fileID: 8877289007085873981}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
@@ -315,12 +316,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabInteractable: {fileID: -5545353866714102486}
-  toolManager: {fileID: 5058777280323972616, guid: d59459f5a9ac6d044bfd3ae7eb9a373a,
-    type: 3}
   primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  isEnabled: 0
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}

@@ -12,6 +12,8 @@ public class LockVertex : MonoBehaviour
 {
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
 
+    PulleyLocomotion pulleyLocomotion;
+    GameObject editingSpace;
 
     // Other method for locking is to disable moveVertices, but this allows the vertex handle to be grabbable
     //[SerializeField] MoveVertices moveVertices;
@@ -44,6 +46,9 @@ public class LockVertex : MonoBehaviour
         grabInteractable.hoverExited.AddListener(HoverExit);
      
         materialSwap = GetComponent<MeshRenderer>();
+
+        editingSpace = MeshRebuilder.instance.editingSpace;
+        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
     }
 
     // Uncomment materialswapping for disabling/enabling movevertices
@@ -86,9 +91,9 @@ public class LockVertex : MonoBehaviour
 
     // Lock vertex on primary button press
     private void primaryButtonStart(InputAction.CallbackContext context)
-    {            
+    {      
         primaryButtonPressed = true;
-        if(isEnabled)
+        if(isEnabled && !pulleyLocomotion.isGrippedL)
         {
             if(!isLocked && hover)
                 {
@@ -119,20 +124,17 @@ public class LockVertex : MonoBehaviour
     // Unlock all locked vertices on secondary button press
     private void secondaryButtonStart(InputAction.CallbackContext context)
     {
-        secondaryButtonPressed = true;
-       
+       secondaryButtonPressed = true;
        if(isEnabled)
        {
-            if(isLocked)
+            if(isLocked && !pulleyLocomotion.isMovingEditingSpace)
             {
                 //moveVertices.enabled = true;
 
                 // gameObject.layer = 0;
 
                 grabInteractable.enabled = true;
-
                 materialSwap.material = unselected;
-
                 isLocked = false;
                 return;
             }
