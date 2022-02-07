@@ -12,6 +12,7 @@ public class LockVertex : MonoBehaviour
 {
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
 
+
     // Other method for locking is to disable moveVertices, but this allows the vertex handle to be grabbable
     //[SerializeField] MoveVertices moveVertices;
 
@@ -22,14 +23,18 @@ public class LockVertex : MonoBehaviour
 
     private bool secondaryButtonPressed = false;
 
+    // For tool manager, tools should not be active by default
+    // disabling the script only disables start() and update() or something like that
+    public bool isEnabled = false;
+
 
     [SerializeField] Material locked;     // red
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
 
     MeshRenderer materialSwap;
-   public bool isLocked = false;
-   private bool hover = false;
+    public bool isLocked = false;
+    private bool hover = false;
 
 
    void OnEnable()
@@ -81,26 +86,29 @@ public class LockVertex : MonoBehaviour
 
     // Lock vertex on primary button press
     private void primaryButtonStart(InputAction.CallbackContext context)
-    {
+    {            
         primaryButtonPressed = true;
-        if(!isLocked && hover)
-            {
-                //moveVertices.enabled = true;
+        if(isEnabled)
+        {
+            if(!isLocked && hover)
+                {
+                    //moveVertices.enabled = true;
 
-                // Disabling the grab interactable also disables the hovering,
-                // I think the only way to allow the hovering would be to implement a hoverInteractable
-                // script like the GrabInteractable one that is given but that seems like too much work
-                grabInteractable.enabled = false;
-                materialSwap.material = locked;
+                    // Disabling the grab interactable also disables the hovering,
+                    // I think the only way to allow the hovering would be to implement a hoverInteractable
+                    // script like the GrabInteractable one that is given but that seems like too much work
+                    grabInteractable.enabled = false;
+                    materialSwap.material = locked;
 
-                // This was another way to disable grabbing that I was trying that I forgot about
-                // but I'm pretty sure it does the same thing as disabling grabInteractable
-                
-                //gameObject.layer = 2;
+                    // This was another way to disable grabbing that I was trying that I forgot about
+                    // but I'm pretty sure it does the same thing as disabling grabInteractable
+                    
+                    //gameObject.layer = 2;
 
-                isLocked = true;
-                return;
-            }
+                    isLocked = true;
+                    return;
+                }
+        }
     }
 
     private void primaryButtonEnd(InputAction.CallbackContext context)
@@ -113,19 +121,22 @@ public class LockVertex : MonoBehaviour
     {
         secondaryButtonPressed = true;
        
-        if(isLocked)
-        {
-            //moveVertices.enabled = true;
+       if(isEnabled)
+       {
+            if(isLocked)
+            {
+                //moveVertices.enabled = true;
 
-            // gameObject.layer = 0;
+                // gameObject.layer = 0;
 
-            grabInteractable.enabled = true;
+                grabInteractable.enabled = true;
 
-            materialSwap.material = unselected;
+                materialSwap.material = unselected;
 
-            isLocked = false;
-            return;
-        }
+                isLocked = false;
+                return;
+            }
+       }
             
     }
 
