@@ -15,7 +15,9 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
+    // Editing Space Objects
     GameObject editingSpace;
+    PulleyLocomotion pulleyLocomotion;
 
     // Mesh data
     Mesh mesh;
@@ -34,6 +36,7 @@ public class MoveVertices : MonoBehaviour
     {
         // Get the editing model's MeshFilter
         editingSpace = MeshRebuilder.instance.editingSpace;
+        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
         model = GameObject.FindGameObjectWithTag("Model");
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
@@ -67,6 +70,11 @@ public class MoveVertices : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+        {
+            return;
+        }
+
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
@@ -86,7 +94,13 @@ public class MoveVertices : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+        {
+            return;
+        }
+
         grabHeld = true;
+        pulleyLocomotion.isMovingVertex = true;
     }
 
     // Stop updating the mesh data
@@ -100,11 +114,19 @@ public class MoveVertices : MonoBehaviour
 
         // Synchronize the position of the mesh vertex by sending an event to the other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[id], id, true);
+        pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+        {
+            grabInteractable.enabled = false;
+            return;
+        }
+        grabInteractable.enabled = true;
+
         if (grabHeld)
         {
             materialSwap.material = selected;
