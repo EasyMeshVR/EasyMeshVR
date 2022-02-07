@@ -368,6 +368,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube (Unity)
       objectReference: {fileID: 0}
+    - target: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
+        type: 3}
+      propertyPath: editingSpace
+      value: 
+      objectReference: {fileID: 2063562609}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0, type: 3}
 --- !u!4 &157689796 stripped
@@ -1110,6 +1115,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1007634900, guid: 1fb0d2009b2d5964fa98151ca280dcfc, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 908162576112810285, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchorMax.y

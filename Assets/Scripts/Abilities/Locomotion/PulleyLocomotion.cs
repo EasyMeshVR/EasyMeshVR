@@ -9,6 +9,10 @@ public class PulleyLocomotion : MonoBehaviour
     public InputActionReference rGrabReference = null;
     public InputActionReference flipYLock = null;
 
+    // Set by MoveVertices to disable locomotion when actively pulling a vertex
+    public bool isMovingVertex = false;
+    public bool isMovingEditingSpace { get; private set; } = false;
+
     private bool isGrippedL = false;
     private bool isGrippedR = false;
 
@@ -39,12 +43,18 @@ public class PulleyLocomotion : MonoBehaviour
     private void Update()
     {
         if (isGrippedL && isGrippedR)
+        {
+            isMovingEditingSpace = true;
             if (lockRotationAroundYAxis) // Locks rotation around Y axis
                 transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+        }
     }
 
     private void LGrabStart(InputAction.CallbackContext context)
     {
+        if (isMovingVertex)
+            return;
+
         isGrippedL = true;
         if (isGrippedR) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
@@ -52,6 +62,9 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void RGrabStart(InputAction.CallbackContext context)
     {
+        if (isMovingVertex)
+            return;
+
         isGrippedR = true;
         if (isGrippedL) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
@@ -60,12 +73,14 @@ public class PulleyLocomotion : MonoBehaviour
     private void LGrabEnd(InputAction.CallbackContext context)
     {
         isGrippedL = false;
+        isMovingEditingSpace = false;
         transform.parent = null;
     }
 
     private void RGrabEnd(InputAction.CallbackContext context)
     {
         isGrippedR = false;
+        isMovingEditingSpace = false;
         gameObject.transform.parent = null;
     }
 

@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\French.cs" />
+    <Compile Include="Assets\Scripts\Vertex.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Example\DemoScene.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Placement.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\OLDTransRotateScale.cs" />
