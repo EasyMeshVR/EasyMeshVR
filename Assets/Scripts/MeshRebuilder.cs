@@ -5,8 +5,12 @@ using System.Linq; // this is for line 79
 
 public class MeshRebuilder : MonoBehaviour
 {
-    GameObject model;
+    public static MeshRebuilder instance { get; private set; }
 
+    [SerializeField]
+    public GameObject editingSpace;
+    GameObject model;
+    
     // Holds the vertex and edge prefabs
     public GameObject vertex;
     public GameObject edge;
@@ -19,11 +23,14 @@ public class MeshRebuilder : MonoBehaviour
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
-    public static Dictionary<GameObject, List<int>> visuals = new Dictionary<GameObject, List<int>>();
+    public static Dictionary<GameObject, List<int>> visuals;
 
     // Setup
     void Awake()
     {
+        visuals = new Dictionary<GameObject, List<int>>();
+        instance = this;
+        
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
         model.tag = ("Model");
@@ -127,6 +134,10 @@ public class MeshRebuilder : MonoBehaviour
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, model.transform);
             newVertex.transform.localPosition = vertices[i];
+
+            // Set the id of the Vertex component to be the index in the vertices array
+            Vertex vertexObj = newVertex.GetComponent<Vertex>();
+            vertexObj.id = i;
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();
