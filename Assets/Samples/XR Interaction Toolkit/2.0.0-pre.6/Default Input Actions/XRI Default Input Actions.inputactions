@@ -1113,7 +1113,7 @@
                 {
                     "name": "",
                     "id": "181592f7-9da6-4a04-933e-828425c1c3e3",
-                    "path": "<ValveIndexController>{LeftHand}/primaryButton",
+                    "path": "<ValveIndexController>{LeftHand}/system",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1124,7 +1124,7 @@
                 {
                     "name": "",
                     "id": "0e1118a7-1596-4d0b-b71d-d01f7e2e0168",
-                    "path": "<OculusTouchController>{LeftHand}/primaryButton",
+                    "path": "<OculusTouchController>{LeftHand}/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -1135,7 +1135,7 @@
                 {
                     "name": "",
                     "id": "8e071937-2be2-4ed8-8b77-1aa1f24a5a29",
-                    "path": "<ViveController>{LeftHand}/trackpadClicked",
+                    "path": "<ViveController>{LeftHand}/menu",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
