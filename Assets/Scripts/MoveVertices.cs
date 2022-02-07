@@ -9,7 +9,7 @@ public class MoveVertices : MonoBehaviour
 {
     [SerializeField] GameObject model;
 
-    [SerializeField] XRGrabNetworkInteractable grabInteractable;
+    [SerializeField] XRGrabInteractable grabInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
