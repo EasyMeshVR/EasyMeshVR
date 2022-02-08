@@ -225,9 +225,6 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                     Vector3 vertex = (Vector3)data[0];
                     int index = (int)data[1];
                     Vertex vertexObj = vertexObjects[index];
-
-                    Debug.Log("Received vertex pull event for index " + index);
-
                     MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
                     vertexObj.transform.localPosition = vertex;
                     vertices[index] = vertex;
