@@ -1256,6 +1256,45 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Mesh Interaction",
+            "id": "0096b937-465d-496f-8fa0-4bbc0f51f349",
+            "actions": [
+                {
+                    "name": "Select",
+                    "type": "Button",
+                    "id": "6964b7aa-8dbe-43bd-ae4b-0e98d418b1db",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "32a82e02-8d0f-4cd0-974f-4d6031df6809",
+                    "path": "<OpenVROculusTouchController>/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "604747dd-bdce-4b0a-9553-b28795613a64",
+                    "path": "<OculusTouchController>/triggerPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [

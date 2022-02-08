@@ -134,6 +134,7 @@ public class MeshRebuilder : MonoBehaviour
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, model.transform);
             newVertex.transform.localPosition = vertices[i];
+            newVertex.name = "Vertex" + i.ToString();
 
             // Set the id of the Vertex component to be the index in the vertices array
             Vertex vertexObj = newVertex.GetComponent<Vertex>();

@@ -16,8 +16,8 @@ GameObject:
   - component: {fileID: 10225722356434956}
   - component: {fileID: -5545353866714102486}
   - component: {fileID: 5762717522507218653}
-  - component: {fileID: -4243344994311814341}
-  - component: {fileID: 2933032626012915278}
+  - component: {fileID: 5694840139592382052}
+  - component: {fileID: -7922308598897869881}
   m_Layer: 0
   m_Name: Vertex
   m_TagString: Vertex
@@ -116,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 0
+  ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
   Synchronization: 3
@@ -271,7 +271,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-4243344994311814341
+--- !u!114 &5694840139592382052
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -284,11 +284,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 0}
+  meshInteraction: {fileID: -5817935543016673740, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   grabInteractable: {fileID: -5545353866714102486}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
---- !u!114 &2933032626012915278
+--- !u!114 &-7922308598897869881
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

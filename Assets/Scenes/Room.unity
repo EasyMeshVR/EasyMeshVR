@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1016,6 +1016,7 @@ MonoBehaviour:
     type: 3}
   flipYLock: {fileID: 4814920333793912679, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  isMovingVertex: 0
   ControllersMidpointObject: {fileID: 573060419}
   EditingSpaceTF: {fileID: 2063562611}
   lockRotationAroundYAxis: 1
