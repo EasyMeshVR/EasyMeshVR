@@ -24,7 +24,6 @@ public class MoveVertices : MonoBehaviour
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
-    // Vector3[] vertices;
     Vertex thisvertex;
 
     // Vertex lookup
@@ -45,9 +44,6 @@ public class MoveVertices : MonoBehaviour
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
-
-        // Copy the vertices
-        // vertices = MeshRebuilder.instance.vertices;
 
         // Hover listeners to change vertex color
         grabInteractable.hoverEntered.AddListener(HoverOver);
