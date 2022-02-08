@@ -10,10 +10,12 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] GameObject model;
 
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
+    [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -130,7 +132,7 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked)
         {
             grabInteractable.enabled = false;
             return;
