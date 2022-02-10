@@ -91,6 +91,18 @@ namespace EasyMeshVR.Multiplayer
         {
             target.position = originTransform.position;
             target.rotation = originTransform.rotation;
+
+            // Calculate inverse scale vector
+            Vector3 editingSpaceScale = editingSpace.transform.lossyScale;
+            if (editingSpaceScale.x != 0 && editingSpaceScale.y != 0 && editingSpaceScale.z != 0)
+            {
+                Vector3 inverseScale = new Vector3(
+                    1.0f / editingSpaceScale.x,
+                    1.0f / editingSpaceScale.y,
+                    1.0f / editingSpaceScale.z
+                );
+                target.localScale = inverseScale;
+            }
         }
 
         void UpdateHandAnimation(InputDevice targetDevice, Animator handAnimator)

@@ -137,8 +137,15 @@ public class MoveVertices : MonoBehaviour
 
     public void UpdateVertex(Transform transform, int index)
     {
-        // Calculate inverse scale vector
         Vector3 editingSpaceScale = editingSpace.transform.localScale;
+
+        // Handle divide by zero error
+        if (editingSpaceScale.x == 0 || editingSpaceScale.y == 0 || editingSpaceScale.z == 0)
+        {
+            return;
+        }
+
+        // Calculate inverse scale vector based on editing space scale
         Vector3 inverseScale = new Vector3(
             1.0f / editingSpaceScale.x,
             1.0f / editingSpaceScale.y,
