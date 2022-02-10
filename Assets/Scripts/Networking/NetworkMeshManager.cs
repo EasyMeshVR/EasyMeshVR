@@ -121,7 +121,7 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, removeImportModelEventOptions, SendOptions.SendReliable);
 
             // We tell all clients to import the model from the web server given the model code.
-            // EventCaching.AddToRoomCacheGloabl caches the event globally so that it persists until the room is closed (all players leave),
+            // EventCaching.AddToRoomCacheGlobal caches the event globally so that it persists until the room is closed (all players leave),
             // so that new players can import the current model in the scene.
             RaiseEventOptions importModelEventOptions = new RaiseEventOptions
             {
@@ -134,7 +134,7 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, importModelEventOptions, SendOptions.SendReliable);
         }
 
-        public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false)
+        public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false, bool released = false)
         {
             EventCaching cachingOption = (isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
 
@@ -144,7 +144,7 @@ namespace EasyMeshVR.Multiplayer
                 CachingOption = cachingOption
             };
 
-            object[] content = new object[] { vertex, index };
+            object[] content = new object[] { vertex, index, released };
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, content, meshVertexPullEventOptions, SendOptions.SendReliable);
         }
 

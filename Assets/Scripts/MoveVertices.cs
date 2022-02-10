@@ -16,7 +16,6 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
@@ -108,17 +107,15 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
-        int id = arg0.interactableObject.transform.GetComponent<Vertex>().id;
-
-        // Synchronize the position of the mesh vertex by sending an event to the other players
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[id], id, true);
+        // Synchronize the position of the mesh vertex by sending a cached event to other players
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, true, true);
         pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked)
+        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked || thisvertex.isHeldByOther)
         {
             grabInteractable.enabled = false;
             return;
@@ -133,7 +130,8 @@ public class MoveVertices : MonoBehaviour
             UpdateVertex(transform, selectedVertex);
             UpdateMesh(selectedVertex);
 
-            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, false);
+            // Continuously synchronize the position of the vertex without caching it until we release it
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, false, false);
         }
     }
 

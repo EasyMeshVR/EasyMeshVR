@@ -216,23 +216,34 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     {
         byte eventCode = photonEvent.Code;
 
+        if (photonEvent.CustomData == null)
+        {
+            return;
+        }
+
         switch (eventCode)
         {
             case Constants.MESH_VERTEX_PULL_EVENT_CODE:
-                if (photonEvent.CustomData != null)
-                {  
-                    object[] data = (object[])photonEvent.CustomData;
-                    Vector3 vertex = (Vector3)data[0];
-                    int index = (int)data[1];
-                    Vertex vertexObj = vertexObjects[index];
-                    MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
-                    vertexObj.transform.localPosition = vertex;
-                    vertices[index] = vertex;
-                    moveVertices.UpdateMesh(index);
-                }
+            {
+                object[] data = (object[])photonEvent.CustomData;
+                HandleMeshVertexPullEvent(data);
                 break;
+            }
             default:
                 break;
         }
+    }
+
+    private void HandleMeshVertexPullEvent(object[] data)
+    {
+        Vector3 vertex = (Vector3)data[0];
+        int index = (int)data[1];
+        bool released = (bool)data[2];
+        Vertex vertexObj = vertexObjects[index];
+        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
+        vertexObj.transform.localPosition = vertex;
+        vertexObj.isHeldByOther = !released;
+        vertices[index] = vertex;
+        moveVertices.UpdateMesh(index);
     }
 }
