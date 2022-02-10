@@ -21,6 +21,9 @@ public class LockVertex : MonoBehaviour
     // Primary and secondary buttons on right hand controller (A and B on Oculus)
     public InputActionReference primaryButtonref = null;
     public InputActionReference secondaryButtonRef = null;
+
+   // public InputActionReference secondaryButtonHold = null;
+
     private bool primaryButtonPressed = false;
 
     private bool secondaryButtonPressed = false;
@@ -38,6 +41,13 @@ public class LockVertex : MonoBehaviour
     public bool isLocked = false;
     private bool hover = false;
 
+    private bool inRadius = false;
+
+    private float holdTime = 0f;
+
+
+    SphereCollider leftSphere;
+    SphereCollider rightSphere;
 
    void OnEnable()
     {
@@ -49,9 +59,15 @@ public class LockVertex : MonoBehaviour
 
         editingSpace = MeshRebuilder.instance.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
+        
+
+        leftSphere = GameObject.Find("LeftHand Controller DirectGrab").GetComponent<SphereCollider>();
+        rightSphere = GameObject.Find("RightHand Controller DirectGrab").GetComponent<SphereCollider>();
     }
 
     // Uncomment materialswapping for disabling/enabling movevertices
+
+    // Maybe get rid of these since I'm using the sphere anyway
      void HoverOver(HoverEnterEventArgs arg0)
     {
       
@@ -78,6 +94,9 @@ public class LockVertex : MonoBehaviour
 
         secondaryButtonRef.action.started += secondaryButtonStart;
         secondaryButtonRef.action.canceled += secondaryButtonEnd;
+
+       // secondaryButtonHold.action.started += secondaryHoldStart;
+       // secondaryButtonHold.action.canceled += secondaryHoldEnd;
     }
 
     private void OnDestroy()
@@ -87,6 +106,9 @@ public class LockVertex : MonoBehaviour
 
         secondaryButtonRef.action.started -= secondaryButtonStart;
         secondaryButtonRef.action.canceled -= secondaryButtonEnd;
+
+       // secondaryButtonHold.action.started -= secondaryHoldStart;
+        //secondaryButtonHold.action.canceled -= secondaryHoldEnd;
     }
 
     // Lock vertex on primary button press
@@ -127,7 +149,7 @@ public class LockVertex : MonoBehaviour
        secondaryButtonPressed = true;
        if(isEnabled)
        {
-            if(isLocked && !pulleyLocomotion.isMovingEditingSpace)
+            if(isLocked && !pulleyLocomotion.isMovingEditingSpace && inRadius)
             {
                 //moveVertices.enabled = true;
 
@@ -142,9 +164,36 @@ public class LockVertex : MonoBehaviour
             
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "GameController")
+            inRadius = true;
+    }
+    void OnTriggerExit(Collider other)
+    {
+        inRadius = false;
+    }
     private void secondaryButtonEnd(InputAction.CallbackContext context)
     {
         secondaryButtonPressed = false;
+        holdTime = 0f;
+    }
+
+    // Unlock all vertices if unlock button is held
+    // Needs a visual attatched to indicate
+    // There's supposed to be a way to do this with the new input system but I can't find out how
+    void Update()
+    {
+        if(secondaryButtonPressed)
+            holdTime += Time.deltaTime;
+
+         if(holdTime >= 1.5f)
+        {  
+            grabInteractable.enabled = true;
+            materialSwap.material = unselected;
+            isLocked = false;
+            return;
+        }
     }
 
 }
