@@ -13,8 +13,8 @@ public class PulleyLocomotion : MonoBehaviour
     public bool isMovingVertex = false;
     public bool isMovingEditingSpace { get; private set; } = false;
 
-    private bool isGrippedL = false;
-    private bool isGrippedR = false;
+    public bool isGrippedL = false;
+    public bool isGrippedR = false;
 
     [SerializeField] private ControllersMidpoint ControllersMidpointObject;
     [SerializeField] private Transform EditingSpaceTF;
