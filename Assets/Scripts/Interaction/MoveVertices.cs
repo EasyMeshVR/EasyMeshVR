@@ -10,7 +10,6 @@ public class MoveVertices : MonoBehaviour
 {
     [SerializeField] GameObject model;
 
-    public InputActionReference meshInteraction;
     [SerializeField] XRGrabNetworkInteractable grabInteractable;
 
     [SerializeField] Material unselected;   // gray
@@ -56,11 +55,8 @@ public class MoveVertices : MonoBehaviour
         grabInteractable.hoverExited.AddListener(HoverExit);
 
         // This checks if the grab has been pressed or released
-        // grabInteractable.selectEntered.AddListener(GrabPulled);
-        // grabInteractable.selectExited.AddListener(GrabReleased);
-
-        meshInteraction.action.started += SelectMeshComponent;
-        meshInteraction.action.canceled += UnselectMeshComponent;
+        grabInteractable.selectEntered.AddListener(GrabPulled);
+        grabInteractable.selectExited.AddListener(GrabReleased);
     }
 
     // We don't need the control listeners if OnDisable() is ever called
@@ -68,11 +64,8 @@ public class MoveVertices : MonoBehaviour
     {
         grabInteractable.hoverEntered.RemoveListener(HoverOver);
         grabInteractable.hoverExited.RemoveListener(HoverExit);
-        // grabInteractable.selectEntered.RemoveListener(GrabPulled);
-        // grabInteractable.selectExited.RemoveListener(GrabReleased);
-
-        meshInteraction.action.started -= SelectMeshComponent;
-        meshInteraction.action.canceled -= UnselectMeshComponent;
+        grabInteractable.selectEntered.RemoveListener(GrabPulled);
+        grabInteractable.selectExited.RemoveListener(GrabReleased);
     }
 
     // Get original position of Vertex before moving
@@ -80,9 +73,7 @@ public class MoveVertices : MonoBehaviour
     void HoverOver(HoverEnterEventArgs arg0)
     {
         if (pulleyLocomotion.isMovingEditingSpace)
-        {
             return;
-        }
 
         materialSwap.material = hovered;
 
@@ -116,29 +107,11 @@ public class MoveVertices : MonoBehaviour
         materialSwap.material = unselected;
     }
 
-
-
-    void SelectMeshComponent(InputAction.CallbackContext context)
-    {
-        grabHeld = true;
-    }
-
-    void UnselectMeshComponent(InputAction.CallbackContext context)
-    {
-        materialSwap.material = unselected;
-        
-        grabHeld = false;
-    }
-
-
-
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
         if (pulleyLocomotion.isMovingEditingSpace)
-        {
             return;
-        }
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -179,8 +152,7 @@ public class MoveVertices : MonoBehaviour
                 1.0f / editingSpaceScale.z
             );
 
-            // Translate, Scale, and Rotate the vertex position based on the current transform
-            // of the editingSpace object.
+            // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
             vertices[selectedVertex] =
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);

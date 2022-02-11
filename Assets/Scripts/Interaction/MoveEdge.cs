@@ -16,6 +16,10 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
+    // Editing Space Objects
+    GameObject editingSpace;
+    PulleyLocomotion pulleyLocomotion;
+
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
@@ -37,6 +41,10 @@ public class MoveEdge : MonoBehaviour
         // Get the editing model's MeshFilter
         model = GameObject.FindGameObjectWithTag("Model");
         mesh = model.GetComponent<MeshFilter>().mesh;
+
+        // Editing space objects
+        editingSpace = MeshRebuilder.instance.editingSpace;
+        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
@@ -66,6 +74,9 @@ public class MoveEdge : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+            return;
+
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
@@ -95,6 +106,9 @@ public class MoveEdge : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+            return;
+
         // Find the two vertices that are connected to the edge we grabbed
         vertex1 = GameObject.Find("Vertex" + selectedVertex1.ToString());
         vertex2 = GameObject.Find("Vertex" + selectedVertex2.ToString());
@@ -104,6 +118,7 @@ public class MoveEdge : MonoBehaviour
         vertex2.transform.parent = selectedEdge.transform;
 
         grabHeld = true;
+        pulleyLocomotion.isMovingVertex = true;
     }
 
     // Stop updating the mesh data
@@ -116,11 +131,19 @@ public class MoveEdge : MonoBehaviour
         vertex2.transform.parent = model.transform;
 
         grabHeld = false;
+        pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
+        if (pulleyLocomotion.isMovingEditingSpace)
+        {
+            grabInteractable.enabled = false;
+            return;
+        }
+        grabInteractable.enabled = true;
+
         if (grabHeld)
         {
             materialSwap.material = selected;
@@ -129,8 +152,26 @@ public class MoveEdge : MonoBehaviour
             // Subtracts model's offset if it's not directly on (0,0,0)
             vertex1.transform.parent = model.transform;
             vertex2.transform.parent = model.transform;
-            vertices[selectedVertex1] = vertex1.transform.localPosition - model.transform.position;
-            vertices[selectedVertex2] = vertex2.transform.localPosition - model.transform.position;
+
+            // vertices[selectedVertex1] = vertex1.transform.localPosition - model.transform.position;
+            // vertices[selectedVertex2] = vertex2.transform.localPosition - model.transform.position;
+
+            // Calculate inverse scale vector
+            Vector3 editingSpaceScale = editingSpace.transform.localScale;
+            Vector3 inverseScale = new Vector3(
+                1.0f / editingSpaceScale.x,
+                1.0f / editingSpaceScale.y,
+                1.0f / editingSpaceScale.z
+            );
+
+            // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
+            vertices[selectedVertex1] =
+                Quaternion.Inverse(editingSpace.transform.rotation)
+                * Vector3.Scale(inverseScale, vertex1.transform.position - editingSpace.transform.position);
+
+            vertices[selectedVertex2] =
+                Quaternion.Inverse(editingSpace.transform.rotation)
+                * Vector3.Scale(inverseScale, vertex2.transform.position - editingSpace.transform.position);
 
             UpdateMesh();
 
