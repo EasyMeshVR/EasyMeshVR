@@ -45,7 +45,16 @@ namespace EasyMeshVR.Multiplayer
             rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
 
             editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
-            gameObject.transform.parent = editingSpace.transform;
+
+            // Initialize the transform of other joining players based on our local editing space transform.
+            if (!photonView.IsMine)
+            {
+                InitTransform(transform, editingSpace.transform);
+            }
+
+            // This makes it so that players' transforms stay in position
+            // relative to our local editing space.
+            transform.parent = editingSpace.transform;
 
             // Set player's name text
             playerNameText.text = photonView.Owner.NickName;
@@ -91,6 +100,18 @@ namespace EasyMeshVR.Multiplayer
         {
             target.position = originTransform.position;
             target.rotation = originTransform.rotation;
+
+            // Calculate inverse scale vector
+            Vector3 editingSpaceScale = editingSpace.transform.lossyScale;
+            if (editingSpaceScale.x != 0 && editingSpaceScale.y != 0 && editingSpaceScale.z != 0)
+            {
+                Vector3 inverseScale = new Vector3(
+                    1.0f / editingSpaceScale.x,
+                    1.0f / editingSpaceScale.y,
+                    1.0f / editingSpaceScale.z
+                );
+                target.localScale = inverseScale;
+            }
         }
 
         void UpdateHandAnimation(InputDevice targetDevice, Animator handAnimator)
@@ -112,6 +133,13 @@ namespace EasyMeshVR.Multiplayer
             {
                 handAnimator.SetFloat("Grip", 0);
             }
+        }
+
+        void InitTransform(Transform target, Transform originTransform)
+        {
+            target.transform.position = target.transform.position + originTransform.transform.position;
+            target.transform.rotation = target.transform.rotation * originTransform.transform.rotation;
+            target.transform.localScale = Vector3.Scale(target.transform.lossyScale, originTransform.transform.lossyScale);
         }
 
         #endregion

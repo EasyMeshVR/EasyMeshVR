@@ -16,5 +16,6 @@ namespace EasyMeshVR.Core
          * Photon Custom Event Codes
         */
         public const byte IMPORT_MODEL_FROM_WEB_EVENT_CODE = 1;
+        public const byte MESH_VERTEX_PULL_EVENT_CODE = 2;
     }
 }
