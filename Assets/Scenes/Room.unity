@@ -1064,7 +1064,7 @@ MonoBehaviour:
   isGrippedL: 0
   isGrippedR: 0
   ControllersMidpointObject: {fileID: 573060419}
-  EditingSpaceTF: {fileID: 2063562611}
+  EditingSpaceTF: {fileID: 0}
   lockRotationAroundYAxis: 1
 --- !u!4 &2063562611
 Transform:
