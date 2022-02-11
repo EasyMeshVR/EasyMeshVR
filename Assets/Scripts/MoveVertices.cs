@@ -16,15 +16,8 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-    // Spheres for grab radius
-    SphereCollider leftSphere;
-    SphereCollider rightSphere;
-
     // Editing Space Objects
     GameObject editingSpace;
-
-  
-
     PulleyLocomotion pulleyLocomotion;
 
     // Mesh data
@@ -51,10 +44,6 @@ public class MoveVertices : MonoBehaviour
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
-
-        // Get sphere colliders of controllers
-        leftSphere = GameObject.Find("LeftHand Controller DirectGrab").GetComponent<SphereCollider>();
-        rightSphere = GameObject.Find("RightHand Controller DirectGrab").GetComponent<SphereCollider>();
 
         // Copy the vertices
         vertices = mesh.vertices;
@@ -149,16 +138,6 @@ public class MoveVertices : MonoBehaviour
         }
         grabInteractable.enabled = true;
 
-        // fix this when get batteries
-
-       // Vector3 editingSpaceScale = editingSpace.transform.localScale;
-        // Scale sphere collider raidus of controller relative to editing space
-          
-       // leftSphere.radius /= editingSpaceScale.magnitude;
-       // rightSphere.radius /= editingSpaceScale.magnitude;
-
-
-
         if (grabHeld)
         {
             materialSwap.material = selected;
@@ -170,9 +149,7 @@ public class MoveVertices : MonoBehaviour
             Vector3 inverseScale = new Vector3(
                 1.0f / editingSpaceScale.x, 
                 1.0f / editingSpaceScale.y, 
-                1.0f / editingSpaceScale.z
-
-                
+                1.0f / editingSpaceScale.z               
             );
 
     

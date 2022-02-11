@@ -22,8 +22,6 @@ public class LockVertex : MonoBehaviour
     public InputActionReference primaryButtonref = null;
     public InputActionReference secondaryButtonRef = null;
 
-   // public InputActionReference secondaryButtonHold = null;
-
     private bool primaryButtonPressed = false;
 
     private bool secondaryButtonPressed = false;
@@ -118,23 +116,9 @@ public class LockVertex : MonoBehaviour
         if(isEnabled && !pulleyLocomotion.isGrippedL)
         {
             if(!isLocked && hover)
-                {
-                    //moveVertices.enabled = true;
-
-                    // Disabling the grab interactable also disables the hovering,
-                    // I think the only way to allow the hovering would be to implement a hoverInteractable
-                    // script like the GrabInteractable one that is given but that seems like too much work
-                    grabInteractable.enabled = false;
-                    materialSwap.material = locked;
-
-                    // This was another way to disable grabbing that I was trying that I forgot about
-                    // but I'm pretty sure it does the same thing as disabling grabInteractable
-                    
-                    //gameObject.layer = 2;
-
-                    isLocked = true;
-                    return;
-                }
+            {
+                Lock();  
+            }
         }
     }
 
@@ -146,22 +130,10 @@ public class LockVertex : MonoBehaviour
     // Unlock all locked vertices on secondary button press
     private void secondaryButtonStart(InputAction.CallbackContext context)
     {
-       secondaryButtonPressed = true;
-       if(isEnabled)
-       {
+        secondaryButtonPressed = true;
+        if(isEnabled)
             if(isLocked && !pulleyLocomotion.isMovingEditingSpace && inRadius)
-            {
-                //moveVertices.enabled = true;
-
-                // gameObject.layer = 0;
-
-                grabInteractable.enabled = true;
-                materialSwap.material = unselected;
-                isLocked = false;
-                return;
-            }
-       }
-            
+                Unlock();  
     }
 
     void OnTriggerEnter(Collider other)
@@ -179,6 +151,37 @@ public class LockVertex : MonoBehaviour
         holdTime = 0f;
     }
 
+    void Lock()
+    {
+        //moveVertices.enabled = true;
+
+        // Disabling the grab interactable also disables the hovering,
+        // I think the only way to allow the hovering would be to implement a hoverInteractable
+        // script like the GrabInteractable one that is given but that seems like too much work
+        grabInteractable.enabled = false;
+        materialSwap.material = locked;
+
+        // This was another way to disable grabbing that I was trying that I forgot about
+        // but I'm pretty sure it does the same thing as disabling grabInteractable
+        
+        //gameObject.layer = 2;
+
+        isLocked = true;
+        return;
+    }
+
+    void Unlock()
+    {
+        //moveVertices.enabled = true;
+
+        // gameObject.layer = 0;
+
+        grabInteractable.enabled = true;
+        materialSwap.material = unselected;
+        isLocked = false;
+        return;
+    }
+
     // Unlock all vertices if unlock button is held
     // Needs a visual attatched to indicate
     // There's supposed to be a way to do this with the new input system but I can't find out how
@@ -188,12 +191,7 @@ public class LockVertex : MonoBehaviour
             holdTime += Time.deltaTime;
 
          if(holdTime >= 1.5f)
-        {  
-            grabInteractable.enabled = true;
-            materialSwap.material = unselected;
-            isLocked = false;
-            return;
-        }
+            Unlock();
     }
 
 }

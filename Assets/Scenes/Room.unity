@@ -444,7 +444,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 1
+  LockTool: 0
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
@@ -950,6 +950,7 @@ GameObject:
   - component: {fileID: 1532462854}
   - component: {fileID: 1532462853}
   - component: {fileID: 1532462851}
+  - component: {fileID: 1532462852}
   m_Layer: 0
   m_Name: LeftHand Controller DirectGrab
   m_TagString: GameController
@@ -984,8 +985,22 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1532462852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532462849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c32862f6c5a2a42bd557a5bed4d062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ControllersMidpointObject: {fileID: 700834602}
+  sphereCollider: {fileID: 1532462851}
 --- !u!114 &1532462853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1607,6 +1622,7 @@ GameObject:
   - component: {fileID: 2093168878}
   - component: {fileID: 2093168877}
   - component: {fileID: 2093168875}
+  - component: {fileID: 2093168876}
   m_Layer: 0
   m_Name: RightHand Controller DirectGrab
   m_TagString: GameController
@@ -1643,6 +1659,20 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2093168876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093168873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2c32862f6c5a2a42bd557a5bed4d062, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ControllersMidpointObject: {fileID: 700834602}
+  sphereCollider: {fileID: 2093168875}
 --- !u!114 &2093168877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2525,7 +2555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19bad63c92130a3468b86263a695ae43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startButton: {fileID: -8914037960180322770, guid: c348712bda248c246b8c49b3db54643f,
+  startButton: {fileID: -7613458357799502818, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   menuOpen: 0
 --- !u!1001 &8680544116246475858
