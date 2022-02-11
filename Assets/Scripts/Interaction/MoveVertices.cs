@@ -24,7 +24,6 @@ public class MoveVertices : MonoBehaviour
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
-    Vertex thisvertex;
 
     // Vertex lookup
     Vector3 originalPosition;
