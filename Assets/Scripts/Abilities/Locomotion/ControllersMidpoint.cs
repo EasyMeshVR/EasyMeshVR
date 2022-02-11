@@ -24,6 +24,7 @@ public class ControllersMidpoint : MonoBehaviour
         //if (lockRotationAroundYAxis)
         //    gameObject.transform.localRotation = Quaternion.LookRotation(new Vector3(midpointDir.x, 0, midpointDir.z), Vector3.up);
         //else
+        if (LController.up.magnitude != 0 && RController.up.magnitude != 0 && midpointDir.magnitude != 0)
             gameObject.transform.localRotation = Quaternion.LookRotation(midpointDir, LController.up + RController.up);
 
         // Maintain Scale
