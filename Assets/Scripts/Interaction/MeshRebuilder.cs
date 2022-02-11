@@ -2,8 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq; // this is for line 79
+using Photon.Pun;
+using Photon.Realtime;
+using ExitGames.Client.Photon;
+using EasyMeshVR.Core;
 
-public class MeshRebuilder : MonoBehaviour
+public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 {
     public static MeshRebuilder instance { get; private set; }
 
@@ -17,18 +21,20 @@ public class MeshRebuilder : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
-    Vector3[] vertices;
+    public Vector3[] vertices;
     Vector3 vertexPosition;
     int[] triangles;
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
     public static Dictionary<GameObject, List<int>> visuals;
+    public List<Vertex> vertexObjects;
 
     // Setup
     void Awake()
     {
         visuals = new Dictionary<GameObject, List<int>>();
+        vertexObjects = new List<Vertex>();
         instance = this;
         
         // For importing in real time we would need the script to get the model automatically
@@ -43,6 +49,18 @@ public class MeshRebuilder : MonoBehaviour
         // Start visualizing the mesh
         RemoveDuplicates();
         CreateVisuals();
+    }
+
+    void OnEnable()
+    {
+
+        PhotonNetwork.AddCallbackTarget(this);
+    }
+
+    void OnDisable()
+    {
+
+        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     // Deletes the duplicate vertices Unity and STL files create
@@ -139,6 +157,7 @@ public class MeshRebuilder : MonoBehaviour
             // Set the id of the Vertex component to be the index in the vertices array
             Vertex vertexObj = newVertex.GetComponent<Vertex>();
             vertexObj.id = i;
+            vertexObjects.Add(vertexObj);
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();
@@ -192,5 +211,40 @@ public class MeshRebuilder : MonoBehaviour
                 visuals.Add(newEdge, conVerts);
             }
         }
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        byte eventCode = photonEvent.Code;
+
+        if (photonEvent.CustomData == null)
+        {
+            return;
+        }
+
+        switch (eventCode)
+        {
+            case Constants.MESH_VERTEX_PULL_EVENT_CODE:
+            {
+                object[] data = (object[])photonEvent.CustomData;
+                HandleMeshVertexPullEvent(data);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    private void HandleMeshVertexPullEvent(object[] data)
+    {
+        Vector3 vertex = (Vector3)data[0];
+        int index = (int)data[1];
+        bool released = (bool)data[2];
+        Vertex vertexObj = vertexObjects[index];
+        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
+        vertexObj.transform.localPosition = vertex;
+        vertexObj.isHeldByOther = !released;
+        vertices[index] = vertex;
+        moveVertices.UpdateMesh(index);
     }
 }
