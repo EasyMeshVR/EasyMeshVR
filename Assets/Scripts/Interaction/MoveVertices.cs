@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using EasyMeshVR.Multiplayer;
 
@@ -23,10 +24,10 @@ public class MoveVertices : MonoBehaviour
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
-    Vertex thisvertex;
 
     // Vertex lookup
     Vector3 originalPosition;
+    Vertex thisvertex;
     int selectedVertex;
 
     bool grabHeld = false;
@@ -35,11 +36,13 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        editingSpace = MeshRebuilder.instance.editingSpace;
-        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
         model = GameObject.FindGameObjectWithTag("Model");
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
+
+        // Editing space objects
+        editingSpace = MeshRebuilder.instance.editingSpace;
+        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
@@ -49,7 +52,6 @@ public class MoveVertices : MonoBehaviour
         grabInteractable.hoverExited.AddListener(HoverExit);
 
         // This checks if the grab has been pressed or released
-        // Needs to be updated to trigger/button pinch controls
         grabInteractable.selectEntered.AddListener(GrabPulled);
         grabInteractable.selectExited.AddListener(GrabReleased);
     }
@@ -68,17 +70,14 @@ public class MoveVertices : MonoBehaviour
     void HoverOver(HoverEnterEventArgs arg0)
     {
         if (pulleyLocomotion.isMovingEditingSpace)
-        {
             return;
-        }
 
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;
 
-        // The selected vertex is just the saved id of this vertex representing its index
-        // in the vertices array
+        // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
     }
 
@@ -92,9 +91,7 @@ public class MoveVertices : MonoBehaviour
     void GrabPulled(SelectEnterEventArgs arg0)
     {
         if (pulleyLocomotion.isMovingEditingSpace)
-        {
             return;
-        }
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;

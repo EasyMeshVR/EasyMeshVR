@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 2463958394191917499}
   - component: {fileID: 10225722356434956}
   - component: {fileID: 5762717522507218653}
-  - component: {fileID: -4243344994311814341}
-  - component: {fileID: 2933032626012915278}
-  - component: {fileID: 8877289007085873981}
   - component: {fileID: 9077015157397384143}
+  - component: {fileID: -8109944905895446732}
+  - component: {fileID: -5656790495856781621}
+  - component: {fileID: -8713780636455507863}
   m_Layer: 0
   m_Name: Vertex
   m_TagString: Vertex
@@ -116,59 +116,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-4243344994311814341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a7d78e45826a6a42b4c3e9e8c31d7a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  model: {fileID: 0}
-  grabInteractable: {fileID: 9077015157397384143}
-  lockVertex: {fileID: 8877289007085873981}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
-  selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
---- !u!114 &2933032626012915278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca69a186a68a699448bcdfcf561c98b8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  id: 0
---- !u!114 &8877289007085873981
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 631ca2cfefda48348a58ee2f8a492d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 9077015157397384143}
-  primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  isEnabled: 0
-  locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
-  isLocked: 0
 --- !u!114 &9077015157397384143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,3 +231,57 @@ MonoBehaviour:
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
   m_AttachPointCompatibilityMode: 0
+--- !u!114 &-8109944905895446732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a7d78e45826a6a42b4c3e9e8c31d7a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  model: {fileID: 0}
+  grabInteractable: {fileID: 9077015157397384143}
+  lockVertex: {fileID: -8713780636455507863}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
+--- !u!114 &-5656790495856781621
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca69a186a68a699448bcdfcf561c98b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isHeldByOther: 0
+--- !u!114 &-8713780636455507863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 631ca2cfefda48348a58ee2f8a492d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabInteractable: {fileID: 9077015157397384143}
+  primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  isEnabled: 0
+  locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  isLocked: 0
