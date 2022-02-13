@@ -59,8 +59,8 @@ public class LockVertex : MonoBehaviour
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
         
 
-        leftSphere = GameObject.Find("LeftHand Controller DirectGrab").GetComponent<SphereCollider>();
-        rightSphere = GameObject.Find("RightHand Controller DirectGrab").GetComponent<SphereCollider>();
+        leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
+        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
     }
 
     // Uncomment materialswapping for disabling/enabling movevertices

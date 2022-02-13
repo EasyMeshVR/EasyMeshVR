@@ -24,7 +24,7 @@ public class SwitchControllers : MonoBehaviour
             if (child.CompareTag("RightController"))
                 rayRight = child;
         
-        grabRight = GameObject.Find("RightHand Controller DirectGrab");
+        grabRight = GameObject.Find("RightRadius");
     }
 
     void Awake()
