@@ -31,7 +31,7 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     public List<Vertex> vertexObjects;
 
     // Setup
-    void Awake()
+    public void Start()
     {
         visuals = new Dictionary<GameObject, List<int>>();
         vertexObjects = new List<Vertex>();

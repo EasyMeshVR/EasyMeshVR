@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
-using EasyMeshVR.Core;
+using EasyMeshVR.Multiplayer;
 
 public class MoveEdge : MonoBehaviour
 {
@@ -114,8 +114,8 @@ public class MoveEdge : MonoBehaviour
         vertex2 = GameObject.Find("Vertex" + selectedVertex2.ToString());
 
         // Parent the two vertices to the edge
-        vertex1.transform.parent = selectedEdge.transform;
-        vertex2.transform.parent = selectedEdge.transform;
+        // vertex1.transform.parent = selectedEdge.transform;
+        // vertex2.transform.parent = selectedEdge.transform;
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -127,10 +127,14 @@ public class MoveEdge : MonoBehaviour
         materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
-        vertex1.transform.parent = model.transform;
-        vertex2.transform.parent = model.transform;
+        // vertex1.transform.parent = model.transform;
+        // vertex2.transform.parent = model.transform;
 
         grabHeld = false;
+
+        // Synchronize the position of the mesh vertex by sending a cached event to other players
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, true, true);
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex2], selectedVertex2, true, true);
         pulleyLocomotion.isMovingVertex = false;
     }
 
@@ -150,11 +154,26 @@ public class MoveEdge : MonoBehaviour
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
             // Subtracts model's offset if it's not directly on (0,0,0)
-            vertex1.transform.parent = model.transform;
-            vertex2.transform.parent = model.transform;
+            // vertex1.transform.parent = model.transform;
+            // vertex2.transform.parent = model.transform;
 
             // vertices[selectedVertex1] = vertex1.transform.localPosition - model.transform.position;
             // vertices[selectedVertex2] = vertex2.transform.localPosition - model.transform.position;
+
+            // --------------------------------------------------------------------------
+            // Parenting was a bust
+            // We need to do math to find the position of the edge of the edge gameobject and update the vertices to that position
+            // This might help us get started but we're gonna have to change a bit of it
+            // Especially for diagonals
+            // 
+            // Vector3 offset = transform.up * (transform.localScale.y / 2f) * -1f;
+            // Vector3 pos = transform.position + offset; //This is the position
+            // transform.position + transform.right * -transform.localScale / 2
+            // --------------------------------------------------------------------------
+
+            Vector3 offset = transform.up * (transform.localScale.y / 2f) * -1f;
+            Vector3 pos1 = transform.position + offset;
+            Vector3 pos2 = transform.position - offset;
 
             // Calculate inverse scale vector
             Vector3 editingSpaceScale = editingSpace.transform.localScale;
@@ -175,8 +194,12 @@ public class MoveEdge : MonoBehaviour
 
             UpdateMesh();
 
-            vertex1.transform.parent = selectedEdge.transform;
-            vertex2.transform.parent = selectedEdge.transform;
+            // vertex1.transform.parent = selectedEdge.transform;
+            // vertex2.transform.parent = selectedEdge.transform;
+
+            // Continuously synchronize the position of the vertex without caching it until we release it
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, false, false);
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex2], selectedVertex2, false, false);
         }
     }
 
