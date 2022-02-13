@@ -114,8 +114,8 @@ public class MoveEdge : MonoBehaviour
         vertex2 = GameObject.Find("Vertex" + selectedVertex2.ToString());
 
         // Parent the two vertices to the edge
-        // vertex1.transform.parent = selectedEdge.transform;
-        // vertex2.transform.parent = selectedEdge.transform;
+        vertex1.transform.parent = selectedEdge.transform;
+        vertex2.transform.parent = selectedEdge.transform;
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -127,8 +127,8 @@ public class MoveEdge : MonoBehaviour
         materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
-        // vertex1.transform.parent = model.transform;
-        // vertex2.transform.parent = model.transform;
+        vertex1.transform.parent = model.transform;
+        vertex2.transform.parent = model.transform;
 
         grabHeld = false;
 
@@ -154,8 +154,8 @@ public class MoveEdge : MonoBehaviour
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
             // Subtracts model's offset if it's not directly on (0,0,0)
-            // vertex1.transform.parent = model.transform;
-            // vertex2.transform.parent = model.transform;
+            vertex1.transform.parent = model.transform;
+            vertex2.transform.parent = model.transform;
 
             // vertices[selectedVertex1] = vertex1.transform.localPosition - model.transform.position;
             // vertices[selectedVertex2] = vertex2.transform.localPosition - model.transform.position;
@@ -194,8 +194,8 @@ public class MoveEdge : MonoBehaviour
 
             UpdateMesh();
 
-            // vertex1.transform.parent = selectedEdge.transform;
-            // vertex2.transform.parent = selectedEdge.transform;
+            vertex1.transform.parent = selectedEdge.transform;
+            vertex2.transform.parent = selectedEdge.transform;
 
             // Continuously synchronize the position of the vertex without caching it until we release it
             NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, false, false);
