@@ -19,6 +19,10 @@ namespace EasyMeshVR.Core
 
         public static ModelImportExport instance { get; private set; }
 
+        [SerializeField] GameObject EditingSpace;
+        [SerializeField] GameObject vertex;
+        [SerializeField] GameObject edge;
+
         #endregion
 
         #region Private Fields
@@ -112,6 +116,13 @@ namespace EasyMeshVR.Core
                 Mesh mesh = meshes[i];
                 mesh.name = "Mesh-" + name + "(" + i + ")";
                 go.GetComponent<MeshFilter>().sharedMesh = mesh;
+
+                MeshRebuilder rebuilder = go.AddComponent<MeshRebuilder>();
+                rebuilder.editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
+                rebuilder.vertex = vertex;
+                rebuilder.edge = edge;
+                rebuilder.enabled = true;
+                // rebuilder.RebuilderSetup();
             }
         }
 

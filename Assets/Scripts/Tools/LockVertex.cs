@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 public class LockVertex : MonoBehaviour
 {
-    [SerializeField] XRGrabNetworkInteractable grabInteractable;
+    [SerializeField] XRGrabInteractable grabInteractable;
 
     PulleyLocomotion pulleyLocomotion;
     GameObject editingSpace;

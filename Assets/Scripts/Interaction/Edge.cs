@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Vertex : MonoBehaviour
+public class Edge : MonoBehaviour
 {
     public int id;
 
@@ -17,6 +17,4 @@ public class Vertex : MonoBehaviour
     {
         
     }
-
 }
-
