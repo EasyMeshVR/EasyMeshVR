@@ -405,6 +405,12 @@ Transform:
   m_Father: {fileID: 1938387771}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &185547378 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6885944694105057824, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6885944694426427361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &299127983
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,6 +690,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &713889963 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6885944694309307564, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6885944694426427361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &900901297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,9 +1066,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f137837311c4eda45b44af4ba71e201e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lGrabReference: {fileID: 7042337326284856298, guid: c348712bda248c246b8c49b3db54643f,
+  lGrabReference: {fileID: -207032289664178842, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  rGrabReference: {fileID: 2477963371509484027, guid: c348712bda248c246b8c49b3db54643f,
+  rGrabReference: {fileID: 661320900886150083, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   flipYLock: {fileID: 4814920333793912679, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
@@ -1064,7 +1076,8 @@ MonoBehaviour:
   isGrippedL: 0
   isGrippedR: 0
   ControllersMidpointObject: {fileID: 573060419}
-  EditingSpaceTF: {fileID: 0}
+  LeftController: {fileID: 185547378}
+  RightController: {fileID: 713889963}
   lockRotationAroundYAxis: 1
 --- !u!4 &2063562611
 Transform:
