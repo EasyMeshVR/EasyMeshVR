@@ -27,6 +27,9 @@ public class ToolManager : MonoBehaviour
 
     void checkImport()
     {
+        lockScripts.Clear();
+        vertexGrab.Clear();
+        edgeGrab.Clear();
         GameObject [] vertices = GameObject.FindGameObjectsWithTag("Vertex");
         GameObject [] edges = GameObject.FindGameObjectsWithTag("Edge");
 
