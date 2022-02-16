@@ -8,14 +8,14 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveVertices : MonoBehaviour
 {
-    [SerializeField] GameObject model;
-
     [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
+    GameObject model;
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -26,7 +26,6 @@ public class MoveVertices : MonoBehaviour
     MeshRenderer materialSwap;
 
     // Vertex lookup
-    Vector3 originalPosition;
     Vertex thisvertex;
     int selectedVertex;
 
@@ -36,7 +35,7 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = GameObject.FindGameObjectWithTag("Model");
+        model = MeshRebuilder.instance.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
 
@@ -166,23 +165,23 @@ public class MoveVertices : MonoBehaviour
         mesh.RecalculateNormals();
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (var kvp in MeshRebuilder.visuals)
+        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
         {
-            // Dictionary created in MeshRebuilder.cs
-            // Dictionary<GameObject, List<int>>
-            // GameObject = edge, List<int> = vertex 1 (origin), vertex 2
+            GameObject edgeObject = edge.gameObject;
+            int vert1 = edge.vert1;
+            int vert2 = edge.vert2;
 
             // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
-            if (kvp.Value[0] == index || kvp.Value[1] == index)
+            if (vert1 == index || vert2 == index)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[kvp.Value[0]], vertices[kvp.Value[1]]);
-                kvp.Key.transform.localPosition = (vertices[kvp.Value[0]] + vertices[kvp.Value[1]]) / 2;
-                kvp.Key.transform.localScale = new Vector3(kvp.Key.transform.localScale.x, edgeDistance, kvp.Key.transform.localScale.z);
+                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
+                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
+                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
 
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                kvp.Key.transform.LookAt(transform, Vector3.up);
-                kvp.Key.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                edgeObject.transform.LookAt(transform, Vector3.up);
+                edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
         }
     }

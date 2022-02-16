@@ -15,14 +15,16 @@ public class PulleyLocomotion : MonoBehaviour
 
     public bool isGrippedL = false;
     public bool isGrippedR = false;
+    private Vector3 originalPos; // Temporary original position of editing space in reference to controller
 
-    [SerializeField] public ControllersMidpoint ControllersMidpointObject;
-    [SerializeField] private Transform EditingSpaceTF;
+    [SerializeField] private ControllersMidpoint ControllersMidpointObject;
+    [SerializeField] private GameObject LeftController;
+    [SerializeField] private GameObject RightController;
     [SerializeField] private bool lockRotationAroundYAxis = true;
 
     private void Awake()
     {
-        if (!ControllersMidpointObject || !EditingSpaceTF)
+        if (!ControllersMidpointObject || !LeftController || !RightController)
             Debug.LogError("PulleyLocomotion component needs to be properly filled in inspector!");
         lGrabReference.action.started += LGrabStart;
         lGrabReference.action.canceled += LGrabEnd;
@@ -42,11 +44,19 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void Update()
     {
-        if (isGrippedL && isGrippedR)
+        if (isGrippedL && isGrippedR) // Both hands gripped: trans, rotate, scale
         {
             isMovingEditingSpace = true;
             if (lockRotationAroundYAxis) // Locks rotation around Y axis
                 transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+        }
+        else if (isGrippedL && !isGrippedR) // Left hand gripped: translate
+        {
+            transform.position = originalPos + LeftController.transform.position;
+        }
+        else if (!isGrippedL && isGrippedR) // Right hand gripped: translate
+        {
+            transform.position = originalPos + RightController.transform.position;
         }
     }
 
@@ -58,6 +68,8 @@ public class PulleyLocomotion : MonoBehaviour
         isGrippedL = true;
         if (isGrippedR) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
+        else
+            originalPos = -LeftController.transform.position + transform.position;
     }
 
     private void RGrabStart(InputAction.CallbackContext context)
@@ -68,6 +80,8 @@ public class PulleyLocomotion : MonoBehaviour
         isGrippedR = true;
         if (isGrippedL) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
+        else
+            originalPos = -RightController.transform.position + transform.position;
     }
 
     private void LGrabEnd(InputAction.CallbackContext context)
@@ -75,6 +89,8 @@ public class PulleyLocomotion : MonoBehaviour
         isGrippedL = false;
         isMovingEditingSpace = false;
         transform.parent = null;
+        if (isGrippedR) // If the other grip is still active, go back to translation only
+            originalPos = -RightController.transform.position + transform.position;
     }
 
     private void RGrabEnd(InputAction.CallbackContext context)
@@ -82,6 +98,8 @@ public class PulleyLocomotion : MonoBehaviour
         isGrippedR = false;
         isMovingEditingSpace = false;
         gameObject.transform.parent = null;
+        if (isGrippedL) // If the other grip is still active, go back to translation only
+            originalPos = -LeftController.transform.position + transform.position;
     }
 
     private void FlipYLock(InputAction.CallbackContext context)
