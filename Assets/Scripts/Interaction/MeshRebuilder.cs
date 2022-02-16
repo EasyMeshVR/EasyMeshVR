@@ -13,7 +13,7 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
     [SerializeField]
     public GameObject editingSpace;
-    GameObject model;
+    public GameObject model;
     
     // Holds the vertex and edge prefabs
     public GameObject vertex;
@@ -27,13 +27,14 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
-    public static Dictionary<GameObject, List<int>> visuals;
+    //public static Dictionary<GameObject, List<int>> visuals;
+    public List<Edge> edgeObjects;
     public List<Vertex> vertexObjects;
 
     // Setup
     public void Start()
     {
-        visuals = new Dictionary<GameObject, List<int>>();
+        edgeObjects = new List<Edge>();
         vertexObjects = new List<Vertex>();
         instance = this;
         
@@ -205,10 +206,11 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
 
                 // Add edge and it's connecting vertices to a dictionary reference for use in other scripts
-                List<int> conVerts = new List<int>();
-                conVerts.Add(i);
-                conVerts.Add(k);
-                visuals.Add(newEdge, conVerts);
+                Edge edgeComponent = newEdge.GetComponent<Edge>();
+                edgeComponent.id = edgeObjects.Count();
+                edgeComponent.vert1 = i;
+                edgeComponent.vert2 = k;
+                edgeObjects.Add(edgeComponent);
             }
         }
     }
