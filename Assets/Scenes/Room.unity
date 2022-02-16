@@ -437,7 +437,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LockTool: 0
   grabVertex: 1
-  grabEdge: 0
+  grabEdge: 1
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
@@ -1968,9 +1968,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f137837311c4eda45b44af4ba71e201e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lGrabReference: {fileID: 7042337326284856298, guid: c348712bda248c246b8c49b3db54643f,
+  lGrabReference: {fileID: -207032289664178842, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  rGrabReference: {fileID: 2477963371509484027, guid: c348712bda248c246b8c49b3db54643f,
+  rGrabReference: {fileID: 661320900886150083, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   flipYLock: {fileID: 4814920333793912679, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
@@ -1978,7 +1978,8 @@ MonoBehaviour:
   isGrippedL: 0
   isGrippedR: 0
   ControllersMidpointObject: {fileID: 573060419}
-  EditingSpaceTF: {fileID: 2063562611}
+  LeftController: {fileID: 1051971692}
+  RightController: {fileID: 2059701652}
   lockRotationAroundYAxis: 1
 --- !u!4 &2063562611
 Transform:

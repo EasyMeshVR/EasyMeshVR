@@ -72,10 +72,14 @@ public class SwitchControllers : MonoBehaviour
         grabLeft.SetActive(false);
         grabRight.SetActive(false);
 
-        // im not sure if there are going to me multiple of these in a scene at any point but if there are then this will work
+        // im not sure if there are going to be multiple of these in a scene at any point but if there are then this should work
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
         foreach(PulleyLocomotion pl in list)
+        {
             pl.ControllersMidpointObject = rayMidpoint;
+            pl.LeftController = rayLeft;
+            pl.RightController = rayRight;
+        }
 
         rayActive = true;
     }
@@ -92,7 +96,11 @@ public class SwitchControllers : MonoBehaviour
 
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
         foreach(PulleyLocomotion pl in list)
+        {
             pl.ControllersMidpointObject = grabMidpoint;
+            pl.LeftController = grabLeft;
+            pl.RightController = grabRight;
+        }
 
         rayActive = false;
     }
