@@ -119,7 +119,7 @@ namespace EasyMeshVR.UI
                 Debug.Log("Cannot import a model with empty code!");
                 return;
             }
-
+            Debug.Log("clicked import model");
             NetworkMeshManager.instance.SynchronizeMeshImport(importModelInputField.text, ImportCallback);
         }
 

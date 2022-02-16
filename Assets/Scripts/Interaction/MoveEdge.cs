@@ -8,13 +8,13 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveEdge : MonoBehaviour
 {
-    [SerializeField] GameObject model;
-
     [SerializeField] XRGrabInteractable grabInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
+    GameObject model;
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -23,10 +23,9 @@ public class MoveEdge : MonoBehaviour
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
-    Vector3[] vertices;
 
     // Edge lookup
-    Vector3 originalPosition;
+    Edge thisedge;
     GameObject selectedEdge;
     int selectedVertex1;
     int selectedVertex2;
@@ -39,8 +38,9 @@ public class MoveEdge : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = GameObject.FindGameObjectWithTag("Model");
+        model = MeshRebuilder.instance.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
+        thisedge = GetComponent<Edge>();
 
         // Editing space objects
         editingSpace = MeshRebuilder.instance.editingSpace;
@@ -48,9 +48,6 @@ public class MoveEdge : MonoBehaviour
 
         // Get the vertex GameObject material
         materialSwap = GetComponent<MeshRenderer>();
-
-        // Copy the vertices
-        vertices = mesh.vertices;
 
         // Hover listeners to change edge color
         grabInteractable.hoverEntered.AddListener(HoverOver);
@@ -80,21 +77,11 @@ public class MoveEdge : MonoBehaviour
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        vertices = mesh.vertices;
+        MeshRebuilder.instance.vertices = mesh.vertices;
 
-        // Finds the correspoinding edge on the mesh based off the GameObject's position
-        // Using localPosition since it's a parent of the model
-        originalPosition = transform.localPosition;
-
-        foreach (var kvp in MeshRebuilder.visuals)
-        {
-            if ((kvp.Key).transform.position == originalPosition)
-            {
-                selectedEdge = kvp.Key;
-                selectedVertex1 = kvp.Value[0];
-                selectedVertex2 = kvp.Value[1];
-            }
-        }
+        selectedEdge = thisedge.gameObject;
+        selectedVertex1 = thisedge.vert1;
+        selectedVertex2 = thisedge.vert2;   
     }
 
     // Set material back to Unselected
@@ -109,9 +96,8 @@ public class MoveEdge : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
 
-        // Find the two vertices that are connected to the edge we grabbed
-        vertex1 = GameObject.Find("Vertex" + selectedVertex1.ToString());
-        vertex2 = GameObject.Find("Vertex" + selectedVertex2.ToString());
+        vertex1 = MeshRebuilder.instance.vertexObjects[selectedVertex1].gameObject;
+        vertex2 = MeshRebuilder.instance.vertexObjects[selectedVertex2].gameObject;
 
         // Parent the two vertices to the edge
         vertex1.transform.parent = selectedEdge.transform;
@@ -154,29 +140,18 @@ public class MoveEdge : MonoBehaviour
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
             // Subtracts model's offset if it's not directly on (0,0,0)
-            vertex1.transform.parent = model.transform;
-            vertex2.transform.parent = model.transform;
+            //vertex1.transform.parent = model.transform;
+            //vertex2.transform.parent = model.transform;
 
-            // vertices[selectedVertex1] = vertex1.transform.localPosition - model.transform.position;
-            // vertices[selectedVertex2] = vertex2.transform.localPosition - model.transform.position;
-
-            // --------------------------------------------------------------------------
-            // Parenting was a bust
-            // We need to do math to find the position of the edge of the edge gameobject and update the vertices to that position
-            // This might help us get started but we're gonna have to change a bit of it
-            // Especially for diagonals
-            // 
-            // Vector3 offset = transform.up * (transform.localScale.y / 2f) * -1f;
-            // Vector3 pos = transform.position + offset; //This is the position
-            // transform.position + transform.right * -transform.localScale / 2
-            // --------------------------------------------------------------------------
-
-            Vector3 offset = transform.up * (transform.localScale.y / 2f) * -1f;
-            Vector3 pos1 = transform.position + offset;
-            Vector3 pos2 = transform.position - offset;
-
-            // Calculate inverse scale vector
             Vector3 editingSpaceScale = editingSpace.transform.localScale;
+
+            // Handle divide by zero error
+            if (editingSpaceScale.x == 0 || editingSpaceScale.y == 0 || editingSpaceScale.z == 0)
+            {
+                return;
+            }
+
+            // Calculate inverse scale vector based on editing space scale
             Vector3 inverseScale = new Vector3(
                 1.0f / editingSpaceScale.x,
                 1.0f / editingSpaceScale.y,
@@ -184,18 +159,18 @@ public class MoveEdge : MonoBehaviour
             );
 
             // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
-            vertices[selectedVertex1] =
+            MeshRebuilder.instance.vertices[selectedVertex1] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex1.transform.position - editingSpace.transform.position);
 
-            vertices[selectedVertex2] =
+            MeshRebuilder.instance.vertices[selectedVertex2] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex2.transform.position - editingSpace.transform.position);
 
             UpdateMesh();
 
-            vertex1.transform.parent = selectedEdge.transform;
-            vertex2.transform.parent = selectedEdge.transform;
+            //vertex1.transform.parent = selectedEdge.transform;
+            //vertex2.transform.parent = selectedEdge.transform;
 
             // Continuously synchronize the position of the vertex without caching it until we release it
             NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, false, false);
@@ -206,41 +181,45 @@ public class MoveEdge : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     void UpdateMesh()
     {
+        Vector3[] vertices = MeshRebuilder.instance.vertices;
+
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (var kvp in MeshRebuilder.visuals)
+        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
         {
-            // Dictionary created in MeshRebuilder.cs
-            // Dictionary<GameObject, List<int>>
-            // GameObject = edge, List<int> = vertex 1 (origin), vertex 2
+            if (edge.id == thisedge.id) continue;
+
+            GameObject edgeObject = edge.gameObject;
+            int vert1 = edge.vert1;
+            int vert2 = edge.vert2;
 
             // If either of the vertex values are the same as selectedVertex1, it will update the edges that vertex is connected to
-            if (kvp.Value[0] == selectedVertex1 || kvp.Value[1] == selectedVertex1)
+            if (vert1 == selectedVertex1 || vert2 == selectedVertex1)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[kvp.Value[0]], vertices[kvp.Value[1]]);
-                kvp.Key.transform.localPosition = (vertices[kvp.Value[0]] + vertices[kvp.Value[1]]) / 2;
-                kvp.Key.transform.localScale = new Vector3(kvp.Key.transform.localScale.x, edgeDistance, kvp.Key.transform.localScale.z);
+                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
+                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
+                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
 
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                kvp.Key.transform.LookAt(vertex1.transform, Vector3.up);
-                kvp.Key.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                edgeObject.transform.LookAt(vertex1.transform, Vector3.up);
+                edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
 
             // If either of the vertex values are the same as selectedVertex2, it will update the edges that vertex is connected to
-            if (kvp.Value[0] == selectedVertex2 || kvp.Value[1] == selectedVertex2)
+            if (vert1 == selectedVertex2 || vert2 == selectedVertex2)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[kvp.Value[0]], vertices[kvp.Value[1]]);
-                kvp.Key.transform.localPosition = (vertices[kvp.Value[0]] + vertices[kvp.Value[1]]) / 2;
-                kvp.Key.transform.localScale = new Vector3(kvp.Key.transform.localScale.x, edgeDistance, kvp.Key.transform.localScale.z);
+                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
+                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
+                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
 
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                kvp.Key.transform.LookAt(vertex2.transform, Vector3.up);
-                kvp.Key.transform.rotation *= Quaternion.Euler(90, 0, 0);
+                edgeObject.transform.LookAt(vertex2.transform, Vector3.up);
+                edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
         }
     }
