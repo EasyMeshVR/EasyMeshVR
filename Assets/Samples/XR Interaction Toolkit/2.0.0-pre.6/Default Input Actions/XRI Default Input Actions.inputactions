@@ -1186,6 +1186,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "LGrabGrip",
+                    "type": "Button",
+                    "id": "6ab619cd-9200-47a4-a40e-19252c37b7f6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RGrabGrip",
+                    "type": "Button",
+                    "id": "340f9272-b592-47e6-8658-c599479e7f4d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1252,6 +1270,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "FlipYLock",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "260f6920-786e-498f-b367-6453861bef94",
+                    "path": "<XRController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "LGrabGrip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7d6a4c87-0543-4e22-9a9b-585125d06f85",
+                    "path": "<ValveIndexController>{LeftHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LGrabGrip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ce603d4a-dc03-49d1-92ab-2f998b215199",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>{LeftHand}/grippressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LGrabGrip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1c9f2062-ecfc-4a26-9182-fd298d209706",
+                    "path": "<XRController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "RGrabGrip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "44148440-aeeb-4d32-bf1a-c18e3423679a",
+                    "path": "<ValveIndexController>{RightHand}/gripPressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RGrabGrip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9ec96de5-17fa-4df7-926c-701e7255b459",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>{RightHand}/grippressed",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RGrabGrip",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
