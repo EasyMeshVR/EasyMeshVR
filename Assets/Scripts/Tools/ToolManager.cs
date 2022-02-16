@@ -20,6 +20,13 @@ public class ToolManager : MonoBehaviour
 
      void Start()
     {
+        checkImport();
+
+        DisableLock();
+    }
+
+    void checkImport()
+    {
         GameObject [] vertices = GameObject.FindGameObjectsWithTag("Vertex");
         GameObject [] edges = GameObject.FindGameObjectsWithTag("Edge");
 
@@ -30,15 +37,13 @@ public class ToolManager : MonoBehaviour
         }
         foreach(GameObject e in edges)
             edgeGrab.Add(e.GetComponent<XRGrabInteractable>());
-
-        DisableLock();
     }
 
     // For now use update to check but when this gets hooked up to the UI another script will call the functions
     void Update()
     {
         // Commented these out for now, it was throwing continuous errors on model import
-        /*if(LockTool)
+        if(LockTool)
             EnableLock();
             
         if(!LockTool)
@@ -54,7 +59,7 @@ public class ToolManager : MonoBehaviour
             DisableEdge();
 
         if(!grabVertex)
-            DisableVertex();*/
+            DisableVertex();
     }
 
     void EnableLock()
@@ -73,24 +78,28 @@ public class ToolManager : MonoBehaviour
 
     void EnableVertex()
     {
+        checkImport();
         foreach(XRGrabInteractable v in vertexGrab)
             v.enabled = true;
     }
 
     void DisableVertex()
     {
+        checkImport();
         foreach(XRGrabInteractable v in vertexGrab)
             v.enabled = false;
     }
 
     void DisableEdge()
     {   
+        checkImport();
         foreach(XRGrabInteractable e in edgeGrab)
             e.enabled = false;
     }
 
     void EnableEdge()
     {
+        checkImport();
         foreach(XRGrabInteractable e in edgeGrab)
             e.enabled = true;
     }
