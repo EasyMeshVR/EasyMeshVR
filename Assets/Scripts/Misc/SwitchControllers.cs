@@ -5,27 +5,23 @@ using System.Linq;
 using UnityEngine.InputSystem;
 
 
-// Switch right hand to ray cast to interact w/ menu
+// Switch to either type of control
+// If on grab, switch to ray for menu
 public class SwitchControllers : MonoBehaviour
 {
-
     [SerializeField] InputActionReference startButton;
-    GameObject rayRight;
+    [SerializeField] GameObject rayLeft;
+    [SerializeField] GameObject rayRight;
+    [SerializeField] GameObject grabLeft;
+    [SerializeField] GameObject grabRight;
 
-    GameObject grabRight;
+    [SerializeField] ControllersMidpoint rayMidpoint;
+    [SerializeField] ControllersMidpoint grabMidpoint;
 
-    List<GameObject> onlyInactive;
+    
+
     public bool menuOpen = false;
-    void Start()
-    {
-        // This is the only way to get inactive gameobjects apparently
-        onlyInactive =   GameObject.FindObjectsOfType<GameObject>(true).Where(sr => !sr.gameObject.activeInHierarchy &&  sr.CompareTag("RightController")).ToList();   
-        foreach (GameObject child in onlyInactive)
-            if (child.CompareTag("RightController"))
-                rayRight = child;
-        
-        grabRight = GameObject.Find("RightRadius");
-    }
+    public bool rayActive = false;
 
     void Awake()
     {
@@ -39,26 +35,72 @@ public class SwitchControllers : MonoBehaviour
         startButton.action.canceled -= startButtonEnd;;
     }
 
+    // only change right hand since menu is still on left
     void startButtonAction(InputAction.CallbackContext context)
     {
-        if(!menuOpen)
+        // Don't switch if player is already using raycast
+        if(!rayActive)
         {
-            rayRight.SetActive(true);
-            grabRight.SetActive(false);
-            menuOpen = true;
-            return;
-        }
-        else
-        {
-            rayRight.SetActive(false);
-            grabRight.SetActive(true);
-            menuOpen = false;
-            return;
+            if(!menuOpen)
+            {
+                rayRight.SetActive(true);
+                grabRight.SetActive(false);
+                menuOpen = true;
+                return;
+            }
+            else
+            {
+                rayRight.SetActive(false);
+                grabRight.SetActive(true);
+                menuOpen = false;
+                return;
+            }
         }
     }
 
     void startButtonEnd(InputAction.CallbackContext context)
     {
         
+    }
+
+    // For enabling either type of control
+    void switchToRay()
+    {
+        rayLeft.SetActive(true);
+        rayRight.SetActive(true);
+
+        grabLeft.SetActive(false);
+        grabRight.SetActive(false);
+
+        // im not sure if there are going to me multiple of these in a scene at any point but if there are then this will work
+        PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
+        foreach(PulleyLocomotion pl in list)
+            pl.ControllersMidpointObject = rayMidpoint;
+
+        rayActive = true;
+    }
+
+    
+    
+      void switchtoGrab()
+    {
+        rayLeft.SetActive(false);
+        rayRight.SetActive(false);
+
+        grabLeft.SetActive(true);
+        grabRight.SetActive(true);
+
+        PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
+        foreach(PulleyLocomotion pl in list)
+            pl.ControllersMidpointObject = grabMidpoint;
+
+        rayActive = false;
+    }
+
+    // just for testing
+    void Update()
+    {
+        if(rayActive)
+            switchToRay();
     }
 }

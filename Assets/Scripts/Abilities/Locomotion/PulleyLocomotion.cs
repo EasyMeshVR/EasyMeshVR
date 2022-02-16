@@ -16,7 +16,7 @@ public class PulleyLocomotion : MonoBehaviour
     public bool isGrippedL = false;
     public bool isGrippedR = false;
 
-    [SerializeField] private ControllersMidpoint ControllersMidpointObject;
+    [SerializeField] public ControllersMidpoint ControllersMidpointObject;
     [SerializeField] private Transform EditingSpaceTF;
     [SerializeField] private bool lockRotationAroundYAxis = true;
 
