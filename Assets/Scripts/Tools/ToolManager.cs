@@ -37,7 +37,8 @@ public class ToolManager : MonoBehaviour
     // For now use update to check but when this gets hooked up to the UI another script will call the functions
     void Update()
     {
-        if(LockTool)
+        // Commented these out for now, it was throwing continuous errors on model import
+        /*if(LockTool)
             EnableLock();
             
         if(!LockTool)
@@ -53,7 +54,7 @@ public class ToolManager : MonoBehaviour
             DisableEdge();
 
         if(!grabVertex)
-            DisableVertex();
+            DisableVertex();*/
     }
 
     void EnableLock()

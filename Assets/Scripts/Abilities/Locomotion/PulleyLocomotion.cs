@@ -62,9 +62,6 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void LGrabStart(InputAction.CallbackContext context)
     {
-        if (isMovingVertex)
-            return;
-
         isGrippedL = true;
         if (isGrippedR) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
@@ -74,9 +71,6 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void RGrabStart(InputAction.CallbackContext context)
     {
-        if (isMovingVertex)
-            return;
-
         isGrippedR = true;
         if (isGrippedL) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;

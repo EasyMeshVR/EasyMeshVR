@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,9 +53,6 @@
     <UnityVersion>2020.3.20f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\HandCollider.cs" />
     <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
@@ -68,9 +65,12 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layout.cs" />
+    <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
+    <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
     <Compile Include="Assets\Scripts\Misc\KeyboardOffset.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
+    <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
@@ -81,6 +81,7 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Placement.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\OLDTransRotateScale.cs" />
     <Compile Include="Assets\Scripts\UI\GeneralOptionsMenu.cs" />
+    <Compile Include="Assets\Scripts\Interaction\MoveEdge.cs" />
     <Compile Include="Assets\Scripts\Networking\Launcher.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenuManager.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Mallet.cs" />
@@ -115,8 +116,6 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\Interaction\MoveEdge.cs" />
-    <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
