@@ -168,8 +168,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0.0371, y: 0.01853}
+  m_AnchoredPosition: {x: -0, y: 0}
+  m_SizeDelta: {x: 0.041006, y: 0.022804}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1691666782749389874
 CanvasRenderer:
@@ -226,8 +226,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 0.008
-  m_fontSizeBase: 0.008
+  m_fontSize: 0.01
+  m_fontSizeBase: 0.01
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -919,7 +919,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.14357549, y: -0.156065}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.343515}
   m_SizeDelta: {x: 0.28715098, y: 0.18759}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9020192814405270841
@@ -1299,7 +1299,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2621626966823831501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1350,7 +1350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeMenuPanel: {fileID: 5745084498275745268}
   activeMainOption: {fileID: 841537452826059644}
-  toolsPanel: {fileID: 0}
+  toolsPanel: {fileID: 1297532810859213568}
   generalOptionsMenuPanel: {fileID: 6086802594943246960}
   settingsPanel: {fileID: 1175255606821270360}
   mainMenuOption: {fileID: 841537452826059644}
@@ -3161,8 +3161,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.11502, y: 0.1073}
-  m_SizeDelta: {x: 0.03845, y: 0.02013}
+  m_AnchoredPosition: {x: 0.11444, y: 0.10775706}
+  m_SizeDelta: {x: 0.042693, y: 0.024066}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &998496894419215368
 CanvasRenderer:
@@ -4046,7 +4046,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5826133750972679397}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -4154,7 +4154,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &6279606815698643954
 GameObject:
   m_ObjectHideFlags: 0
@@ -5109,8 +5109,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.1435633, y: -0.156065}
-  m_SizeDelta: {x: 0.2871266, y: 0.18759}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.343515}
+  m_SizeDelta: {x: 0.28715098, y: 0.18759}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5678077064187403121
 CanvasRenderer:
@@ -7059,7 +7059,7 @@ PrefabInstance:
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: ToolsButton
+      value: AbilitiesButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
