@@ -435,7 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 1
+  LockTool: 0
   grabVertex: 1
   grabEdge: 0
 --- !u!4 &299127985
