@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
+  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -446,7 +446,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 299127983}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -472,6 +472,8 @@ MonoBehaviour:
   grabRight: {fileID: 2059701652}
   rayMidpoint: {fileID: 457441225}
   grabMidpoint: {fileID: 573060419}
+  activeLeftControllerTransform: {fileID: 1282352284}
+  activeRightControllerTransform: {fileID: 2059701653}
   menuOpen: 0
   rayActive: 0
 --- !u!114 &457441225 stripped
@@ -2375,7 +2377,7 @@ PrefabInstance:
     - target: {fileID: 6885944694309307564, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_TagString
-      value: RightController
+      value: Untagged
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694309307568, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
@@ -2563,6 +2565,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &6885944694426427364 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6885944693598627270, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6885944694426427361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8680544116246475858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2576,9 +2584,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
+      propertyPath: head
+      value: 
+      objectReference: {fileID: 6885944694426427364}
+    - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
       propertyPath: XROrigin
       value: 
       objectReference: {fileID: 6885944694426427362}
+    - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: leftHandController
+      value: 
+      objectReference: {fileID: 1282352283}
+    - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: rightHandController
+      value: 
+      objectReference: {fileID: 2059701652}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: spawnPoints.Array.data[0]

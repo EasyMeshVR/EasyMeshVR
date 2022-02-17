@@ -9,6 +9,8 @@ using UnityEngine.InputSystem;
 // If on grab, switch to ray for menu
 public class SwitchControllers : MonoBehaviour
 {
+    public static SwitchControllers instance { get; private set; }
+
     [SerializeField] InputActionReference startButton;
     [SerializeField] GameObject rayLeft;
     [SerializeField] GameObject rayRight;
@@ -18,13 +20,18 @@ public class SwitchControllers : MonoBehaviour
     [SerializeField] ControllersMidpoint rayMidpoint;
     [SerializeField] ControllersMidpoint grabMidpoint;
 
-    
+    [SerializeField]
+    public Transform activeLeftControllerTransform;
+
+    [SerializeField]
+    public Transform activeRightControllerTransform;
 
     public bool menuOpen = false;
     public bool rayActive = false;
 
     void Awake()
     {
+        instance = this;
         startButton.action.started += startButtonAction;
         startButton.action.canceled += startButtonEnd;;
     }
@@ -46,12 +53,14 @@ public class SwitchControllers : MonoBehaviour
                 rayRight.SetActive(true);
                 grabRight.SetActive(false);
                 menuOpen = true;
+                activeRightControllerTransform = rayRight.transform;
                 return;
             }
             else
             {
                 rayRight.SetActive(false);
                 grabRight.SetActive(true);
+                activeRightControllerTransform = grabRight.transform;
                 menuOpen = false;
                 return;
             }
@@ -71,6 +80,9 @@ public class SwitchControllers : MonoBehaviour
 
         grabLeft.SetActive(false);
         grabRight.SetActive(false);
+
+        activeLeftControllerTransform = rayLeft.transform;
+        activeRightControllerTransform = rayRight.transform;
 
         // im not sure if there are going to be multiple of these in a scene at any point but if there are then this should work
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
@@ -93,6 +105,9 @@ public class SwitchControllers : MonoBehaviour
 
         grabLeft.SetActive(true);
         grabRight.SetActive(true);
+
+        activeLeftControllerTransform = grabLeft.transform;
+        activeRightControllerTransform = grabRight.transform;
 
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
         foreach(PulleyLocomotion pl in list)

@@ -6,6 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using ExitGames.Client.Photon;
 using EasyMeshVR.Core;
+using EasyMeshVR.Multiplayer;
 
 public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 {
@@ -232,6 +233,12 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                 HandleMeshVertexPullEvent(data);
                 break;
             }
+            case Constants.MESH_EDGE_PULL_EVENT_CODE:
+            {
+                object[] data = (object[])photonEvent.CustomData;
+                HandleMeshEdgePullEvent(data);
+                break;
+            }
             default:
                 break;
         }
@@ -248,5 +255,21 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         vertexObj.isHeldByOther = !released;
         vertices[index] = vertex;
         moveVertices.UpdateMesh(index);
+    }
+
+    private void HandleMeshEdgePullEvent(object[] data)
+    {
+        EdgePullEvent edgeEvent = EdgePullEvent.DeserializeEvent(data);
+
+        Edge edgeObj = edgeObjects[edgeEvent.id];
+        Vertex vert1Obj = vertexObjects[edgeEvent.vert1];
+        Vertex vert2Obj = vertexObjects[edgeEvent.vert2];
+        MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+        edgeObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = !edgeEvent.released;
+        vert1Obj.transform.localPosition = edgeEvent.vertex1Pos;
+        vert2Obj.transform.localPosition = edgeEvent.vertex2Pos;
+        vertices[edgeEvent.vert1] = edgeEvent.vertex1Pos;
+        vertices[edgeEvent.vert2] = edgeEvent.vertex2Pos;
+        moveEdge.UpdateMesh(edgeEvent.id, edgeEvent.vert1, edgeEvent.vert2, false);
     }
 }

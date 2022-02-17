@@ -7,4 +7,5 @@ public class Edge : MonoBehaviour
     public int id;
     public int vert1;
     public int vert2;
+    public bool isHeldByOther;
 }

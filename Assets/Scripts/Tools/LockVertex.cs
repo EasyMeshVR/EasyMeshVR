@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction;
 using UnityEngine.XR.Interaction.Toolkit;
 
 using UnityEngine.InputSystem;
+using EasyMeshVR.Core;
 
 
 public class LockVertex : MonoBehaviour
@@ -138,7 +139,7 @@ public class LockVertex : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "GameController")
+        if (other.CompareTag(Constants.GAME_CONTROLLER_TAG))
             inRadius = true;
     }
     void OnTriggerExit(Collider other)
