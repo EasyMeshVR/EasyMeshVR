@@ -15,9 +15,6 @@ namespace EasyMeshVR.Multiplayer
 
         public static NetworkPlayerManager instance { get; private set; }
 
-        [SerializeField]
-        public Transform head;
-
         #endregion
 
         #region Private Fields

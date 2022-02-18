@@ -472,8 +472,8 @@ MonoBehaviour:
   grabRight: {fileID: 2059701652}
   rayMidpoint: {fileID: 457441225}
   grabMidpoint: {fileID: 573060419}
-  activeLeftControllerTransform: {fileID: 1282352284}
-  activeRightControllerTransform: {fileID: 2059701653}
+  activeLeftController: {fileID: 1282352283}
+  activeRightController: {fileID: 2059701652}
   menuOpen: 0
   rayActive: 0
 --- !u!114 &457441225 stripped
@@ -1912,7 +1912,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063562609}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1.96}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1470187135}
@@ -2282,6 +2282,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: XR Origin
       objectReference: {fileID: 0}
+    - target: {fileID: 6885944694062799482, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6885944694062799487, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_RootOrder
@@ -2565,9 +2570,9 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &6885944694426427364 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6885944693598627270, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+--- !u!1 &6885944694426427364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6885944693598627271, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}

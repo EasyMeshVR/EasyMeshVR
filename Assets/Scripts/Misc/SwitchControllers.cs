@@ -21,10 +21,10 @@ public class SwitchControllers : MonoBehaviour
     [SerializeField] ControllersMidpoint grabMidpoint;
 
     [SerializeField]
-    public Transform activeLeftControllerTransform;
+    public GameObject activeLeftController;
 
     [SerializeField]
-    public Transform activeRightControllerTransform;
+    public GameObject activeRightController;
 
     public bool menuOpen = false;
     public bool rayActive = false;
@@ -53,14 +53,14 @@ public class SwitchControllers : MonoBehaviour
                 rayRight.SetActive(true);
                 grabRight.SetActive(false);
                 menuOpen = true;
-                activeRightControllerTransform = rayRight.transform;
+                activeRightController = rayRight;
                 return;
             }
             else
             {
                 rayRight.SetActive(false);
                 grabRight.SetActive(true);
-                activeRightControllerTransform = grabRight.transform;
+                activeRightController = grabRight;
                 menuOpen = false;
                 return;
             }
@@ -81,8 +81,8 @@ public class SwitchControllers : MonoBehaviour
         grabLeft.SetActive(false);
         grabRight.SetActive(false);
 
-        activeLeftControllerTransform = rayLeft.transform;
-        activeRightControllerTransform = rayRight.transform;
+        activeLeftController = rayLeft;
+        activeRightController = rayRight;
 
         // im not sure if there are going to be multiple of these in a scene at any point but if there are then this should work
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
@@ -106,8 +106,8 @@ public class SwitchControllers : MonoBehaviour
         grabLeft.SetActive(true);
         grabRight.SetActive(true);
 
-        activeLeftControllerTransform = grabLeft.transform;
-        activeRightControllerTransform = grabRight.transform;
+        activeLeftController = grabLeft;
+        activeRightController = grabRight;
 
         PulleyLocomotion [] list = GameObject.FindObjectsOfType<PulleyLocomotion>(); 
         foreach(PulleyLocomotion pl in list)
