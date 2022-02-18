@@ -270,6 +270,7 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         vert2Obj.transform.localPosition = edgeEvent.vertex2Pos;
         vertices[edgeEvent.vert1] = edgeEvent.vertex1Pos;
         vertices[edgeEvent.vert2] = edgeEvent.vertex2Pos;
+        moveEdge.SetActiveEdges(edgeObj, edgeEvent.released);
         moveEdge.UpdateMesh(edgeEvent.id, edgeEvent.vert1, edgeEvent.vert2, false);
     }
 }

@@ -221,7 +221,7 @@ public class MoveEdge : MonoBehaviour
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
-            currEdge.GetComponent<XRGrabInteractable>().enabled = false;
+            currEdge.GetComponent<XRGrabInteractable>().enabled = active;
         }
     }
 
