@@ -242,11 +242,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41059e2c70f4f0245a30fc0f5fa02ae2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 0}
   grabInteractable: {fileID: -3022987318446701925}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
+  locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
 --- !u!114 &-2442381604478648354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,4 +262,4 @@ MonoBehaviour:
   id: 0
   vert1: 0
   vert2: 0
-  edgeObject: {fileID: 0}
+  isHeldByOther: 0

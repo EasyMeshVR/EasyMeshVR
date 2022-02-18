@@ -13,6 +13,7 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+    [SerializeField] Material locked;     // red
 
     GameObject model;
 
@@ -22,7 +23,7 @@ public class MoveEdge : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
-    MeshRenderer materialSwap;
+    public MeshRenderer materialSwap;
 
     // Edge lookup
     Edge thisedge;
@@ -70,7 +71,7 @@ public class MoveEdge : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
         materialSwap.material = hovered;
@@ -82,14 +83,19 @@ public class MoveEdge : MonoBehaviour
     // Set material back to Unselected
     void HoverExit(HoverExitEventArgs arg0)
     {
+        if (thisedge.locked)
+            return;
+
         materialSwap.material = unselected;
     }
 
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
+
+        SetActiveEdges(thisedge, false);
 
         vertex1 = MeshRebuilder.instance.vertexObjects[thisedge.vert1];
         vertex2 = MeshRebuilder.instance.vertexObjects[thisedge.vert2];
@@ -110,6 +116,11 @@ public class MoveEdge : MonoBehaviour
     // Stop updating the mesh data
     void GrabReleased(SelectExitEventArgs arg0)
     {
+        if (thisedge.locked)
+            return;
+
+        SetActiveEdges(thisedge, true);
+
         materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
@@ -144,7 +155,7 @@ public class MoveEdge : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace || thisedge.isHeldByOther)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.isHeldByOther || thisedge.locked)
         {
             grabInteractable.enabled = false;
             return;
@@ -199,6 +210,18 @@ public class MoveEdge : MonoBehaviour
             };
 
             NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
+        }
+    }
+
+    public void SetActiveEdges(Edge edge, bool active)
+    {
+        foreach (Edge currEdge in MeshRebuilder.instance.edgeObjects)
+        {
+            if (currEdge.id == edge.id) continue;
+
+            currEdge.locked = !active;
+            currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
+            currEdge.GetComponent<XRGrabInteractable>().enabled = false;
         }
     }
 
