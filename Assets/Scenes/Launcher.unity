@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
+  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6392,7 +6392,8 @@ MonoBehaviour:
   isGrippedL: 0
   isGrippedR: 0
   ControllersMidpointObject: {fileID: 1007634901}
-  EditingSpaceTF: {fileID: 2146458001}
+  LeftController: {fileID: 0}
+  RightController: {fileID: 0}
   lockRotationAroundYAxis: 0
 --- !u!4 &2146458001
 Transform:
