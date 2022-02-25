@@ -190,7 +190,8 @@ public class MoveEdge : MonoBehaviour
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
         foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
         {
-            if (edge.id == thisedge.id) continue;
+            if (edge.id == thisedge.id)
+                continue;
 
             GameObject edgeObject = edge.gameObject;
             int vert1 = edge.vert1;

@@ -96,23 +96,23 @@ public class LockVertex : MonoBehaviour
         if(isEnabled && !pulleyLocomotion.isGrippedL)
         {
             if(!isLocked && hover)
-                {
-                    //moveVertices.enabled = true;
+            {
+                //moveVertices.enabled = true;
 
-                    // Disabling the grab interactable also disables the hovering,
-                    // I think the only way to allow the hovering would be to implement a hoverInteractable
-                    // script like the GrabInteractable one that is given but that seems like too much work
-                    grabInteractable.enabled = false;
-                    materialSwap.material = locked;
+                // Disabling the grab interactable also disables the hovering,
+                // I think the only way to allow the hovering would be to implement a hoverInteractable
+                // script like the GrabInteractable one that is given but that seems like too much work
+                grabInteractable.enabled = false;
+                materialSwap.material = locked;
 
-                    // This was another way to disable grabbing that I was trying that I forgot about
-                    // but I'm pretty sure it does the same thing as disabling grabInteractable
+                // This was another way to disable grabbing that I was trying that I forgot about
+                // but I'm pretty sure it does the same thing as disabling grabInteractable
                     
-                    //gameObject.layer = 2;
+                //gameObject.layer = 2;
 
-                    isLocked = true;
-                    return;
-                }
+                isLocked = true;
+                return;
+            }
         }
     }
 

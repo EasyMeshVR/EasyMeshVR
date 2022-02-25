@@ -15,13 +15,12 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-    GameObject model;
-
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
 
     // Mesh data
+    GameObject model;
     Mesh mesh;
     MeshRenderer materialSwap;
 
@@ -65,7 +64,7 @@ public class MoveVertices : MonoBehaviour
     }
 
     // Get original position of Vertex before moving
-    // Set material to Selected (change name to hover)
+    // Set material to Selected
     void HoverOver(HoverEnterEventArgs arg0)
     {
         if (pulleyLocomotion.isMovingEditingSpace)

@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -8109944905895446732}
   - component: {fileID: -5656790495856781621}
   - component: {fileID: -8713780636455507863}
+  - component: {fileID: 502973961573988433}
   m_Layer: 0
   m_Name: Vertex
   m_TagString: Vertex
@@ -243,7 +244,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a7d78e45826a6a42b4c3e9e8c31d7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  model: {fileID: 0}
   grabInteractable: {fileID: 9077015157397384143}
   lockVertex: {fileID: -8713780636455507863}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
@@ -285,3 +285,23 @@ MonoBehaviour:
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   isLocked: 0
+--- !u!114 &502973961573988433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e5cb7db9aa61b4593914acd9ae65ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabInteractable: {fileID: 9077015157397384143}
+  primaryButtonRef: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  isEnabled: 0
+  merge: {fileID: 2100000, guid: aba1d672e8ef9df418e8bde84502f25e, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}

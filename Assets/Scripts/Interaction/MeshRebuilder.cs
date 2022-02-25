@@ -19,23 +19,26 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     public GameObject vertex;
     public GameObject edge;
 
+    GameObject newVertex;
+    GameObject newEdge;
+
     // Mesh data
     Mesh mesh;
     public Vector3[] vertices;
     Vector3 vertexPosition;
-    int[] triangles;
+    public int[] triangles;
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
-    //public static Dictionary<GameObject, List<int>> visuals;
-    public List<Edge> edgeObjects;
+    // public static Dictionary<GameObject, List<int>> visuals;
     public List<Vertex> vertexObjects;
+    public List<Edge> edgeObjects;
 
     // Setup
     public void Start()
     {
-        edgeObjects = new List<Edge>();
         vertexObjects = new List<Vertex>();
+        edgeObjects = new List<Edge>();
         instance = this;
         
         // For importing in real time we would need the script to get the model automatically
@@ -54,13 +57,11 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
     void OnEnable()
     {
-
         PhotonNetwork.AddCallbackTarget(this);
     }
 
     void OnDisable()
     {
-
         PhotonNetwork.RemoveCallbackTarget(this);
     }
 
@@ -147,17 +148,20 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     // Actually create the vertex and edge GameObject interactables
     void CreateVisuals()
     {
+        int edgeCount = 0;
+
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
-            GameObject newVertex = Instantiate(vertex, model.transform);
+            newVertex = Instantiate(vertex, model.transform);
             newVertex.transform.localPosition = vertices[i];
             newVertex.name = "Vertex" + i.ToString();
 
-            // Set the id of the Vertex component to be the index in the vertices array
+            // Set the id of the Vertex component to be the index in the vertices array (Vertex.cs script)
             Vertex vertexObj = newVertex.GetComponent<Vertex>();
             vertexObj.id = i;
+            vertexObj.thisVertex = newVertex;
             vertexObjects.Add(vertexObj);
 
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
@@ -194,7 +198,8 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                     continue;
 
                 // Same as vertex, create a new edge object and set its parent
-                GameObject newEdge = Instantiate(edge, model.transform);
+                newEdge = Instantiate(edge, model.transform);
+                newEdge.name = "Edge" + (i + edgeCount++).ToString();
 
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
@@ -205,13 +210,32 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                 newEdge.transform.LookAt(newVertex.transform, Vector3.up);
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
 
-                // Add edge and it's connecting vertices to a dictionary reference for use in other scripts
+                // Add edge id and it's connecting vertices ids to the Edge component (Edge.cs script)
                 Edge edgeComponent = newEdge.GetComponent<Edge>();
                 edgeComponent.id = edgeObjects.Count();
                 edgeComponent.vert1 = i;
                 edgeComponent.vert2 = k;
+                edgeComponent.thisEdge = newEdge;
                 edgeObjects.Add(edgeComponent);
             }
+
+            // I'd rather not do this cause now I have to loop through every edge
+            // If there's a way to get the Vertex.cs component from the second vertex (edgeComponent.vert2 or k),
+            //    then we can set the edge ids inside the above foreach loop
+            //    * I can explain this better in person if someone's trying to understand
+            // If not, try to move it out of the big for loop as this will be looping
+            //    through the edges for every vertex that's created
+            // It's fine for a cube obv, but not for big models
+            // This script is already slow enough as it is
+
+            // Add Edge id to Vertex component (used in Merge tool)
+            foreach (Edge edge in edgeObjects)
+            {
+                if (edge.vert1 == i || edge.vert2 == i)
+                    vertexObj.connectedEdges.Add(edge);
+            }
+
+            edgeCount--;
         }
     }
 

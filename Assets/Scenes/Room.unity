@@ -441,6 +441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LockTool: 0
+  MergeTool: 1
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
