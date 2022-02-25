@@ -8,6 +8,9 @@ public class ResizeRadius : MonoBehaviour
     [SerializeField] private ControllersMidpoint ControllersMidpointObject;
     [SerializeField] SphereCollider sphereCollider;
 
+    [SerializeField] GameObject sphereVisual;
+
+
     Transform editingSpace;
 
     void Start()
@@ -24,6 +27,12 @@ public class ResizeRadius : MonoBehaviour
         if(.25f * editingSpace.localScale.sqrMagnitude <=  scale.sqrMagnitude)
             return;
 
-        sphereCollider.radius = scale.sqrMagnitude;
+        else
+        {
+            sphereCollider.radius = scale.sqrMagnitude;
+            sphereVisual.transform.localScale = scale;
+            return;
+        }
+
     }
 }

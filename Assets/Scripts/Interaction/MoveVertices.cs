@@ -21,6 +21,8 @@ public class MoveVertices : MonoBehaviour
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
 
+    public bool isLocked;
+
     // Mesh data
     Mesh mesh;
     MeshRenderer materialSwap;
@@ -111,7 +113,7 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked || thisvertex.isHeldByOther)
+        if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
         {
             grabInteractable.enabled = false;
             return;

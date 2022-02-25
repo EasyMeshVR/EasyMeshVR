@@ -35,7 +35,7 @@ public class ToolManager : MonoBehaviour
 
         foreach(GameObject vertex in vertices)
         {
-            lockScripts.Add(vertex.GetComponent<LockVertex>());
+            //lockScripts.Add(vertex.GetComponent<LockVertex>());
             vertexGrab.Add(vertex.GetComponent<XRGrabInteractable>());
         }
         foreach(GameObject e in edges)
@@ -67,16 +67,16 @@ public class ToolManager : MonoBehaviour
 
     void EnableLock()
     {
-        foreach(LockVertex script in lockScripts)
+       // foreach(LockVertex script in lockScripts)
            // script.enabled = true;
-           script.isEnabled = true;
+         // script.isEnabled = true;
     }
 
     void DisableLock()
     {
-        foreach(LockVertex script in lockScripts)
+       // foreach(LockVertex script in lockScripts)
             //script.enabled = false;
-            script.isEnabled = false;
+          //  script.isEnabled = false;
     }
 
     void EnableVertex()
