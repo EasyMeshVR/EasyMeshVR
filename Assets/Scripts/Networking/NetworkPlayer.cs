@@ -39,10 +39,9 @@ namespace EasyMeshVR.Multiplayer
             photonView = GetComponent<PhotonView>();
             mainCameraTransform = Camera.main.transform;
 
-            XROrigin origin = FindObjectOfType<XROrigin>();
-            headOrigin = origin.transform.Find("Camera Offset/Main Camera");
-            leftHandOrigin = origin.transform.Find("Camera Offset/LeftHand Controller");
-            rightHandOrigin = origin.transform.Find("Camera Offset/RightHand Controller");
+            headOrigin = mainCameraTransform;
+            leftHandOrigin = SwitchControllers.instance.activeLeftController.transform;
+            rightHandOrigin = SwitchControllers.instance.activeRightController.transform;
 
             editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
 
@@ -77,6 +76,9 @@ namespace EasyMeshVR.Multiplayer
         {
             if (photonView.IsMine)
             {
+                leftHandOrigin = SwitchControllers.instance.activeLeftController.transform;
+                rightHandOrigin = SwitchControllers.instance.activeRightController.transform;
+
                 MapPosition(head, headOrigin);
                 MapPosition(leftHand, leftHandOrigin);
                 MapPosition(rightHand, rightHandOrigin);

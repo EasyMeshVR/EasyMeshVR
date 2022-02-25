@@ -66,11 +66,9 @@
     <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layout.cs" />
     <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
-    <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
     <Compile Include="Assets\Scripts\Misc\KeyboardOffset.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
-    <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
@@ -116,6 +114,9 @@
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
+    <Compile Include="Assets\Scripts\Networking\NetworkEvents.cs" />
+    <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
+    <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
