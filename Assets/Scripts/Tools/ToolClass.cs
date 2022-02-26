@@ -82,4 +82,14 @@ public class ToolClass : MonoBehaviour
     {
         //print("secondary parent");
     }
+
+    public void Enable()
+    {
+        isEnabled = true;
+    }
+
+    public void Disable()
+    {
+        isEnabled = false;
+    }
 }

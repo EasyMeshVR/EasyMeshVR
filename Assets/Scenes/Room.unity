@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -435,7 +435,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 1
+  LockTool: 0
+  lockScript: {fileID: 2059701659}
   grabVertex: 1
   grabEdge: 1
 --- !u!4 &299127985
@@ -2095,7 +2096,7 @@ MonoBehaviour:
     type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
-  isEnabled: 1
+  isEnabled: 0
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
@@ -2104,7 +2105,6 @@ MonoBehaviour:
   editingSpace: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
-  isEnabled: 1
   inRadius: 0
   leftSphere: {fileID: 0}
   rightSphere: {fileID: 0}

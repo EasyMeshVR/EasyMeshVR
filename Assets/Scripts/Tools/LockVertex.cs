@@ -21,7 +21,7 @@ public class LockVertex : ToolClass
     public GameObject currentVertex;
     public GameObject currentEdge;
 
-    public bool isEnabled = true;
+    //new public bool isEnabled = false;
     public bool inRadius = false;
 
     public SphereCollider leftSphere;
