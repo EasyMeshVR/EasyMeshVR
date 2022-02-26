@@ -13,7 +13,7 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
-    [SerializeField] Material locked;     // red
+    [SerializeField] Material locked;     // gray with reduced opacity
 
     GameObject model;
 
