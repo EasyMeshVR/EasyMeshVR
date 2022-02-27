@@ -1362,6 +1362,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Start Button",
+                    "type": "Button",
+                    "id": "b8537457-9fdf-4ec5-a6ee-3668abdf6a69",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1406,6 +1415,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Use Tool Primary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77fe05f8-8958-4c69-a08c-6530de7aa321",
+                    "path": "<ValveIndexController>{LeftHand}/system",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Start Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e5047692-930f-4bea-8b7c-4eeebd9d330a",
+                    "path": "<OculusTouchController>{LeftHand}/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Start Button",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "648b117b-2b8b-45b2-8251-9c6d6268925f",
+                    "path": "<ViveController>{LeftHand}/menu",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Start Button",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

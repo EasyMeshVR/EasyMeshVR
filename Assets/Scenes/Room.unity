@@ -465,7 +465,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19bad63c92130a3468b86263a695ae43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startButton: {fileID: -7613458357799502818, guid: c348712bda248c246b8c49b3db54643f,
+  startButton: {fileID: -2756610235483516241, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
   rayLeft: {fileID: 1469689269}
   rayRight: {fileID: 1647071323}
@@ -473,8 +473,8 @@ MonoBehaviour:
   grabRight: {fileID: 2059701652}
   rayMidpoint: {fileID: 457441225}
   grabMidpoint: {fileID: 573060419}
-  activeLeftController: {fileID: 1282352283}
-  activeRightController: {fileID: 2059701652}
+  activeLeftController: {fileID: 0}
+  activeRightController: {fileID: 0}
   menuOpen: 0
   rayActive: 0
 --- !u!114 &457441225 stripped
@@ -983,7 +983,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1282352283}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2c32862f6c5a2a42bd557a5bed4d062, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a2494a57c6f280438c904185491e9ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ControllersMidpointObject: {fileID: 573060419}
@@ -1589,7 +1589,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2059701652}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2c32862f6c5a2a42bd557a5bed4d062, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a2494a57c6f280438c904185491e9ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ControllersMidpointObject: {fileID: 573060419}

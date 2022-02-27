@@ -43,6 +43,7 @@
      <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
      <Compile Include="Assets\Scripts\Abilities\Locomotion\PulleyLocomotion.cs" />
      <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\Dvorak.cs" />
+     <Compile Include="Assets\Scripts\Tools\Merge.cs" />
      <Compile Include="Assets\Scripts\Interaction\MeshRebuilder.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
@@ -98,7 +99,8 @@
      <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
      <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-     <Compile Include="Assets\Scripts\Tools\Merge.cs" />
+     <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
+     <Compile Include="Assets\Scripts\Tools\ResizeRadius.cs" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
