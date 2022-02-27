@@ -14,7 +14,6 @@ public class ToolManager : MonoBehaviour
     [SerializeField] public bool MergeTool;
     List<Merge> mergeScripts = new List<Merge>();
 
-    void Start()
 
     List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
     List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
@@ -42,19 +41,18 @@ public class ToolManager : MonoBehaviour
         foreach(GameObject vertex in vertices)
         {
             lockScripts.Add(vertex.GetComponent<LockVertex>());
-
-
-        print("num lock scripts " + lockScripts.Count);
-        DisableLock();
-
-
-        foreach (GameObject vertex in vertices)
             mergeScripts.Add(vertex.GetComponent<Merge>());
-
-        print("num merge scripts " + mergeScripts.Count);
-        DisableMerge();
             vertexGrab.Add(vertex.GetComponent<XRGrabInteractable>());
         }
+
+       // print("num lock scripts " + lockScripts.Count);
+        //DisableLock();
+
+
+        //foreach (GameObject vertex in vertices)
+
+       // print("num merge scripts " + mergeScripts.Count);
+        //DisableMerge();
         foreach(GameObject e in edges)
             edgeGrab.Add(e.GetComponent<XRGrabInteractable>());
     }

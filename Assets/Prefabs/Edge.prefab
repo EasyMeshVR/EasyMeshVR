@@ -265,3 +265,4 @@ MonoBehaviour:
   vert2: 0
   isHeldByOther: 0
   locked: 0
+  thisEdge: {fileID: 6331143426899357056}
