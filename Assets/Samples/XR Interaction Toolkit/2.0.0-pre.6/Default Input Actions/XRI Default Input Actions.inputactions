@@ -1380,6 +1380,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Right Resize",
+                    "type": "Value",
+                    "id": "a64a3bee-22eb-4afb-8542-c6aff7ef3170",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Left Resize",
+                    "type": "Value",
+                    "id": "184add96-de20-4ea7-ab7b-505c866c4aaa",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1479,6 +1497,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Use Tool Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c5341de-c5de-401c-adf7-0a71a57c815b",
+                    "path": "<XRController>{RightHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Right Resize",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "073bb487-7363-4b88-b769-0d767d6f6e35",
+                    "path": "<XRController>{LeftHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Left Resize",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
