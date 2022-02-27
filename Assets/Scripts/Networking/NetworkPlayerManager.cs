@@ -11,22 +11,16 @@ namespace EasyMeshVR.Multiplayer
 {
     public class NetworkPlayerManager : MonoBehaviourPunCallbacks
     {
-        #region Public Fields
-
-        public static NetworkPlayerManager instance { get; private set; }
-
-        #endregion
-
         #region Private Fields
 
         [SerializeField]
         private Transform[] spawnPoints = new Transform[Constants.MAX_PLAYERS_PER_ROOM];
 
         [SerializeField]
-        private GameObject networkPlayerPrefab;
+        private GameObject XROrigin;
 
         [SerializeField]
-        private GameObject XROrigin;
+        private GameObject networkPlayerPrefab;
 
         private GameObject spawnedPlayerPrefab;
 
@@ -37,11 +31,6 @@ namespace EasyMeshVR.Multiplayer
         #endregion
 
         #region MonoBehaviour Callbacks
-
-        void Awake()
-        {
-            instance = this;
-        }
 
         void OnValidate()
         {

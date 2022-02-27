@@ -17,9 +17,9 @@ public class PulleyLocomotion : MonoBehaviour
     public bool isGrippedR = false;
     private Vector3 originalPos; // Temporary original position of editing space in reference to controller
 
-    [SerializeField] public ControllersMidpoint ControllersMidpointObject;
-    [SerializeField] public GameObject LeftController;
-    [SerializeField] public GameObject RightController;
+    [SerializeField] private ControllersMidpoint ControllersMidpointObject;
+    [SerializeField] private GameObject LeftController;
+    [SerializeField] private GameObject RightController;
     [SerializeField] private bool lockRotationAroundYAxis = true;
 
     private void Awake()
@@ -62,6 +62,9 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void LGrabStart(InputAction.CallbackContext context)
     {
+        if (isMovingVertex)
+            return;
+
         isGrippedL = true;
         if (isGrippedR) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;
@@ -71,6 +74,9 @@ public class PulleyLocomotion : MonoBehaviour
 
     private void RGrabStart(InputAction.CallbackContext context)
     {
+        if (isMovingVertex)
+            return;
+
         isGrippedR = true;
         if (isGrippedL) // Both grips active, parent to midpoint
             transform.parent = ControllersMidpointObject.transform;

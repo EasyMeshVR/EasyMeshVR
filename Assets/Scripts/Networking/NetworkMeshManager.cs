@@ -117,14 +117,7 @@ namespace EasyMeshVR.Multiplayer
                 CachingOption = EventCaching.RemoveFromRoomCache
             };
 
-            RaiseEventOptions removeMeshEdgePullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
-
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, null, removeMeshVertexPullEventOptions, SendOptions.SendReliable);
-            PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, null, removeMeshEdgePullEventOptions, SendOptions.SendReliable);
             PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, removeImportModelEventOptions, SendOptions.SendReliable);
 
             // We tell all clients to import the model from the web server given the model code.
@@ -153,20 +146,6 @@ namespace EasyMeshVR.Multiplayer
 
             object[] content = new object[] { vertex, index, released };
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, content, meshVertexPullEventOptions, SendOptions.SendReliable);
-        }
-
-        public void SynchronizeMeshEdgePull(EdgePullEvent edgeEvent)
-        {
-            EventCaching cachingOption = (edgeEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
-
-            RaiseEventOptions meshEdgePullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = cachingOption
-            };
-
-            object[] content = EdgePullEvent.SerializeEvent(edgeEvent);
-            PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, content, meshEdgePullEventOptions, SendOptions.SendReliable);
         }
 
         #endregion
