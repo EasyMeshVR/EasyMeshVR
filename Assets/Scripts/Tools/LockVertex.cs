@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction;
 using UnityEngine.XR.Interaction.Toolkit;
 
 using UnityEngine.InputSystem;
+using EasyMeshVR.Core;
 
 
 public class LockVertex : MonoBehaviour
@@ -21,6 +22,7 @@ public class LockVertex : MonoBehaviour
     // Primary and secondary buttons on right hand controller (A and B on Oculus)
     public InputActionReference primaryButtonref = null;
     public InputActionReference secondaryButtonRef = null;
+
     private bool primaryButtonPressed = false;
 
     private bool secondaryButtonPressed = false;
@@ -38,6 +40,13 @@ public class LockVertex : MonoBehaviour
     public bool isLocked = false;
     private bool hover = false;
 
+    private bool inRadius = false;
+
+    private float holdTime = 0f;
+
+
+    SphereCollider leftSphere;
+    SphereCollider rightSphere;
 
    void OnEnable()
     {
@@ -49,9 +58,15 @@ public class LockVertex : MonoBehaviour
 
         editingSpace = MeshRebuilder.instance.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
+        
+
+        leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
+        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
     }
 
     // Uncomment materialswapping for disabling/enabling movevertices
+
+    // Maybe get rid of these since I'm using the sphere anyway
      void HoverOver(HoverEnterEventArgs arg0)
     {
       
@@ -78,6 +93,9 @@ public class LockVertex : MonoBehaviour
 
         secondaryButtonRef.action.started += secondaryButtonStart;
         secondaryButtonRef.action.canceled += secondaryButtonEnd;
+
+       // secondaryButtonHold.action.started += secondaryHoldStart;
+       // secondaryButtonHold.action.canceled += secondaryHoldEnd;
     }
 
     private void OnDestroy()
@@ -87,6 +105,9 @@ public class LockVertex : MonoBehaviour
 
         secondaryButtonRef.action.started -= secondaryButtonStart;
         secondaryButtonRef.action.canceled -= secondaryButtonEnd;
+
+       // secondaryButtonHold.action.started -= secondaryHoldStart;
+        //secondaryButtonHold.action.canceled -= secondaryHoldEnd;
     }
 
     // Lock vertex on primary button press
@@ -97,21 +118,7 @@ public class LockVertex : MonoBehaviour
         {
             if(!isLocked && hover)
             {
-                //moveVertices.enabled = true;
-
-                // Disabling the grab interactable also disables the hovering,
-                // I think the only way to allow the hovering would be to implement a hoverInteractable
-                // script like the GrabInteractable one that is given but that seems like too much work
-                grabInteractable.enabled = false;
-                materialSwap.material = locked;
-
-                // This was another way to disable grabbing that I was trying that I forgot about
-                // but I'm pretty sure it does the same thing as disabling grabInteractable
-                    
-                //gameObject.layer = 2;
-
-                isLocked = true;
-                return;
+                Lock();  
             }
         }
     }
@@ -124,27 +131,68 @@ public class LockVertex : MonoBehaviour
     // Unlock all locked vertices on secondary button press
     private void secondaryButtonStart(InputAction.CallbackContext context)
     {
-       secondaryButtonPressed = true;
-       if(isEnabled)
-       {
-            if(isLocked && !pulleyLocomotion.isMovingEditingSpace)
-            {
-                //moveVertices.enabled = true;
-
-                // gameObject.layer = 0;
-
-                grabInteractable.enabled = true;
-                materialSwap.material = unselected;
-                isLocked = false;
-                return;
-            }
-       }
-            
+        secondaryButtonPressed = true;
+        if(isEnabled)
+            if(isLocked && !pulleyLocomotion.isMovingEditingSpace && inRadius)
+                Unlock();  
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag(Constants.GAME_CONTROLLER_TAG))
+            inRadius = true;
+    }
+    void OnTriggerExit(Collider other)
+    {
+        inRadius = false;
+    }
     private void secondaryButtonEnd(InputAction.CallbackContext context)
     {
         secondaryButtonPressed = false;
+        holdTime = 0f;
+    }
+
+    void Lock()
+    {
+        //moveVertices.enabled = true;
+
+        // Disabling the grab interactable also disables the hovering,
+        // I think the only way to allow the hovering would be to implement a hoverInteractable
+        // script like the GrabInteractable one that is given but that seems like too much work
+        grabInteractable.enabled = false;
+        materialSwap.material = locked;
+
+        // This was another way to disable grabbing that I was trying that I forgot about
+        // but I'm pretty sure it does the same thing as disabling grabInteractable
+        
+        //gameObject.layer = 2;
+
+        isLocked = true;
+        return;
+    }
+
+    void Unlock()
+    {
+        //moveVertices.enabled = true;
+
+        // gameObject.layer = 0;
+
+        grabInteractable.enabled = true;
+        materialSwap.material = unselected;
+        isLocked = false;
+        return;
+    }
+
+    // Unlock all vertices if unlock button is held
+    // Needs a visual attatched to indicate
+    // There's supposed to be a way to do this with the new input system but I can't find out how
+    void Update()
+    {
+        if(secondaryButtonPressed)
+            holdTime += Time.deltaTime;
+
+         if(holdTime >= 1.5f)
+            Unlock();
     }
 
 }

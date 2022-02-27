@@ -9,4 +9,7 @@ public class Edge : MonoBehaviour
     public int vert2;
 
     public GameObject thisEdge;
+
+    public bool isHeldByOther;
+    public bool locked;
 }
