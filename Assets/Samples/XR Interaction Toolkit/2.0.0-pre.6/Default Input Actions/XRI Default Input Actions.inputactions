@@ -1362,24 +1362,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Hold Secondary",
-                    "type": "Button",
-                    "id": "ba8fd035-9137-45ce-b59c-74332e0c2138",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Hold",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "StartButton",
-                    "type": "Button",
-                    "id": "8051acd8-cf20-4ae8-920e-f089c478831e",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1424,61 +1406,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Use Tool Primary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "30a31d62-4f4a-4046-acea-34feefcd926c",
-                    "path": "<ValveIndexController>{RightHand}/secondaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Hold Secondary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "281f6451-105f-420f-b6d1-5dbe217b04a7",
-                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>/secondarybutton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Hold Secondary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "82c07a3f-6530-4edf-9430-ffa80a75646a",
-                    "path": "<ViveController>{LeftHand}/menu",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartButton",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "95cc50a9-37ef-4cd0-ba9f-4e5e0dd305cd",
-                    "path": "<OculusTouchController>{LeftHand}/start",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartButton",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "d53c21c3-b03b-4fdf-b549-0111407a3f8c",
-                    "path": "<ValveIndexController>{LeftHand}/system",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "StartButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

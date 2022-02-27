@@ -9,13 +9,11 @@ TagManager:
   - Model
   - EditingSpace
   - NetworkPlayer
-  - LeftController
-  - RightController
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Grab
+  - 
   - Water
   - UI
   - 
