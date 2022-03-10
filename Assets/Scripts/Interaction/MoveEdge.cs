@@ -15,6 +15,9 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material selected;     // light blue
     [SerializeField] Material locked;     // gray with reduced opacity
 
+    [SerializeField] SwitchControllers switchControllers;
+
+
     GameObject model;
 
     // Editing Space Objects
@@ -34,6 +37,7 @@ public class MoveEdge : MonoBehaviour
     Vertex vertex2;
     bool grabHeld = false;
 
+
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -41,6 +45,8 @@ public class MoveEdge : MonoBehaviour
         model = MeshRebuilder.instance.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisedge = GetComponent<Edge>();
+        switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
+
 
         // Editing space objects
         editingSpace = MeshRebuilder.instance.editingSpace;
@@ -74,7 +80,8 @@ public class MoveEdge : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
-        //materialSwap.material = hovered;
+        if(switchControllers.rayActive)
+            materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;

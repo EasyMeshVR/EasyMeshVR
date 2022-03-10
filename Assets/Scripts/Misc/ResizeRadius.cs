@@ -16,6 +16,7 @@ public class ResizeRadius : MonoBehaviour
     [SerializeField] Material sphereMat;
 
     MeshRenderer materialSwap;
+    
 
     bool matEnabled = false;
     float timer = 0f;

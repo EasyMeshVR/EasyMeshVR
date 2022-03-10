@@ -15,6 +15,9 @@ public class MoveVertices : MonoBehaviour
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
+    [SerializeField] SwitchControllers switchControllers;
+
+
     GameObject model;
 
     // Editing Space Objects
@@ -40,6 +43,8 @@ public class MoveVertices : MonoBehaviour
         model = MeshRebuilder.instance.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
+
+        switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
         // Editing space objects
         editingSpace = MeshRebuilder.instance.editingSpace;
@@ -73,7 +78,9 @@ public class MoveVertices : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
 
-        //materialSwap.material = hovered;
+
+        if(switchControllers.rayActive)
+            materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;

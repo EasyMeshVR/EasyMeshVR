@@ -14,10 +14,13 @@ public class LockVertex : ToolClass
     [SerializeField] Material locked;     // red
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
+
+    [SerializeField] SwitchControllers switchControllers;
+
     public XRGrabInteractable vertexGrabInteractable;
 
-    public PulleyLocomotion pulleyLocomotion;
-    public GameObject editingSpace;
+   // public PulleyLocomotion pulleyLocomotion;
+   // public GameObject editingSpace;
     public GameObject currentVertex;
     public GameObject currentEdge;
 
@@ -32,6 +35,7 @@ public class LockVertex : ToolClass
     
 
     MeshRenderer materialSwap;
+
     private bool hover = false;
     private float holdTime = 0f;
 
@@ -39,8 +43,8 @@ public class LockVertex : ToolClass
 
    void OnEnable()
     {
-        editingSpace = GameObject.Find("EditingSpace");
-        pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
+       // editingSpace = GameObject.Find("EditingSpace");
+       // pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
         rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
@@ -54,6 +58,7 @@ public class LockVertex : ToolClass
 
     public override void PrimaryAction()
     {
+       // print("priimary called ");
         if(!inRadius)
             return;
 
@@ -127,7 +132,39 @@ public class LockVertex : ToolClass
     }
     public void OnTriggerExit(Collider other)
     {
-        inRadius = false;
-        currentVertex = null;
+        if(!switchControllers.rayActive)
+        {
+            inRadius = false;
+            currentVertex = null;
+        }
+    }
+
+    async void FixedUpdate()
+    {
+        if(switchControllers.rayActive)
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * Mathf.Infinity, Color.yellow);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Vertex"))
+            {
+                currentVertex = hit.transform.gameObject;
+                vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
+                if(primaryButtonPressed)
+                    Lock();
+                if(secondaryButtonPressed)
+                    Unlock();
+
+                inRadius = true;
+            }
+
+            else
+            {
+                inRadius = false;
+                currentVertex = null;
+            }
+
+        }   
+                
+
     }
 }

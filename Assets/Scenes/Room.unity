@@ -476,7 +476,7 @@ MonoBehaviour:
   activeLeftController: {fileID: 1282352283}
   activeRightController: {fileID: 2059701652}
   menuOpen: 0
-  rayActive: 0
+  rayActive: 1
 --- !u!1 &403955828
 GameObject:
   m_ObjectHideFlags: 0
@@ -1392,6 +1392,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sC: {fileID: 1282352287}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  unselected: {fileID: 0}
+  pm: {fileID: 2063562610}
 --- !u!1 &1319448459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1628,6 +1630,35 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1647071329
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647071323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 631ca2cfefda48348a58ee2f8a492d5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  primaryButtonPressed: 0
+  secondaryButtonPressed: 0
+  isEnabled: 0
+  locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  switchControllers: {fileID: 299127986}
+  vertexGrabInteractable: {fileID: 0}
+  currentVertex: {fileID: 0}
+  currentEdge: {fileID: 0}
+  inRadius: 0
+  leftSphere: {fileID: 0}
+  rightSphere: {fileID: 0}
 --- !u!1001 &1860608691
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2114,6 +2145,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sC: {fileID: 2059701656}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  pm: {fileID: 2063562610}
 --- !u!114 &2059701659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2136,9 +2169,8 @@ MonoBehaviour:
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  switchControllers: {fileID: 299127986}
   vertexGrabInteractable: {fileID: 0}
-  pulleyLocomotion: {fileID: 0}
-  editingSpace: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
