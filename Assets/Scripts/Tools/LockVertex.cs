@@ -24,7 +24,6 @@ public class LockVertex : ToolClass
     public GameObject currentVertex;
     public GameObject currentEdge;
 
-    //new public bool isEnabled = false;
     public bool inRadius = false;
 
     public SphereCollider leftSphere;
@@ -58,7 +57,6 @@ public class LockVertex : ToolClass
 
     public override void PrimaryAction()
     {
-       // print("priimary called ");
         if(!inRadius)
             return;
 
@@ -84,6 +82,7 @@ public class LockVertex : ToolClass
         Unlock();
     }
 
+    // Change material, disable vertex grab interactable, set boolean
     void Lock()
     {
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
@@ -94,6 +93,7 @@ public class LockVertex : ToolClass
         return;
     }
 
+    // Change material, enbable vertex grab interactable, set boolean
     void Unlock()
     {
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
@@ -103,30 +103,14 @@ public class LockVertex : ToolClass
         return;
     }
 
-    // Unlock all vertices if unlock button is held
-    // Needs a visual attatched to indicate
-    // // There's supposed to be a way to do this with the new input system but I can't find out how
-    //  getting rid of hold to unlock for now since script is no longer attatched to vertices
-
-    // void Update()
-    // {
-    //     if(secondaryButtonPressed)
-    //         holdTime += Time.deltaTime;
-
-    //      if(holdTime >= 1.5f)
-    //         Unlock();
-    // }
-
-    // check sphere collision of controllers
+    // Get vertex info from sphere collision
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Vertex"))
         {
-            // get vertex infoo
             currentVertex = other.gameObject; 
             selectedVertex = currentVertex.GetComponent<Vertex>().id;
             vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
-            //print("test vertex id " + selectedVertex);
             inRadius = true;
         }
     }
@@ -139,6 +123,7 @@ public class LockVertex : ToolClass
         }
     }
 
+    // Separate raycast for raycast controllers, gets vertex info from raycast hit
     async void FixedUpdate()
     {
         if(switchControllers.rayActive)
@@ -156,15 +141,11 @@ public class LockVertex : ToolClass
 
                 inRadius = true;
             }
-
             else
             {
                 inRadius = false;
                 currentVertex = null;
             }
-
         }   
-                
-
     }
 }

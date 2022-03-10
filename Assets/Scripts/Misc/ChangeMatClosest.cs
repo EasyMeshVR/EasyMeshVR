@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// When using radius controllers, only highlight nearest object
 public class ChangeMatClosest : MonoBehaviour
 {
 
@@ -20,6 +21,7 @@ public class ChangeMatClosest : MonoBehaviour
         float nearObjectDistance = 0f;
         Vector3 center = sC.transform.position + sC.center;
     
+        // Get all colliders in collision and find closest
         Collider[] allOverlappingColliders = Physics.OverlapSphere(center, sC.radius);
         foreach(Collider c in allOverlappingColliders)
         {
@@ -32,6 +34,7 @@ public class ChangeMatClosest : MonoBehaviour
             }
         }
  
+        // Don't do anything if the vertex is locked or if locomotion is happening
         if(nearObject != null)
         {
             if(nearObject.CompareTag("Vertex") && nearObject.GetComponent<MoveVertices>().isLocked)
@@ -48,6 +51,7 @@ public class ChangeMatClosest : MonoBehaviour
         }
      }
 
+    // Change the material back on exit
      public void OnTriggerExit(Collider other)
     {
         checkImport();
@@ -64,6 +68,7 @@ public class ChangeMatClosest : MonoBehaviour
     }
 
     // this might be wrong
+    // Get a new reference to the pulley locomotion script if a new editing space is imported
      void checkImport()
     {
         pm = GameObject.FindObjectOfType<PulleyLocomotion>();
