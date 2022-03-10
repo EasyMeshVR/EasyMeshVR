@@ -121,7 +121,7 @@ public class LockVertex : ToolClass
             currentVertex = other.gameObject; 
             selectedVertex = currentVertex.GetComponent<Vertex>().id;
             vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
-            print("test vertex id " + selectedVertex);
+            //print("test vertex id " + selectedVertex);
             inRadius = true;
         }
     }

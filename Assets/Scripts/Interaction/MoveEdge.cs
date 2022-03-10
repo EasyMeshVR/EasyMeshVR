@@ -74,7 +74,7 @@ public class MoveEdge : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
-        materialSwap.material = hovered;
+        //materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;

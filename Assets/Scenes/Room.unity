@@ -435,7 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 0
+  LockTool: 1
   lockScript: {fileID: 2059701659}
   grabVertex: 1
   grabEdge: 1
@@ -503,8 +503,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403955828}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: 0, z: 0.175}
-  m_LocalScale: {x: 0.22, y: 0.22, z: 0.22}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 2059701653}
   m_RootOrder: 1
@@ -516,7 +516,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403955828}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1034,6 +1034,7 @@ GameObject:
   - component: {fileID: 1282352286}
   - component: {fileID: 1282352285}
   - component: {fileID: 1282352289}
+  - component: {fileID: 1282352290}
   m_Layer: 0
   m_Name: LeftRadius
   m_TagString: GameController
@@ -1049,7 +1050,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282352283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.016, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 861336794}
@@ -1088,6 +1089,7 @@ MonoBehaviour:
       m_Action: Thumbstick
       m_Flags: 0
     m_Flags: 0
+  sphereMat: {fileID: 2100000, guid: b9a0048d7cd58764a95231e6696ec557, type: 2}
 --- !u!114 &1282352286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1177,7 +1179,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.125
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1282352288
 MonoBehaviour:
@@ -1376,6 +1378,20 @@ MonoBehaviour:
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   isEnabled: 1
+--- !u!114 &1282352290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282352283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 247af6b3aefef7f4a8fc0e467fef2b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sC: {fileID: 1282352287}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
 --- !u!1 &1319448459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,8 +1555,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396491060}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.03, y: 0, z: 0.175}
-  m_LocalScale: {x: 0.22, y: 0.22, z: 0.22}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 1282352284}
   m_RootOrder: 1
@@ -1552,7 +1568,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1396491060}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1759,6 +1775,7 @@ GameObject:
   - component: {fileID: 2059701655}
   - component: {fileID: 2059701654}
   - component: {fileID: 2059701659}
+  - component: {fileID: 2059701658}
   m_Layer: 0
   m_Name: RightRadius
   m_TagString: GameController
@@ -1813,6 +1830,7 @@ MonoBehaviour:
       m_Action: Thumbstick
       m_Flags: 0
     m_Flags: 0
+  sphereMat: {fileID: 2100000, guid: b9a0048d7cd58764a95231e6696ec557, type: 2}
 --- !u!114 &2059701655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1902,7 +1920,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.125
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2059701657
 MonoBehaviour:
@@ -2082,6 +2100,20 @@ MonoBehaviour:
     m_Reference: {fileID: 875253871413052681, guid: c348712bda248c246b8c49b3db54643f,
       type: 3}
   m_ButtonPressPoint: 0.5
+--- !u!114 &2059701658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059701652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 247af6b3aefef7f4a8fc0e467fef2b1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sC: {fileID: 2059701656}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
 --- !u!114 &2059701659
 MonoBehaviour:
   m_ObjectHideFlags: 0
