@@ -7,7 +7,7 @@ public class ChangeMatClosest : MonoBehaviour
 {
 
     [SerializeField] SphereCollider sC;
-    [SerializeField] Material hovered;
+    [SerializeField] Material hoveredO;
     [SerializeField] Material unselected;
     GameObject nearObject;
     [SerializeField] PulleyLocomotion pm;
@@ -19,7 +19,8 @@ public class ChangeMatClosest : MonoBehaviour
         checkImport();
 
         if(pm.isMovingEditingSpace || pm.isMovingVertex)
-                return;
+            return;
+
 
         float nearObjectDistance = 0f;
         Vector3 center = sC.transform.position + sC.center;
@@ -28,7 +29,7 @@ public class ChangeMatClosest : MonoBehaviour
         Collider[] allOverlappingColliders = Physics.OverlapSphere(center, sC.radius);
         foreach(Collider c in allOverlappingColliders)
         {
-            float curDistance = Vector3.Distance(c.transform.position, sC.transform.position);
+            float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
 
             if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag("GameController"))
             {
@@ -45,22 +46,18 @@ public class ChangeMatClosest : MonoBehaviour
                 nearObject = null;
                 return;
             }
-
-            
-                
-
             materialSwap = nearObject.GetComponent<MeshRenderer>();
-            materialSwap.material = hovered;
+            materialSwap.material = hoveredO;
         }
      }
 
     // Change the material back on exit
-     public void OnTriggerExit(Collider other)
+    public void OnTriggerExit(Collider other)
     {
         checkImport();
         if(nearObject == null)
             return;
-            
+
          if(pm.isMovingEditingSpace || pm.isMovingVertex)
             return;
 
@@ -68,8 +65,9 @@ public class ChangeMatClosest : MonoBehaviour
             return;
 
 
-        materialSwap = other.gameObject.GetComponent<MeshRenderer>();
-        materialSwap.material = unselected;
+       // materialSwap = other.gameObject.GetComponent<MeshRenderer>();
+
+       // materialSwap.material = unselected;
         nearObject = null;
     }
 
