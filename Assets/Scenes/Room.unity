@@ -476,7 +476,7 @@ MonoBehaviour:
   activeLeftController: {fileID: 1282352283}
   activeRightController: {fileID: 2059701652}
   menuOpen: 0
-  rayActive: 1
+  rayActive: 0
 --- !u!1 &403955828
 GameObject:
   m_ObjectHideFlags: 0

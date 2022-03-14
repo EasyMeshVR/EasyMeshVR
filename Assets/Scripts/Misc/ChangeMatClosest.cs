@@ -18,6 +18,9 @@ public class ChangeMatClosest : MonoBehaviour
     { 
         checkImport();
 
+        if(pm.isMovingEditingSpace || pm.isMovingVertex)
+                return;
+
         float nearObjectDistance = 0f;
         Vector3 center = sC.transform.position + sC.center;
     
@@ -34,7 +37,7 @@ public class ChangeMatClosest : MonoBehaviour
             }
         }
  
-        // Don't do anything if the vertex is locked or if locomotion is happening
+        // Don't do anything if the vertex is locked or if locomotion is happening or if another thing is being pulled
         if(nearObject != null)
         {
             if(nearObject.CompareTag("Vertex") && nearObject.GetComponent<MoveVertices>().isLocked)
@@ -43,8 +46,8 @@ public class ChangeMatClosest : MonoBehaviour
                 return;
             }
 
-            if(pm.isMovingEditingSpace)
-                return;
+            
+                
 
             materialSwap = nearObject.GetComponent<MeshRenderer>();
             materialSwap.material = hovered;
@@ -55,12 +58,12 @@ public class ChangeMatClosest : MonoBehaviour
      public void OnTriggerExit(Collider other)
     {
         checkImport();
+         if(pm.isMovingEditingSpace || pm.isMovingVertex)
+            return;
 
         if(nearObject.CompareTag("Vertex") && nearObject.GetComponent<MoveVertices>().isLocked)
             return;
 
-        if(pm.isMovingEditingSpace)
-            return;
 
         materialSwap = other.gameObject.GetComponent<MeshRenderer>();
         materialSwap.material = unselected;
