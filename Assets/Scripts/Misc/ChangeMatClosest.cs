@@ -58,6 +58,9 @@ public class ChangeMatClosest : MonoBehaviour
      public void OnTriggerExit(Collider other)
     {
         checkImport();
+        if(nearObject == null)
+            return;
+            
          if(pm.isMovingEditingSpace || pm.isMovingVertex)
             return;
 

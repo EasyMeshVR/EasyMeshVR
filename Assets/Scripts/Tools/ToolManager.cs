@@ -8,7 +8,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] public bool LockTool;
-    [SerializeField] LockVertex lockScript;
+    [SerializeField] LockVertex lockScriptRay;
+    [SerializeField] LockVertex lockScriptGrab;
+
 
     List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
     List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
@@ -64,12 +66,14 @@ public class ToolManager : MonoBehaviour
 
     void EnableLock()
     {
-       lockScript.Enable();
+       lockScriptRay.Enable();
+       lockScriptGrab.Enable();
     }
 
     void DisableLock()
     {
-       lockScript.Disable();
+       lockScriptRay.Disable();
+       lockScriptGrab.Disable();
     }
 
     void EnableVertex()
