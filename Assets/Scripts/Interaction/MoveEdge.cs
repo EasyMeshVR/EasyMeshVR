@@ -13,6 +13,7 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+    [SerializeField] Material locked;     // gray with reduced opacity
 
     GameObject model;
 
@@ -22,16 +23,15 @@ public class MoveEdge : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
-    MeshRenderer materialSwap;
+    public MeshRenderer materialSwap;
 
     // Edge lookup
     Edge thisedge;
     GameObject selectedEdge;
     int selectedVertex1;
     int selectedVertex2;
-    GameObject vertex1;
-    GameObject vertex2;
-
+    Vertex vertex1;
+    Vertex vertex2;
     bool grabHeld = false;
 
     // Get all references we need and add control listeners
@@ -71,37 +71,43 @@ public class MoveEdge : MonoBehaviour
     // Set material to Selected (change name to hover)
     void HoverOver(HoverEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;
-
-        selectedEdge = thisedge.gameObject;
-        selectedVertex1 = thisedge.vert1;
-        selectedVertex2 = thisedge.vert2;   
     }
 
     // Set material back to Unselected
     void HoverExit(HoverExitEventArgs arg0)
     {
+        if (thisedge.locked)
+            return;
+
         materialSwap.material = unselected;
     }
 
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
-        vertex1 = MeshRebuilder.instance.vertexObjects[selectedVertex1].gameObject;
-        vertex2 = MeshRebuilder.instance.vertexObjects[selectedVertex2].gameObject;
+        SetActiveEdges(thisedge, false);
+
+        vertex1 = MeshRebuilder.instance.vertexObjects[thisedge.vert1];
+        vertex2 = MeshRebuilder.instance.vertexObjects[thisedge.vert2];
+
+        thisedge.transform.parent = model.transform;
 
         // Parent the two vertices to the edge
-        vertex1.transform.parent = selectedEdge.transform;
-        vertex2.transform.parent = selectedEdge.transform;
+        vertex1.transform.parent = thisedge.transform;
+        vertex2.transform.parent = thisedge.transform;
+
+        vertex1.gameObject.SetActive(false);
+        vertex2.gameObject.SetActive(false);
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -110,24 +116,46 @@ public class MoveEdge : MonoBehaviour
     // Stop updating the mesh data
     void GrabReleased(SelectExitEventArgs arg0)
     {
+        if (thisedge.locked)
+            return;
+
+        SetActiveEdges(thisedge, true);
+
         materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
         vertex1.transform.parent = model.transform;
         vertex2.transform.parent = model.transform;
 
+        vertex1.gameObject.SetActive(true);
+        vertex2.gameObject.SetActive(true);
+
         grabHeld = false;
 
+        Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisedge.vert1];
+        Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisedge.vert2];
+
         // Synchronize the position of the mesh vertex by sending a cached event to other players
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, true, true);
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex2], selectedVertex2, true, true);
+        EdgePullEvent edgeEvent = new EdgePullEvent
+        {
+            id = thisedge.id,
+            vert1 = thisedge.vert1,
+            vert2 = thisedge.vert2,
+            position = thisedge.transform.position,
+            vertex1Pos = vertex1Pos,
+            vertex2Pos = vertex2Pos,
+            isCached = true,
+            released = true,
+        };
+
+        NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
         pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.isHeldByOther || thisedge.locked)
         {
             grabInteractable.enabled = false;
             return;
@@ -139,10 +167,6 @@ public class MoveEdge : MonoBehaviour
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
-            // Subtracts model's offset if it's not directly on (0,0,0)
-            //vertex1.transform.parent = model.transform;
-            //vertex2.transform.parent = model.transform;
-
             Vector3 editingSpaceScale = editingSpace.transform.localScale;
 
             // Handle divide by zero error
@@ -159,27 +183,50 @@ public class MoveEdge : MonoBehaviour
             );
 
             // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
-            MeshRebuilder.instance.vertices[selectedVertex1] = 
+            MeshRebuilder.instance.vertices[thisedge.vert1] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex1.transform.position - editingSpace.transform.position);
 
-            MeshRebuilder.instance.vertices[selectedVertex2] = 
+            MeshRebuilder.instance.vertices[thisedge.vert2] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex2.transform.position - editingSpace.transform.position);
 
-            UpdateMesh();
+            UpdateMesh(thisedge.id, thisedge.vert1, thisedge.vert2);
 
-            //vertex1.transform.parent = selectedEdge.transform;
-            //vertex2.transform.parent = selectedEdge.transform;
+            Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisedge.vert1];
+            Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisedge.vert2];
 
             // Continuously synchronize the position of the vertex without caching it until we release it
-            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex1], selectedVertex1, false, false);
-            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex2], selectedVertex2, false, false);
+            EdgePullEvent edgeEvent = new EdgePullEvent
+            {
+                id = thisedge.id,
+                vert1 = thisedge.vert1,
+                vert2 = thisedge.vert2,
+                position = thisedge.transform.position,
+                vertex1Pos = vertex1Pos,
+                vertex2Pos = vertex2Pos,
+                isCached = false,
+                released = false,
+            };
+
+            NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
+        }
+    }
+
+    public void SetActiveEdges(Edge edge, bool active)
+    {
+        foreach (Edge currEdge in MeshRebuilder.instance.edgeObjects)
+        {
+            if (currEdge.id == edge.id) continue;
+
+            currEdge.locked = !active;
+            currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
+            currEdge.GetComponent<XRGrabInteractable>().enabled = active;
         }
     }
 
     // Update MeshFilter and re-draw in-game visuals
-    void UpdateMesh()
+    public void UpdateMesh(int edgeId, int vertex1Id, int vertex2Id, bool skipThisEdgeId = true)
     {
         Vector3[] vertices = MeshRebuilder.instance.vertices;
 
@@ -187,17 +234,20 @@ public class MoveEdge : MonoBehaviour
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
+        Transform vertex1Transform = MeshRebuilder.instance.vertexObjects[vertex1Id].transform;
+        Transform vertex2Transform = MeshRebuilder.instance.vertexObjects[vertex2Id].transform;
+
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
         foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
         {
-            if (edge.id == thisedge.id) continue;
+            if (skipThisEdgeId && edge.id == edgeId) continue;
 
             GameObject edgeObject = edge.gameObject;
             int vert1 = edge.vert1;
             int vert2 = edge.vert2;
 
             // If either of the vertex values are the same as selectedVertex1, it will update the edges that vertex is connected to
-            if (vert1 == selectedVertex1 || vert2 == selectedVertex1)
+            if (vert1 == vertex1Id || vert2 == vertex1Id)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
@@ -205,12 +255,12 @@ public class MoveEdge : MonoBehaviour
                 edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
 
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                edgeObject.transform.LookAt(vertex1.transform, Vector3.up);
+                edgeObject.transform.LookAt(vertex1Transform, Vector3.up);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
 
             // If either of the vertex values are the same as selectedVertex2, it will update the edges that vertex is connected to
-            if (vert1 == selectedVertex2 || vert2 == selectedVertex2)
+            if (vert1 == vertex2Id || vert2 == vertex2Id)
             {
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
@@ -218,7 +268,7 @@ public class MoveEdge : MonoBehaviour
                 edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
 
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                edgeObject.transform.LookAt(vertex2.transform, Vector3.up);
+                edgeObject.transform.LookAt(vertex2Transform, Vector3.up);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
         }
