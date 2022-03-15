@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layout.cs" />
     <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
+    <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\CharacterInstantiation.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\TouchPad.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\Joystick.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkEvents.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
+    <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\PhotonDemoExtensions.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
@@ -148,9 +150,6 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\Networking\NetworkEvents.cs" />
-    <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
-    <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -983,25 +982,25 @@
       <Project>{58890371-E227-559B-3B1E-C75277547716}</Project>
       <Name>PhotonUnityNetworking.Demos</Name>
     </ProjectReference>
+    <ProjectReference Include="PhotonVoice.PUN.csproj">
+      <Project>{84307A6A-EA88-2F16-B448-7C37CA1743A9}</Project>
+      <Name>PhotonVoice.PUN</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonVoice.API.csproj">
       <Project>{E5008587-5223-EC55-442A-74484BAD9B7D}</Project>
       <Name>PhotonVoice.API</Name>
     </ProjectReference>
-    <ProjectReference Include="PhotonVoice.Editor.csproj">
-      <Project>{957439B7-A871-3E07-B8CE-6931A5C837C1}</Project>
-      <Name>PhotonVoice.Editor</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonVoice.PUN.csproj">
-      <Project>{84307A6A-EA88-2F16-B448-7C37CA1743A9}</Project>
-      <Name>PhotonVoice.PUN</Name>
+    <ProjectReference Include="PhotonVoice.Utilities.Editor.csproj">
+      <Project>{C69BE714-6780-4140-F8AD-B2E6F5562C09}</Project>
+      <Name>PhotonVoice.Utilities.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="PhotonVoice.csproj">
       <Project>{09BC1CDD-22CC-77AE-1326-90A41A22848D}</Project>
       <Name>PhotonVoice</Name>
     </ProjectReference>
-    <ProjectReference Include="PhotonVoice.Utilities.Editor.csproj">
-      <Project>{C69BE714-6780-4140-F8AD-B2E6F5562C09}</Project>
-      <Name>PhotonVoice.Utilities.Editor</Name>
+    <ProjectReference Include="PhotonVoice.Editor.csproj">
+      <Project>{957439B7-A871-3E07-B8CE-6931A5C837C1}</Project>
+      <Name>PhotonVoice.Editor</Name>
     </ProjectReference>
     <ProjectReference Include="PhotonVoice.PUN.Editor.csproj">
       <Project>{D1E4B0D9-29B7-806B-4D6B-1C5234C1911D}</Project>

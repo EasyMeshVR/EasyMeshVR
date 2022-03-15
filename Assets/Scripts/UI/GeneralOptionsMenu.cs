@@ -178,6 +178,15 @@ namespace EasyMeshVR.UI
 
         #endregion
 
+        #region Clear Canvas Methods
+
+        public void OnClickedClearCanvasButton()
+        {
+            NetworkMeshManager.instance.SynchronizeClearCanvas();
+        }
+
+        #endregion
+
         #region Private Methods
 
         private void SwapActivePanel(GameObject targetPanel)

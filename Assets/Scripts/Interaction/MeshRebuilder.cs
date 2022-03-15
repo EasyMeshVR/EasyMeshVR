@@ -38,7 +38,9 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         edgeObjects = new List<Edge>();
         vertexObjects = new List<Vertex>();
         instance = this;
-        
+
+        editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
+
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
         model.tag = ("Model");

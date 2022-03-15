@@ -103,29 +103,7 @@ namespace EasyMeshVR.Multiplayer
         {
             importCallback = callback;
 
-            // We clear the previous buffered event for importing a model so that newly joining
-            // players are not importing older models.
-            RaiseEventOptions removeImportModelEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
-
-            RaiseEventOptions removeMeshVertexPullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
-
-            RaiseEventOptions removeMeshEdgePullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
-
-            PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, null, removeMeshVertexPullEventOptions, SendOptions.SendReliable);
-            PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, null, removeMeshEdgePullEventOptions, SendOptions.SendReliable);
-            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, removeImportModelEventOptions, SendOptions.SendReliable);
+            RemoveCachedEditEvents();
 
             // We tell all clients to import the model from the web server given the model code.
             // EventCaching.AddToRoomCacheGlobal caches the event globally so that it persists until the room is closed (all players leave),
@@ -139,6 +117,19 @@ namespace EasyMeshVR.Multiplayer
             object[] content = new object[] { modelCode };
 
             PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, importModelEventOptions, SendOptions.SendReliable);
+        }
+
+        public void SynchronizeClearCanvas()
+        {
+            RemoveCachedEditEvents();
+
+            RaiseEventOptions clearCanvasEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.DoNotCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.CLEAR_CANVAS_EVENT_CODE, null, clearCanvasEventOptions, SendOptions.SendReliable);
         }
 
         public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false, bool released = false)
@@ -171,6 +162,30 @@ namespace EasyMeshVR.Multiplayer
 
         #endregion
 
+        #region Private Methods
+
+        private void RemoveCachedEvent(byte eventCode)
+        {
+            RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.RemoveFromRoomCache
+            };
+
+            PhotonNetwork.RaiseEvent(eventCode, null, removeCachedEventOptions, SendOptions.SendReliable);
+        }
+
+        private void RemoveCachedEditEvents()
+        {
+            // We clear the previous buffered events for importing a model and any cached edits,
+            // so that newly joining players aren't importing older models and messing with null data.
+            RemoveCachedEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE);
+            RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE);
+            RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE);
+        }
+
+        #endregion
+
         #region Pun Callbacks
 
         public void OnEvent(EventData photonEvent)
@@ -187,6 +202,9 @@ namespace EasyMeshVR.Multiplayer
                         string modelCode = (string)data[0];
                         ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
                     }
+                    break;
+                case Constants.CLEAR_CANVAS_EVENT_CODE:
+                    ModelImportExport.instance.ClearCanvas();
                     break;
                 default:
                     break;
