@@ -35,7 +35,7 @@ public class MoveEdge : MonoBehaviour
     int selectedVertex2;
     Vertex vertex1;
     Vertex vertex2;
-    bool grabHeld = false;
+    public bool grabHeld = false;
 
 
     // Get all references we need and add control listeners

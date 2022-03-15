@@ -17,6 +17,9 @@ public class LockVertex : ToolClass
 
     [SerializeField] SwitchControllers switchControllers;
 
+    [SerializeField] ToolRaycast ray;
+
+
     public XRGrabInteractable vertexGrabInteractable;
 
    // public PulleyLocomotion pulleyLocomotion;
@@ -124,28 +127,24 @@ public class LockVertex : ToolClass
     }
 
     // Separate raycast for raycast controllers, gets vertex info from raycast hit
-    async void FixedUpdate()
+    void Update()
     {
         if(switchControllers.rayActive)
         {
-            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * Mathf.Infinity, Color.yellow);
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Vertex"))
+            if(ray.hitVertex)
             {
-                currentVertex = hit.transform.gameObject;
+                currentVertex = ray.hit.transform.gameObject;
                 vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
                 if(primaryButtonPressed)
                     Lock();
                 if(secondaryButtonPressed)
                     Unlock();
-
-                inRadius = true;
             }
             else
             {
                 inRadius = false;
                 currentVertex = null;
             }
-        }   
+        }
     }
 }

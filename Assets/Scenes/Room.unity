@@ -435,7 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 0
+  LockTool: 1
   lockScriptRay: {fileID: 1647071329}
   lockScriptGrab: {fileID: 2059701659}
   grabVertex: 1
@@ -1294,6 +1294,7 @@ MonoBehaviour:
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   pm: {fileID: 2063562610}
+  otherHand: {fileID: 2059701658}
 --- !u!1 &1319448459
 GameObject:
   m_ObjectHideFlags: 0
@@ -1681,6 +1682,20 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1647071324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1647071323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79ad07946bab2c4aadfd4c23b30bc8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitVertex: 0
+  hitEdge: 0
 --- !u!114 &1647071329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1704,6 +1719,7 @@ MonoBehaviour:
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
+  ray: {fileID: 1647071324}
   vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
@@ -2293,6 +2309,7 @@ MonoBehaviour:
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   pm: {fileID: 2063562610}
+  otherHand: {fileID: 1282352289}
 --- !u!114 &2059701659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2316,6 +2333,7 @@ MonoBehaviour:
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
+  ray: {fileID: 1647071324}
   vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}

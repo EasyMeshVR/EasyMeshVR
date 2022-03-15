@@ -135,6 +135,7 @@
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
      <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
+     <Compile Include="Assets\Scripts\Tools\ToolRaycast.cs" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />

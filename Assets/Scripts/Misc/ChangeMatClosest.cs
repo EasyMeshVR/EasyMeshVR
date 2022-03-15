@@ -11,6 +11,9 @@ public class ChangeMatClosest : MonoBehaviour
     [SerializeField] Material unselected;
     GameObject nearObject;
     [SerializeField] PulleyLocomotion pm;
+
+    [SerializeField] ChangeMatClosest otherHand;
+
     MeshRenderer materialSwap;
 
 
@@ -46,6 +49,12 @@ public class ChangeMatClosest : MonoBehaviour
                 nearObject = null;
                 return;
             }
+
+            // Bug if moving edge then grabbing vertex will allow locked edges to be highlighted
+            if(otherHand.nearObject!=null)
+                if(otherHand.nearObject.CompareTag("Edge") && nearObject.CompareTag("Edge") && otherHand.nearObject.GetComponent<MoveEdge>().grabHeld)
+                    return;
+
             materialSwap = nearObject.GetComponent<MeshRenderer>();
             materialSwap.material = hoveredO;
         }
@@ -57,6 +66,8 @@ public class ChangeMatClosest : MonoBehaviour
         checkImport();
         if(nearObject == null)
             return;
+
+    
 
          if(pm.isMovingEditingSpace || pm.isMovingVertex)
             return;
