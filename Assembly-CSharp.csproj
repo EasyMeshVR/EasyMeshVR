@@ -150,6 +150,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
+    <Compile Include="Assets\Scripts\UI\PlayerEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -950,13 +951,25 @@
       <Project>{4E39CE0F-FE66-FD7F-E774-F15DFD711CC8}</Project>
       <Name>Boxophobic.SkyboxCubemapExtended.Editor</Name>
     </ProjectReference>
+    <ProjectReference Include="PhotonVoice.Utilities.Editor.csproj">
+      <Project>{C69BE714-6780-4140-F8AD-B2E6F5562C09}</Project>
+      <Name>PhotonVoice.Utilities.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="PunDemos.DemoSlotcarEditor.csproj">
       <Project>{19F86686-C640-76D3-9FDF-A6D19613CC11}</Project>
       <Name>PunDemos.DemoSlotcarEditor</Name>
     </ProjectReference>
+    <ProjectReference Include="PhotonVoice.PUN.csproj">
+      <Project>{84307A6A-EA88-2F16-B448-7C37CA1743A9}</Project>
+      <Name>PhotonVoice.PUN</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonUnityNetworking.Utilities.Culling.Editor.csproj">
       <Project>{16D71DDA-E039-ACD8-8F6E-9584C9B73ECC}</Project>
       <Name>PhotonUnityNetworking.Utilities.Culling.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="PhotonVoice.API.csproj">
+      <Project>{E5008587-5223-EC55-442A-74484BAD9B7D}</Project>
+      <Name>PhotonVoice.API</Name>
     </ProjectReference>
     <ProjectReference Include="Boxophobic.Utils.Editor.csproj">
       <Project>{7871B646-1651-6FC1-1A33-95132AECE841}</Project>
@@ -974,33 +987,21 @@
       <Project>{EE6E5568-25DF-A318-C340-1BC13E987C1A}</Project>
       <Name>Parabox.Stl</Name>
     </ProjectReference>
-    <ProjectReference Include="Boxophobic.Utils.Scripts.csproj">
-      <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>
-      <Name>Boxophobic.Utils.Scripts</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
-      <Project>{58890371-E227-559B-3B1E-C75277547716}</Project>
-      <Name>PhotonUnityNetworking.Demos</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonVoice.PUN.csproj">
-      <Project>{84307A6A-EA88-2F16-B448-7C37CA1743A9}</Project>
-      <Name>PhotonVoice.PUN</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonVoice.API.csproj">
-      <Project>{E5008587-5223-EC55-442A-74484BAD9B7D}</Project>
-      <Name>PhotonVoice.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="PhotonVoice.Utilities.Editor.csproj">
-      <Project>{C69BE714-6780-4140-F8AD-B2E6F5562C09}</Project>
-      <Name>PhotonVoice.Utilities.Editor</Name>
-    </ProjectReference>
     <ProjectReference Include="PhotonVoice.csproj">
       <Project>{09BC1CDD-22CC-77AE-1326-90A41A22848D}</Project>
       <Name>PhotonVoice</Name>
     </ProjectReference>
+    <ProjectReference Include="Boxophobic.Utils.Scripts.csproj">
+      <Project>{4CDA9552-6764-C676-1E53-92E9E7D2ED08}</Project>
+      <Name>Boxophobic.Utils.Scripts</Name>
+    </ProjectReference>
     <ProjectReference Include="PhotonVoice.Editor.csproj">
       <Project>{957439B7-A871-3E07-B8CE-6931A5C837C1}</Project>
       <Name>PhotonVoice.Editor</Name>
+    </ProjectReference>
+    <ProjectReference Include="PhotonUnityNetworking.Demos.csproj">
+      <Project>{58890371-E227-559B-3B1E-C75277547716}</Project>
+      <Name>PhotonUnityNetworking.Demos</Name>
     </ProjectReference>
     <ProjectReference Include="PhotonVoice.PUN.Editor.csproj">
       <Project>{D1E4B0D9-29B7-806B-4D6B-1C5234C1911D}</Project>

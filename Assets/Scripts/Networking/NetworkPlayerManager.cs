@@ -5,6 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using EasyMeshVR.Core;
+using EasyMeshVR.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace EasyMeshVR.Multiplayer
@@ -55,6 +56,7 @@ namespace EasyMeshVR.Multiplayer
         void Start()
         {
             spawnedPlayerPrefab = SpawnPlayer();
+            CreatePlayerEntry(PhotonNetwork.LocalPlayer);
         }
 
         #endregion
@@ -70,6 +72,18 @@ namespace EasyMeshVR.Multiplayer
                 Debug.Log("Destroying player prefab");
                 PhotonNetwork.Destroy(spawnedPlayerPrefab);
             }
+        }
+
+        public override void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            base.OnPlayerEnteredRoom(newPlayer);
+            CreatePlayerEntry(newPlayer);
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            base.OnPlayerLeftRoom(otherPlayer);
+            RemovePlayerEntry(otherPlayer);
         }
 
         #endregion
@@ -88,6 +102,16 @@ namespace EasyMeshVR.Multiplayer
         #endregion
 
         #region Private Methods
+
+        private void CreatePlayerEntry(Player player)
+        {
+            GameMenuManager.instance.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
+        }
+
+        private void RemovePlayerEntry(Player player)
+        {
+            GameMenuManager.instance.gameMenu.generalOptionsMenuPanel.RemovePlayerEntry(player);
+        }
 
         private Transform GetNextSpawnPoint()
         {

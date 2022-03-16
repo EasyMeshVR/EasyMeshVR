@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using EasyMeshVR.Core;
 using EasyMeshVR.Multiplayer;
@@ -59,12 +60,22 @@ namespace EasyMeshVR.UI
         [SerializeField]
         private Color subOptionSelectedColor;
 
+        [SerializeField]
+        private GameObject playerInfoArea;
+
+        [SerializeField]
+        private GameObject playerEntryPrefab;
+
+        private Dictionary<int, PlayerEntry> playerEntries;
+
         #endregion
 
         #region MonoBehaviourCallbacks
 
         void Start()
         {
+            playerEntries = new Dictionary<int, PlayerEntry>();
+
             // Set colors of sub-option buttons
             SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
             SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
@@ -183,6 +194,44 @@ namespace EasyMeshVR.UI
         public void OnClickedClearCanvasButton()
         {
             NetworkMeshManager.instance.SynchronizeClearCanvas();
+        }
+
+        #endregion
+
+        #region Multiplayer Menu Methods
+
+        public void CreatePlayerEntry(Player player)
+        {
+            if (player == null)
+            {
+                Debug.LogWarning("GeneralOptionsMenu:CreatePlayerEntry(): Received a null player object!");
+                return;
+            }
+
+            GameObject playerEntryObj = Instantiate(playerEntryPrefab, playerInfoArea.transform);
+            PlayerEntry playerEntry = playerEntryObj.GetComponent<PlayerEntry>();
+
+            playerEntry.playerName = player.NickName;
+
+            playerEntries.Add(player.ActorNumber, playerEntry);
+        }
+
+        public void RemovePlayerEntry(Player player)
+        {
+            if (player == null)
+            {
+                Debug.LogWarning("GeneralOptionsMenu:RemovePlayerEntry(): Received a null player object!");
+                return;
+            }
+
+            PlayerEntry removedPlayerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out removedPlayerEntry) && removedPlayerEntry)
+            {
+                Debug.LogFormat("Removing player number {0} with name {1} from the multiplayer menu", player.ActorNumber, player.NickName);
+                Destroy(removedPlayerEntry.gameObject);
+                playerEntries.Remove(player.ActorNumber);
+            }
         }
 
         #endregion

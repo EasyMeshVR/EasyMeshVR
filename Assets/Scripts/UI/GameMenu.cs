@@ -8,6 +8,13 @@ namespace EasyMeshVR.UI
 {
     public class GameMenu : MonoBehaviourPunCallbacks
     {
+        #region Public Fields
+
+        [SerializeField]
+        public GeneralOptionsMenu generalOptionsMenuPanel;
+
+        #endregion
+
         #region Private Fields
 
         [SerializeField]
@@ -18,9 +25,6 @@ namespace EasyMeshVR.UI
 
         [SerializeField]
         GameObject toolsPanel;
-
-        [SerializeField]
-        GeneralOptionsMenu generalOptionsMenuPanel;
 
         [SerializeField]
         GameObject settingsPanel;

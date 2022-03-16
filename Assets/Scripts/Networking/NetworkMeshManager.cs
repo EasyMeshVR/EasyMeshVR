@@ -164,11 +164,11 @@ namespace EasyMeshVR.Multiplayer
 
         #region Private Methods
 
-        private void RemoveCachedEvent(byte eventCode)
+        private void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.Others,
+                Receivers = receiverGroup,
                 CachingOption = EventCaching.RemoveFromRoomCache
             };
 
@@ -179,9 +179,9 @@ namespace EasyMeshVR.Multiplayer
         {
             // We clear the previous buffered events for importing a model and any cached edits,
             // so that newly joining players aren't importing older models and messing with null data.
-            RemoveCachedEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE);
-            RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE);
-            RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE);
+            RemoveCachedEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, ReceiverGroup.All);
+            RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, ReceiverGroup.Others);
         }
 
         #endregion

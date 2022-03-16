@@ -6,6 +6,7 @@ using Unity.XR.CoreUtils;
 using Photon.Pun;
 using TMPro;
 using EasyMeshVR.Core;
+using EasyMeshVR.UI;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -28,7 +29,7 @@ namespace EasyMeshVR.Multiplayer
         private Transform mainCameraTransform;
         private PhotonView photonView;
         private GameObject editingSpace;
-        
+
         #endregion
 
         #region MonoBehaviour Callbacks
