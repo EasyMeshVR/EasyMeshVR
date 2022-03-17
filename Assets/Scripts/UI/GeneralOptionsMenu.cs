@@ -232,14 +232,11 @@ namespace EasyMeshVR.UI
                 playerEntries = new Dictionary<int, PlayerEntry>();
             }
 
-            Debug.Log(player);
-            Debug.Log(playerEntryPrefab);
-            Debug.Log(playerInfoArea);
-
             GameObject playerEntryObj = Instantiate(playerEntryPrefab, playerInfoArea.transform);
             PlayerEntry playerEntry = playerEntryObj.GetComponent<PlayerEntry>();
 
             playerEntry.playerName = player.NickName;
+            playerEntry.isHost = player.IsMasterClient;
 
             playerEntries.Add(player.ActorNumber, playerEntry);
         }

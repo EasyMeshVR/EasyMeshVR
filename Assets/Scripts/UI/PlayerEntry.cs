@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Photon.Pun;
 
 namespace EasyMeshVR.UI
 {
@@ -32,7 +33,8 @@ namespace EasyMeshVR.UI
             set
             {
                 _isHost = value;
-                // TODO: toggle crown image
+                SetHostCrownVisible();
+                SetKickButtonEnabled();
             }
         }
 
@@ -47,12 +49,41 @@ namespace EasyMeshVR.UI
         private Button kickButton;
 
         [SerializeField]
+        private Image kickButtonIcon;
+
+        [SerializeField]
         private Button muteButton;
 
         [SerializeField]
         private Image hostCrownIcon;
 
-        private bool _isHost;
+        private bool _isHost = false;
+
+        #endregion
+
+        #region MonoBehaviour Callbacks
+
+        private void Start()
+        {
+            SetHostCrownVisible();
+            SetKickButtonEnabled();
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private void SetHostCrownVisible()
+        {
+            hostCrownIcon.enabled = _isHost;
+        }
+
+        private void SetKickButtonEnabled()
+        {
+            bool enabled = !_isHost && PhotonNetwork.IsMasterClient;
+            kickButtonIcon.enabled = enabled;
+            kickButton.enabled = enabled;
+        }
 
         #endregion
     }

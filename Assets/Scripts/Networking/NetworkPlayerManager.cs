@@ -94,9 +94,14 @@ namespace EasyMeshVR.Multiplayer
         {
             base.OnPlayerLeftRoom(otherPlayer);
             RemovePlayerEntry(otherPlayer);
-            
-            // TODO: if the player that left was the host, change the
-            // host crown icon to the correct player
+        }
+
+        public override void OnMasterClientSwitched(Player newMasterClient)
+        {
+            base.OnMasterClientSwitched(newMasterClient);
+
+            // TODO: Change the host crown icon to the correct host player
+            // and update the kick icons for the correct host
         }
 
         #endregion
@@ -145,12 +150,6 @@ namespace EasyMeshVR.Multiplayer
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 CreatePlayerEntry(player);
-
-                /*// Create the local player's entry right after the host
-                if (player.IsMasterClient && player != PhotonNetwork.LocalPlayer)
-                {
-                    CreatePlayerEntry(PhotonNetwork.LocalPlayer);
-                }*/
             }
         }
 
