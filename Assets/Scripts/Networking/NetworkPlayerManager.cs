@@ -100,8 +100,19 @@ namespace EasyMeshVR.Multiplayer
         {
             base.OnMasterClientSwitched(newMasterClient);
 
-            // TODO: Change the host crown icon to the correct host player
-            // and update the kick icons for the correct host
+            // Update the host entry
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.UpdateHostEntry(newMasterClient);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.UpdateHostEntry(newMasterClient);
+
+            // If the host switched to us, update every other players' entry
+            if (newMasterClient == PhotonNetwork.LocalPlayer)
+            {
+                foreach (Player player in PhotonNetwork.PlayerListOthers)
+                {
+                    radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.UpdateHostEntry(player);
+                    raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.UpdateHostEntry(player);
+                }
+            }
         }
 
         #endregion

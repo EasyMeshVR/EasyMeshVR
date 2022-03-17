@@ -259,6 +259,20 @@ namespace EasyMeshVR.UI
             }
         }
 
+        public void UpdateHostEntry(Player host)
+        {
+            PlayerEntry hostEntry;
+            
+            if (playerEntries.TryGetValue(host.ActorNumber, out hostEntry) && hostEntry)
+            {
+                hostEntry.isHost = host.IsMasterClient;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update host entry - Name: {0} ActorNumber {1}", host.NickName, host.ActorNumber);
+            }
+        }
+
         #endregion
 
         #region Private Methods
