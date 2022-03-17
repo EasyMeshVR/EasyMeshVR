@@ -29,6 +29,16 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField]
         private GameObject XROrigin;
 
+        [SerializeField]
+        private HandPresence leftHandRadiusPresence;
+
+        [SerializeField]
+        private HandPresence leftHandRayCastPresence;
+
+        private GameMenuManager radiusGameMenuManager;
+
+        private GameMenuManager raycastGameMenuManager;
+
         private GameObject spawnedPlayerPrefab;
 
         private int myPlayerNumber = 0;
@@ -56,7 +66,7 @@ namespace EasyMeshVR.Multiplayer
         void Start()
         {
             spawnedPlayerPrefab = SpawnPlayer();
-            CreatePlayerEntry(PhotonNetwork.LocalPlayer);
+            StartCoroutine(InitializeGameMenuPlayerEntries());
         }
 
         #endregion
@@ -84,6 +94,9 @@ namespace EasyMeshVR.Multiplayer
         {
             base.OnPlayerLeftRoom(otherPlayer);
             RemovePlayerEntry(otherPlayer);
+            
+            // TODO: if the player that left was the host, change the
+            // host crown icon to the correct player
         }
 
         #endregion
@@ -103,14 +116,54 @@ namespace EasyMeshVR.Multiplayer
 
         #region Private Methods
 
+        private IEnumerator InitializeGameMenuPlayerEntries()
+        {
+            if (!leftHandRadiusPresence.initialized && !leftHandRadiusPresence.initializing)
+            {
+                leftHandRadiusPresence.TryInitialize();
+            }
+            if (!leftHandRayCastPresence.initialized && !leftHandRayCastPresence.initializing)
+            {
+                leftHandRayCastPresence.TryInitialize();
+            }
+
+            while (leftHandRadiusPresence.initializing || leftHandRayCastPresence.initializing) 
+            {
+                Debug.Log("waiting on initialization of left hand presence");
+                yield return null;
+            }
+
+            raycastGameMenuManager = leftHandRayCastPresence.spawnedHandModel.GetComponent<GameMenuManager>();
+            radiusGameMenuManager = leftHandRadiusPresence.spawnedHandModel.GetComponent<GameMenuManager>();
+
+            InitializePlayerList();
+            
+        }
+
+        private void InitializePlayerList()
+        {
+            foreach (Player player in PhotonNetwork.PlayerList)
+            {
+                CreatePlayerEntry(player);
+
+                /*// Create the local player's entry right after the host
+                if (player.IsMasterClient && player != PhotonNetwork.LocalPlayer)
+                {
+                    CreatePlayerEntry(PhotonNetwork.LocalPlayer);
+                }*/
+            }
+        }
+
         private void CreatePlayerEntry(Player player)
         {
-            GameMenuManager.instance.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
         }
 
         private void RemovePlayerEntry(Player player)
         {
-            GameMenuManager.instance.gameMenu.generalOptionsMenuPanel.RemovePlayerEntry(player);
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.RemovePlayerEntry(player);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.RemovePlayerEntry(player);
         }
 
         private Transform GetNextSpawnPoint()

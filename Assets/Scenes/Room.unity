@@ -705,6 +705,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c2509c76b281144cb0099fc45f17a09, type: 3}
+--- !u!114 &675396854 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3621981467535291327, guid: 6c2509c76b281144cb0099fc45f17a09,
+    type: 3}
+  m_PrefabInstance: {fileID: 675396853}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b4a737903b82a43bb95804a2149147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -2713,6 +2725,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6885944694426427361}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6885944694426427365 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3621981466967685154, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6885944694426427361}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b4a737903b82a43bb95804a2149147, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &8680544116246475858
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2744,6 +2768,16 @@ PrefabInstance:
       propertyPath: rightHandController
       value: 
       objectReference: {fileID: 2059701652}
+    - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: leftHandRadiusPresence
+      value: 
+      objectReference: {fileID: 675396854}
+    - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: leftHandRayCastPresence
+      value: 
+      objectReference: {fileID: 6885944694426427365}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: spawnPoints.Array.data[0]

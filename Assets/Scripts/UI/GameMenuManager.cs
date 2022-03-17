@@ -10,8 +10,6 @@ namespace EasyMeshVR.UI
     {
         #region Public Fields
 
-        public static GameMenuManager instance { get; private set; }
-
         [SerializeField]
         public GameMenu gameMenu;
 
@@ -32,7 +30,7 @@ namespace EasyMeshVR.UI
 
         void Awake()
         {
-            instance = this;
+            Debug.Log("In GameMenuManager Awake()");
             toggleGameMenuRef.action.started += ToggleGameMenuAction;
         }
 

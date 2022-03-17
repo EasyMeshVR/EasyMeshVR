@@ -66,7 +66,12 @@ namespace EasyMeshVR.UI
         [SerializeField]
         private GameObject playerEntryPrefab;
 
+        [SerializeField]
+        private TMP_Text roomName;
+
         private Dictionary<int, PlayerEntry> playerEntries;
+
+        private bool initialized = false;
 
         #endregion
 
@@ -74,21 +79,36 @@ namespace EasyMeshVR.UI
 
         void Start()
         {
-            playerEntries = new Dictionary<int, PlayerEntry>();
+            Initialize();
+        }
 
-            // Set colors of sub-option buttons
-            SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(clearCanvasSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(multiplayerSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(activeSubOption, subOptionSelectedColor);
+        private void Initialize()
+        {
+            if (!initialized)
+            {
+                if (playerEntries == null)
+                {
+                    playerEntries = new Dictionary<int, PlayerEntry>();
+                }
 
-            // Disable all MainMenu panels except the active one
-            saveQuitPanel.SetActive(false);
-            cloudUploadDownloadPanel.SetActive(false);
-            clearCanvasPanel.SetActive(false);
-            multiplayerPanel.SetActive(false);
-            activePanel.SetActive(true);
+                roomName.text = (string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
+
+                // Set colors of sub-option buttons
+                SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(clearCanvasSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(multiplayerSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(activeSubOption, subOptionSelectedColor);
+
+                // Disable all MainMenu panels except the active one
+                saveQuitPanel.SetActive(false);
+                cloudUploadDownloadPanel.SetActive(false);
+                clearCanvasPanel.SetActive(false);
+                multiplayerPanel.SetActive(false);
+                activePanel.SetActive(true);
+
+                initialized = true;
+            }
         }
 
         #endregion
@@ -207,6 +227,14 @@ namespace EasyMeshVR.UI
                 Debug.LogWarning("GeneralOptionsMenu:CreatePlayerEntry(): Received a null player object!");
                 return;
             }
+            if (playerEntries == null)
+            {
+                playerEntries = new Dictionary<int, PlayerEntry>();
+            }
+
+            Debug.Log(player);
+            Debug.Log(playerEntryPrefab);
+            Debug.Log(playerInfoArea);
 
             GameObject playerEntryObj = Instantiate(playerEntryPrefab, playerInfoArea.transform);
             PlayerEntry playerEntry = playerEntryObj.GetComponent<PlayerEntry>();
