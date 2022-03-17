@@ -9,17 +9,22 @@ using EasyMeshVR.Multiplayer;
 public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
-    [SerializeField] LockVertex lockVertex;
+   // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
+
+    //[SerializeField] SwitchControllers switchControllers;
+
 
     GameObject model;
 
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
+
+    public bool isLocked;
 
     // Mesh data
     Mesh mesh;
@@ -38,6 +43,8 @@ public class MoveVertices : MonoBehaviour
         model = MeshRebuilder.instance.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
+
+        //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
         // Editing space objects
         editingSpace = MeshRebuilder.instance.editingSpace;
@@ -71,6 +78,8 @@ public class MoveVertices : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
 
+
+        //if(switchControllers.rayActive)
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
@@ -111,7 +120,7 @@ public class MoveVertices : MonoBehaviour
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked || thisvertex.isHeldByOther)
+        if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
         {
             grabInteractable.enabled = false;
             return;

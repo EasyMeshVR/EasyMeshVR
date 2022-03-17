@@ -71,3 +71,14 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 Assembly-CSharp.csproj
+Assembly-CSharp.csproj
+Assets/ExternalAssets/TextMesh Pro/Resources/Fonts & Materials/Roboto-Bold SDF.asset
+Assets/ExternalAssets/XR/Settings/Open XR Package Settings.asset
+Assets/Materials/Blue 1.mat
+Assets/Materials/Blue 1.mat.meta
+ProjectSettings/Packages/com.unity.learn.iet-framework/Settings.json
+UserSettings/EditorUserSettings.asset
+UserSettings/EditorUserSettings.asset
+Assembly-CSharp.csproj
+Assembly-CSharp.csproj
+Assembly-CSharp.csproj
