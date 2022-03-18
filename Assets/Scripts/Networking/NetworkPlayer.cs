@@ -72,7 +72,7 @@ namespace EasyMeshVR.Multiplayer
                 playerNameCanvas.enabled = false;
             }
 
-            // Finally add this NetworkPlayer to the running list of 
+            // Finally add this NetworkPlayer to the NetworkPlayerManager dictionary
             NetworkPlayerManager.instance.AddNetworkPlayer(this);
         }
 
