@@ -153,7 +153,6 @@ namespace EasyMeshVR.Multiplayer
             radiusGameMenuManager = leftHandRadiusPresence.spawnedHandModel.GetComponent<GameMenuManager>();
 
             InitializePlayerList();
-            
         }
 
         private void InitializePlayerList()

@@ -1380,31 +1380,27 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Right Resize",
+                    "type": "Value",
+                    "id": "a64a3bee-22eb-4afb-8542-c6aff7ef3170",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Left Resize",
+                    "type": "Value",
+                    "id": "184add96-de20-4ea7-ab7b-505c866c4aaa",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "73d24b27-40d9-406f-be37-2f9afabc22da",
-                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>/secondarybutton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Use Tool Secondary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1b9d8292-2ad6-4be2-9fd5-431d94e2061e",
-                    "path": "<ValveIndexController>{RightHand}/secondaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Use Tool Secondary",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "",
                     "id": "dbd20067-8149-4ab5-8a2e-0376796b0890",
@@ -1479,6 +1475,50 @@
                     "processors": "",
                     "groups": "",
                     "action": "StartButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0798b5da-180c-4fc1-bbb3-fc503b32967c",
+                    "path": "<ValveIndexController>{RightHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8d2814e1-9a83-4e46-bf79-999f354e7bdb",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerRight>/secondarybutton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Use Tool Secondary",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0c5341de-c5de-401c-adf7-0a71a57c815b",
+                    "path": "<XRController>{RightHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Right Resize",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "073bb487-7363-4b88-b769-0d767d6f6e35",
+                    "path": "<XRController>{LeftHand}/Primary2DAxis",
+                    "interactions": "",
+                    "processors": "StickDeadzone",
+                    "groups": "Continuous Move",
+                    "action": "Left Resize",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
