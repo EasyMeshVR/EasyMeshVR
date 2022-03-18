@@ -220,7 +220,7 @@ namespace EasyMeshVR.UI
 
         #region Multiplayer Menu Methods
 
-        public void CreatePlayerEntry(Player player)
+        public void CreatePlayerEntry(Player player, UnityEngine.Events.UnityAction onKickAction)
         {
             if (player == null)
             {
@@ -237,6 +237,7 @@ namespace EasyMeshVR.UI
 
             playerEntry.playerName = player.NickName;
             playerEntry.isHost = player.IsMasterClient;
+            playerEntry.AddKickButtonOnClickAction(onKickAction);
 
             playerEntries.Add(player.ActorNumber, playerEntry);
         }

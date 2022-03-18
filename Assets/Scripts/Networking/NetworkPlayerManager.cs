@@ -163,10 +163,25 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
+        private void OnKickAction(Player player)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                Debug.LogFormat("Kicking player Name: {0} ActorNumber: {1}", player.NickName, player.ActorNumber);
+                PhotonNetwork.CloseConnection(player);
+            }
+            else
+            {
+                Debug.LogWarningFormat("Cannot kick player Name: {0}. We are not the master client.", player.NickName);
+            }
+        }
+
         private void CreatePlayerEntry(Player player)
         {
-            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
-            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player);
+            UnityEngine.Events.UnityAction kickAction = delegate { OnKickAction(player); };
+
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction);
         }
 
         private void RemovePlayerEntry(Player player)

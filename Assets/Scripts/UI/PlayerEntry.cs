@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Photon.Pun;
+using Photon.Realtime;
 
 namespace EasyMeshVR.UI
 {
@@ -67,6 +68,20 @@ namespace EasyMeshVR.UI
         {
             SetHostCrownVisible();
             SetKickButtonEnabled();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void AddKickButtonOnClickAction(UnityEngine.Events.UnityAction onClickAction)
+        {
+            kickButton.onClick.AddListener(onClickAction);
+        }
+
+        public void AddMuteButtonOnClickAction(UnityEngine.Events.UnityAction onClickAction)
+        {
+            muteButton.onClick.AddListener(onClickAction);
         }
 
         #endregion
