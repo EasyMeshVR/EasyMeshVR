@@ -39,6 +39,20 @@ namespace EasyMeshVR.UI
             }
         }
 
+        public bool isMuted
+        {
+            get
+            {
+                return _isMuted;
+            }
+
+            set
+            {
+                _isMuted = value;
+                SetMuteButtonImage();
+            }
+        }
+
         #endregion
 
         #region Private Fields
@@ -56,9 +70,20 @@ namespace EasyMeshVR.UI
         private Button muteButton;
 
         [SerializeField]
+        private Image muteButtonIcon;
+
+        [SerializeField]
+        private Sprite unmutedSprite;
+
+        [SerializeField]
+        private Sprite mutedSprite;
+
+        [SerializeField]
         private Image hostCrownIcon;
 
         private bool _isHost = false;
+
+        private bool _isMuted = false;
 
         #endregion
 
@@ -84,6 +109,12 @@ namespace EasyMeshVR.UI
             muteButton.onClick.AddListener(onClickAction);
         }
 
+        public void ToggleMuteIconSprite()
+        {
+            _isMuted = !_isMuted;
+            SetMuteButtonImage();
+        }
+
         #endregion
 
         #region Private Methods
@@ -98,6 +129,18 @@ namespace EasyMeshVR.UI
             bool enabled = !_isHost && PhotonNetwork.IsMasterClient;
             kickButtonIcon.enabled = enabled;
             kickButton.enabled = enabled;
+        }
+
+        private void SetMuteButtonImage()
+        {
+            if (_isMuted)
+            {
+                muteButtonIcon.sprite = mutedSprite;
+            }
+            else
+            {
+                muteButtonIcon.sprite = unmutedSprite;
+            }
         }
 
         #endregion

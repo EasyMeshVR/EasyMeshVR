@@ -119,19 +119,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4552581230313594032}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &3354303745003112037
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,7 +146,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3354303745003112037}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0.005000062}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2617454354074339209}
@@ -264,6 +252,9 @@ MonoBehaviour:
   kickButton: {fileID: 4534736758004977007}
   kickButtonIcon: {fileID: 4552581230313594032}
   muteButton: {fileID: 325805905008476766}
+  muteButtonIcon: {fileID: 598864229596248311}
+  unmutedSprite: {fileID: 21300000, guid: d0a9c77b2c540f54181972b794c8ead1, type: 3}
+  mutedSprite: {fileID: 21300000, guid: eedaf0872a618404ea99903e5b479d60, type: 3}
   hostCrownIcon: {fileID: 5939844361962281338}
 --- !u!114 &6023945815001510937
 MonoBehaviour:
@@ -454,7 +445,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0.00004929304, y: 0}
+  m_AnchoredPosition: {x: -0.0026, y: 0}
   m_SizeDelta: {x: 0.02, y: 0.02}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &1702925436429310192
@@ -485,7 +476,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 47cb8b91050f48e449c758bab87c87c9, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d0a9c77b2c540f54181972b794c8ead1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -538,4 +529,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 598864229596248311}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8509859056021668149}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.PlayerEntry, Assembly-CSharp
+        m_MethodName: ToggleMuteIconSprite
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

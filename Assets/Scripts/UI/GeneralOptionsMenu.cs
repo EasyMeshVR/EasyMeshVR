@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -220,7 +221,7 @@ namespace EasyMeshVR.UI
 
         #region Multiplayer Menu Methods
 
-        public void CreatePlayerEntry(Player player, UnityEngine.Events.UnityAction onKickAction)
+        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction)
         {
             if (player == null)
             {
@@ -238,6 +239,7 @@ namespace EasyMeshVR.UI
             playerEntry.playerName = player.NickName;
             playerEntry.isHost = player.IsMasterClient;
             playerEntry.AddKickButtonOnClickAction(onKickAction);
+            playerEntry.AddMuteButtonOnClickAction(onMuteAction);
 
             playerEntries.Add(player.ActorNumber, playerEntry);
         }

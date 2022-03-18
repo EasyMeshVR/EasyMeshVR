@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using Photon.Pun;
 using Photon.Realtime;
+using Photon.Voice.Unity;
 using EasyMeshVR.Core;
 using EasyMeshVR.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -35,6 +37,9 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField]
         private HandPresence leftHandRayCastPresence;
 
+        [SerializeField]
+        private Recorder micRecorder;
+
         private GameMenuManager radiusGameMenuManager;
 
         private GameMenuManager raycastGameMenuManager;
@@ -44,6 +49,8 @@ namespace EasyMeshVR.Multiplayer
         private int myPlayerNumber = 0;
 
         private const string PLAYER_NUMBER_PROPERTY = "playerNumber";
+
+        private Dictionary<int, NetworkPlayer> networkPlayers;
 
         #endregion
 
@@ -65,6 +72,7 @@ namespace EasyMeshVR.Multiplayer
 
         void Start()
         {
+            networkPlayers = new Dictionary<int, NetworkPlayer>();
             spawnedPlayerPrefab = SpawnPlayer();
             StartCoroutine(InitializeGameMenuPlayerEntries());
         }
@@ -94,6 +102,7 @@ namespace EasyMeshVR.Multiplayer
         {
             base.OnPlayerLeftRoom(otherPlayer);
             RemovePlayerEntry(otherPlayer);
+            RemoveNetworkPlayer(otherPlayer.ActorNumber);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -118,6 +127,16 @@ namespace EasyMeshVR.Multiplayer
         #endregion
 
         #region Public Methods
+
+        public void AddNetworkPlayer(NetworkPlayer networkPlayer)
+        {
+            networkPlayers.Add(networkPlayer.photonView.OwnerActorNr, networkPlayer);
+        }
+
+        public void RemoveNetworkPlayer(int actorNumber)
+        {
+            networkPlayers.Remove(actorNumber);
+        }
 
         public GameObject SpawnPlayer()
         {
@@ -176,12 +195,45 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
+        private void OnMuteAction(Player player)
+        {
+            Debug.LogFormat("NetworkPlayerManager:OnMuteAction(): Muting player Name {0} ActorNumber {1}", player.NickName, player.ActorNumber);
+
+            // Mute our own mic from transmitting our voice
+            if (player == PhotonNetwork.LocalPlayer)
+            {
+                if (micRecorder.IsRecording)
+                {
+                    micRecorder.StopRecording();
+                }
+                else
+                {
+                    micRecorder.StartRecording();
+                }
+            }
+            // Mute the audio (locally) coming from other players
+            else
+            {
+                NetworkPlayer networkPlayer;
+                
+                if (networkPlayers.TryGetValue(player.ActorNumber, out networkPlayer) && networkPlayer)
+                {
+                    networkPlayer.ToggleMuteMic();
+                }
+                else
+                {
+                    Debug.LogWarningFormat("Could not mute player Name: {0} ActorNumber: {1}", player.NickName, player.ActorNumber);
+                }
+            }
+        }
+
         private void CreatePlayerEntry(Player player)
         {
-            UnityEngine.Events.UnityAction kickAction = delegate { OnKickAction(player); };
+            UnityAction kickAction = delegate { OnKickAction(player); };
+            UnityAction muteAction = delegate { OnMuteAction(player); };
 
-            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction);
-            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction);
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
         }
 
         private void RemovePlayerEntry(Player player)
