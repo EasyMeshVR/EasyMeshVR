@@ -76,7 +76,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9c36030b42f2304284a92bba6ac2280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  micAudioSource: {fileID: 7864060972919199130}
   head: {fileID: 2070135865318166593}
   leftHand: {fileID: 4535272410777809235}
   rightHand: {fileID: 2875063767760246561}
@@ -84,6 +83,7 @@ MonoBehaviour:
   rightHandAnimator: {fileID: 7376840665451898350}
   playerNameCanvas: {fileID: 6233472594560948969}
   playerNameText: {fileID: 8483653956014972165}
+  micAudioSource: {fileID: 7864060972919199130}
 --- !u!114 &8643552817863895899
 MonoBehaviour:
   m_ObjectHideFlags: 0

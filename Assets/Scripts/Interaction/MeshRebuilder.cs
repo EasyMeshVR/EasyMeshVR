@@ -218,6 +218,44 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         }
     }
 
+    public void ClearHeldDataForPlayer(Player player)
+    {
+        Debug.LogFormat("Called ClearHeldDataForPlayer for player Name: {0} ActorNumber: {1}", player.NickName, player.ActorNumber);
+
+        // We start a coroutine since this may be a long running process
+        // and we don't want to hang the main thread
+        StartCoroutine(ClearHeldData(player));
+    }
+
+    private IEnumerator ClearHeldData(Player player)
+    {
+        foreach (Vertex vertexObj in vertexObjects)
+        {
+            if (vertexObj.isHeldByOther && vertexObj.heldByActorNumber == player.ActorNumber)
+            {
+                Debug.LogFormat("Cleared vertex id: {0} held by player Name: {1} ActorNumber: {2}", vertexObj.id, player.NickName, player.ActorNumber);
+                vertexObj.isHeldByOther = false;
+                vertexObj.heldByActorNumber = -1;
+            }
+
+            yield return null;
+        }
+
+        foreach (Edge edgeObj in edgeObjects)
+        {
+            if (edgeObj.isHeldByOther && edgeObj.heldByActorNumber == player.ActorNumber)
+            {
+                Debug.LogFormat("Cleared edge id: {0} held by player Name: {1} ActorNumber: {2}", edgeObj.id, player.NickName, player.ActorNumber);
+                edgeObj.isHeldByOther = false;
+                edgeObj.heldByActorNumber = -1;
+                edgeObj.locked = false;
+                edgeObj.GetComponent<MoveEdge>().SetActiveEdges(edgeObj, true);
+            }
+
+            yield return null;
+        }
+    }
+
     public void OnEvent(EventData photonEvent)
     {
         byte eventCode = photonEvent.Code;
@@ -248,14 +286,17 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
     private void HandleMeshVertexPullEvent(object[] data)
     {
-        Vector3 vertex = (Vector3)data[0];
-        int index = (int)data[1];
-        bool released = (bool)data[2];
+        VertexPullEvent vertexEvent = VertexPullEvent.DeserializeEvent(data);
+
+        Vector3 vertexPos = vertexEvent.vertexPos;
+        int index = vertexEvent.id;
+        bool released = vertexEvent.released;
         Vertex vertexObj = vertexObjects[index];
         MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
-        vertexObj.transform.localPosition = vertex;
+        vertexObj.transform.localPosition = vertexPos;
         vertexObj.isHeldByOther = !released;
-        vertices[index] = vertex;
+        vertexObj.heldByActorNumber = (released) ? -1 : vertexEvent.actorNumber;
+        vertices[index] = vertexPos;
         moveVertices.UpdateMesh(index);
     }
 
@@ -267,7 +308,9 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         Vertex vert1Obj = vertexObjects[edgeEvent.vert1];
         Vertex vert2Obj = vertexObjects[edgeEvent.vert2];
         MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+        int heldByActorNumber = (edgeEvent.released) ? -1 : edgeEvent.actorNumber;
         edgeObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = !edgeEvent.released;
+        edgeObj.heldByActorNumber = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = heldByActorNumber;
         vert1Obj.transform.localPosition = edgeEvent.vertex1Pos;
         vert2Obj.transform.localPosition = edgeEvent.vertex2Pos;
         vertices[edgeEvent.vert1] = edgeEvent.vertex1Pos;

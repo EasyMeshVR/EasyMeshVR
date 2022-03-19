@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using Photon.Pun;
 using EasyMeshVR.Multiplayer;
 
 public class MoveVertices : MonoBehaviour
@@ -112,8 +113,17 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
+        VertexPullEvent vertexEvent = new VertexPullEvent()
+        {
+            id = selectedVertex,
+            vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+            released = true,
+            isCached = true,
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+        };
+
         // Synchronize the position of the mesh vertex by sending a cached event to other players
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, true, true);
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
     }
 
@@ -135,8 +145,17 @@ public class MoveVertices : MonoBehaviour
             UpdateVertex(transform, selectedVertex);
             UpdateMesh(selectedVertex);
 
+            VertexPullEvent vertexEvent = new VertexPullEvent()
+            {
+                id = selectedVertex,
+                vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+                released = false,
+                isCached = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
+
             // Continuously synchronize the position of the vertex without caching it until we release it
-            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, false, false);
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         }
     }
 

@@ -132,9 +132,9 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.CLEAR_CANVAS_EVENT_CODE, null, clearCanvasEventOptions, SendOptions.SendReliable);
         }
 
-        public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false, bool released = false)
+        public void SynchronizeMeshVertexPull(VertexPullEvent vertexEvent)
         {
-            EventCaching cachingOption = (isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+            EventCaching cachingOption = (vertexEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
 
             RaiseEventOptions meshVertexPullEventOptions = new RaiseEventOptions
             {
@@ -142,7 +142,7 @@ namespace EasyMeshVR.Multiplayer
                 CachingOption = cachingOption
             };
 
-            object[] content = new object[] { vertex, index, released };
+            object[] content = VertexPullEvent.SerializeEvent(vertexEvent);
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, content, meshVertexPullEventOptions, SendOptions.SendReliable);
         }
 

@@ -103,6 +103,8 @@ namespace EasyMeshVR.Multiplayer
             base.OnPlayerLeftRoom(otherPlayer);
             RemovePlayerEntry(otherPlayer);
             RemoveNetworkPlayer(otherPlayer.ActorNumber);
+
+            MeshRebuilder.instance.ClearHeldDataForPlayer(otherPlayer);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
