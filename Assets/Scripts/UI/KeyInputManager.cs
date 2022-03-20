@@ -12,7 +12,7 @@ namespace EasyMeshVR.UI
         #region Private Fields
 
         [SerializeField]
-        private Keyboard keyboard;
+        private VRKeys.Keyboard keyboard;
 
         private TMP_InputField inputField;
 

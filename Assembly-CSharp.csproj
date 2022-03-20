@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,9 +53,6 @@
     <UnityVersion>2020.3.20f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\HandCollider.cs" />
     <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
@@ -63,6 +60,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\ButtonHandler.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\PulleyLocomotion.cs" />
+    <Compile Include="Assets\Scripts\Tools\ToolClass.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\VirtualInput.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\Dvorak.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\ChangePOV.cs" />
@@ -82,6 +80,7 @@
     <Compile Include="Assets\Scripts\Networking\NetworkEvents.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
     <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
+    <Compile Include="Assets\Scripts\Misc\ChangeMatClosest.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\PhotonDemoExtensions.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
@@ -139,6 +138,7 @@
     <Compile Include="Assets\Scripts\Networking\ModelImportExport.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Keyboard.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Key.cs" />
+    <Compile Include="Assets\Scripts\Tools\ToolRaycast.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Controller.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\DemoVoiceUI.cs" />
@@ -154,9 +154,10 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
     <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\Tools\ToolRaycast.cs" />
-    <Compile Include="Assets\Scripts\Tools\ToolClass.cs" />
-    <Compile Include="Assets\Scripts\Misc\ChangeMatClosest.cs" />
+    <Compile Include="Assets\Scripts\UI\ButtonVR.cs" />
+    <Compile Include="Assets\Scripts\UI\KeyboardButton.cs" />
+    <Compile Include="Assets\Scripts\UI\Keyboard.cs" />
+    <Compile Include="Assets\Scripts\UI\TypingArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
