@@ -2854,11 +2854,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694105057828, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
-      propertyPath: m_UseForceGrab
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6885944694105057828, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
-        type: 3}
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 97838035}
@@ -2888,11 +2883,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_TagString
       value: RightController
-      objectReference: {fileID: 0}
-    - target: {fileID: 6885944694309307568, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
-        type: 3}
-      propertyPath: m_UseForceGrab
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694309307568, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}

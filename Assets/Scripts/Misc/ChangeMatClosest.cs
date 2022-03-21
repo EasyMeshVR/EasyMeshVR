@@ -34,7 +34,7 @@ public class ChangeMatClosest : MonoBehaviour
         foreach(Collider c in allOverlappingColliders)
         {
             float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
-
+ 
             if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag(Constants.GAME_CONTROLLER_TAG))
             {
                 nearObjectDistance = curDistance;
@@ -60,8 +60,6 @@ public class ChangeMatClosest : MonoBehaviour
 
             if (materialSwap == null)
             {
-                Debug.LogWarning("MeshRenderer component is null for GameObject Name: " + nearObject.name 
-                    + "\nCheck that the collision matrix layers are setup properly in Project Settings.");
                 return;
             }
 

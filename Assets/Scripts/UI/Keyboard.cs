@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 using System;
 using TMPro;
 
 namespace EasyMeshVR.UI
 {
-    // TODO: make the keyboard interactable (can be moved around/rotated with your hands)
     public class Keyboard : MonoBehaviour
     {
+        [SerializeField] XRGrabInteractable grabInteractable;
+        [SerializeField] Material unselected;
+        [SerializeField] Material hovered;
+        [SerializeField] Material selected;
+        [SerializeField] MeshRenderer boardMeshRenderer;
+
         public TMP_InputField activeInputField;
         public TMP_InputField defaultPanelInputField;
         public TMP_InputField importModelPanelInputField;
@@ -57,6 +63,39 @@ namespace EasyMeshVR.UI
             Vector3 forwardVec = Vector3.Scale(0.35f * Vector3.one, transform.rotation * Vector3.forward);
             transform.position = mainCameraTransform.position + new Vector3(0f, -0.6f, 0f);
             transform.position += forwardVec;
+
+            grabInteractable.hoverEntered.AddListener(HoverOver);
+            grabInteractable.hoverExited.AddListener(HoverExit);
+            grabInteractable.selectEntered.AddListener(GrabPulled);
+            grabInteractable.selectExited.AddListener(GrabReleased);
+        }
+
+        void OnDisable()
+        {
+            grabInteractable.hoverEntered.RemoveListener(HoverOver);
+            grabInteractable.hoverExited.RemoveListener(HoverExit);
+            grabInteractable.selectEntered.RemoveListener(GrabPulled);
+            grabInteractable.selectExited.RemoveListener(GrabReleased);
+        }
+
+        void HoverOver(HoverEnterEventArgs arg0)
+        {
+            boardMeshRenderer.material = hovered;
+        }
+
+        void HoverExit(HoverExitEventArgs arg0)
+        {
+            boardMeshRenderer.material = unselected;
+        }
+
+        void GrabPulled(SelectEnterEventArgs arg0)
+        {
+            boardMeshRenderer.material = selected;
+        }
+
+        void GrabReleased(SelectExitEventArgs arg0)
+        {
+            boardMeshRenderer.material = unselected;
         }
 
         public void Enable()
