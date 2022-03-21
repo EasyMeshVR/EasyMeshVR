@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using VRKeys;
 
 namespace EasyMeshVR.UI
 {
@@ -12,7 +11,7 @@ namespace EasyMeshVR.UI
         #region Private Fields
 
         [SerializeField]
-        private VRKeys.Keyboard keyboard;
+        private Keyboard keyboard;
 
         private TMP_InputField inputField;
 
@@ -24,11 +23,6 @@ namespace EasyMeshVR.UI
         void Awake()
         {
             instance = this;
-        }
-
-        void Start()
-        {
-
         }
 
         #endregion

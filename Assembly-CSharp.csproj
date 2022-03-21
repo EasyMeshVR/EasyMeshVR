@@ -75,7 +75,6 @@
     <Compile Include="Assets\Scripts\UI\PlayerEntry.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\CharacterInstantiation.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\TouchPad.cs" />
-    <Compile Include="Assets\Scripts\Misc\KeyboardOffset.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\Joystick.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkEvents.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />

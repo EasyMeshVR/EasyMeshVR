@@ -1,44 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
-public class TypingArea : MonoBehaviour
+namespace EasyMeshVR.UI
 {
-    public GameObject leftHand;
-    public GameObject rightHand;
-    public GameObject leftTypingHand;
-    public GameObject rightTypingHand;
-
-    private void OnTriggerEnter(Collider other)
+    public class TypingArea : MonoBehaviour
     {
-        GameObject hand = other.GetComponentInParent<XRController>().gameObject;
-
-        if (hand == null) return;
-
-        if (hand == leftHand)
+        private void Start()
         {
-            leftTypingHand.SetActive(true);
+            
         }
-        else if (hand == rightHand)
+
+        private void OnTriggerEnter(Collider other)
         {
-            rightTypingHand.SetActive(true);
+            
         }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        GameObject hand = other.GetComponentInParent<XRController>().gameObject;
-
-        if (hand == null) return;
-
-        if (hand == leftHand)
+        private void OnTriggerExit(Collider other)
         {
-            leftTypingHand.SetActive(false);
-        }
-        else if (hand == rightHand)
-        {
-            rightTypingHand.SetActive(false);
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EasyMeshVR.Core;
 
 // When using radius controllers, only highlight nearest object
 public class ChangeMatClosest : MonoBehaviour
@@ -34,7 +35,7 @@ public class ChangeMatClosest : MonoBehaviour
         {
             float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
 
-            if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag("GameController"))
+            if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag(Constants.GAME_CONTROLLER_TAG))
             {
                 nearObjectDistance = curDistance;
                 nearObject = c.gameObject;
@@ -56,6 +57,13 @@ public class ChangeMatClosest : MonoBehaviour
                     return;
 
             materialSwap = nearObject.GetComponent<MeshRenderer>();
+
+            if (materialSwap == null)
+            {
+                Debug.LogWarning("material swap is null for object: " + nearObject.name);
+                return;
+            }
+
             materialSwap.material = hoveredO;
         }
      }

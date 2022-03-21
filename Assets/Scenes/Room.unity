@@ -705,6 +705,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Left Hand Presence
       objectReference: {fileID: 0}
+    - target: {fileID: 3621981467535291326, guid: 6c2509c76b281144cb0099fc45f17a09,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6c2509c76b281144cb0099fc45f17a09, type: 3}
 --- !u!114 &675396854 stripped
@@ -966,7 +971,7 @@ GameObject:
   - component: {fileID: 1282352286}
   - component: {fileID: 1282352285}
   - component: {fileID: 1282352289}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftRadius
   m_TagString: GameController
   m_Icon: {fileID: 0}
@@ -1442,6 +1447,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Right Hand Presence
       objectReference: {fileID: 0}
+    - target: {fileID: 3621981467535291326, guid: ddc38db09f9124241b4b4e9b2b9831eb,
+        type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ddc38db09f9124241b4b4e9b2b9831eb, type: 3}
 --- !u!1 &1355196005
@@ -1605,7 +1615,7 @@ GameObject:
   - component: {fileID: 1645407436}
   - component: {fileID: 1645407435}
   - component: {fileID: 1645407434}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LeftSphere
   m_TagString: GameController
   m_Icon: {fileID: 0}
@@ -1750,7 +1760,7 @@ GameObject:
   - component: {fileID: 1858885733}
   - component: {fileID: 1858885732}
   - component: {fileID: 1858885731}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightSphere
   m_TagString: GameController
   m_Icon: {fileID: 0}
@@ -1981,7 +1991,7 @@ GameObject:
   - component: {fileID: 2059701654}
   - component: {fileID: 2059701658}
   - component: {fileID: 2059701659}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RightRadius
   m_TagString: GameController
   m_Icon: {fileID: 0}
@@ -2837,6 +2847,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6885944694105057824, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_TagString
+      value: LeftController
+      objectReference: {fileID: 0}
     - target: {fileID: 6885944694105057828, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_UseForceGrab
@@ -2872,7 +2887,7 @@ PrefabInstance:
     - target: {fileID: 6885944694309307564, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_TagString
-      value: Untagged
+      value: RightController
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694309307568, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
