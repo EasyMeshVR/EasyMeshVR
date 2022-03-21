@@ -12,23 +12,32 @@ namespace EasyMeshVR.UI
     public class Keyboard : MonoBehaviour
     {
         [SerializeField] XRGrabInteractable grabInteractable;
+        [SerializeField] Transform defaultBoardAttachTransform;
+        [SerializeField] Transform numpadBoardAttachTransform;
         [SerializeField] Material unselected;
         [SerializeField] Material hovered;
         [SerializeField] Material selected;
-        [SerializeField] MeshRenderer boardMeshRenderer;
+        [SerializeField] MeshRenderer defaultBoardMeshRenderer;
+        [SerializeField] MeshRenderer numpadBoardMeshRenderer;
 
-        public TMP_InputField activeInputField;
-        public TMP_InputField defaultPanelInputField;
-        public TMP_InputField importModelPanelInputField;
+        [SerializeField] GameObject defaultBoard;
+        [SerializeField] GameObject numpadBoard;
 
-        public GameObject defaultPanel;
-        public GameObject importModelPanel;
-        public TMP_Text errorText;
-        public TMP_Text successText;
-        public GameObject normalButtons;
-        public GameObject capsButtons;
-        public ButtonVR enterButton;
-        public bool caps;
+        [SerializeField] TMP_InputField activeInputField;
+        [SerializeField] TMP_InputField defaultPanelInputField;
+        [SerializeField] TMP_InputField importModelPanelInputField;
+
+        [SerializeField] ButtonVR activeEnterButton;
+        [SerializeField] ButtonVR enterButtonDefault;
+        [SerializeField] ButtonVR enterButtonNumpad;
+
+        [SerializeField] GameObject defaultPanel;
+        [SerializeField] GameObject importModelPanel;
+        [SerializeField] TMP_Text errorText;
+        [SerializeField] TMP_Text successText;
+        [SerializeField] GameObject normalButtons;
+        [SerializeField] GameObject capsButtons;
+        [SerializeField] bool caps;
 
         [Serializable]
         public class KeyboardUpdateEvent : UnityEvent<string> { }
@@ -55,6 +64,9 @@ namespace EasyMeshVR.UI
 
         void OnEnable()
         {
+            defaultBoardMeshRenderer.material = unselected;
+            numpadBoardMeshRenderer.material = unselected;
+
             // Rotate the keyboard around its y-axis based on the mainCamera's y rotation
             transform.rotation = Quaternion.identity;
             transform.RotateAround(transform.position, Vector3.up, mainCameraTransform.rotation.eulerAngles.y);
@@ -78,24 +90,29 @@ namespace EasyMeshVR.UI
             grabInteractable.selectExited.RemoveListener(GrabReleased);
         }
 
+        MeshRenderer GetActiveBoardMeshRenderer()
+        {
+            return (activeEnterButton == enterButtonDefault) ? defaultBoardMeshRenderer : numpadBoardMeshRenderer;
+        }
+
         void HoverOver(HoverEnterEventArgs arg0)
         {
-            boardMeshRenderer.material = hovered;
+            GetActiveBoardMeshRenderer().material = hovered;
         }
 
         void HoverExit(HoverExitEventArgs arg0)
         {
-            boardMeshRenderer.material = unselected;
+            GetActiveBoardMeshRenderer().material = unselected;
         }
 
         void GrabPulled(SelectEnterEventArgs arg0)
         {
-            boardMeshRenderer.material = selected;
+            GetActiveBoardMeshRenderer().material = selected;
         }
 
         void GrabReleased(SelectExitEventArgs arg0)
         {
-            boardMeshRenderer.material = unselected;
+            GetActiveBoardMeshRenderer().material = unselected;
         }
 
         public void Enable()
@@ -105,16 +122,24 @@ namespace EasyMeshVR.UI
 
         public void DisplayImportModelPanel()
         {
+            numpadBoard.SetActive(true);
+            defaultBoard.SetActive(false);
             activeInputField = importModelPanelInputField;
+            activeEnterButton = enterButtonNumpad;
             defaultPanel.SetActive(false);
             importModelPanel.SetActive(true);
+            grabInteractable.attachTransform = numpadBoardAttachTransform;
         }
 
         public void DisplayDefaultPanel()
         {
+            numpadBoard.SetActive(false);
+            defaultBoard.SetActive(true);
             activeInputField = defaultPanelInputField;
+            activeEnterButton = enterButtonDefault;
             defaultPanel.SetActive(true);
             importModelPanel.SetActive(false);
+            grabInteractable.attachTransform = defaultBoardAttachTransform;
         }
 
         public void Disable()
@@ -141,12 +166,12 @@ namespace EasyMeshVR.UI
 
         public void AddEnterButtonOnReleaseEvent(UnityAction onReleaseAction)
         {
-            enterButton.onRelease.AddListener(onReleaseAction);
+            activeEnterButton.onRelease.AddListener(onReleaseAction);
         }
 
         public void AddEnterButtonOnReleaseEvent(Action<string> onReleaseAction)
         {
-            enterButton.onRelease.AddListener(delegate
+            activeEnterButton.onRelease.AddListener(delegate
             {
                 HandleImportModel(onReleaseAction);
             });
@@ -192,7 +217,7 @@ namespace EasyMeshVR.UI
 
         public void RemoveEnterButtonOnReleaseEvent()
         {
-            enterButton.onRelease.RemoveAllListeners();
+            activeEnterButton.onRelease.RemoveAllListeners();
         }
 
         public void InsertChar(string c)
