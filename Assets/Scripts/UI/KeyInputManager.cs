@@ -92,6 +92,8 @@ namespace EasyMeshVR.UI
         public void Cancel()
         {
             keyboard.ClearText();
+            keyboard.ClearErrorMessage();
+            keyboard.ClearSuccessMessage();
 
             if (inputField != null)
             {
@@ -103,7 +105,7 @@ namespace EasyMeshVR.UI
 
         public void EnableKeyboardForImportingModel(Action<string> callback)
         {
-            // TODO: enable keyboard with numpad and a custom background canvas
+            // TODO: enable keyboard numpad layout and a custom background canvas
             keyboard.Enable();
             keyboard.DisplayImportModelPanel();
             keyboard.AddEnterButtonOnReleaseEvent(callback);

@@ -54,7 +54,7 @@ namespace EasyMeshVR.UI
             transform.RotateAround(transform.position, Vector3.up, mainCameraTransform.rotation.eulerAngles.y);
 
             // Posiiton the keyboard in front of the mainCamera
-            Vector3 forwardVec = Vector3.Scale(0.4f * Vector3.one, transform.rotation * Vector3.forward);
+            Vector3 forwardVec = Vector3.Scale(0.35f * Vector3.one, transform.rotation * Vector3.forward);
             transform.position = mainCameraTransform.position + new Vector3(0f, -0.6f, 0f);
             transform.position += forwardVec;
         }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2122032082726902169}
   - component: {fileID: 2122032082726902151}
   - component: {fileID: 2122032082726902150}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Button Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 2122032084071874839}
   - component: {fileID: 2122032084071874838}
   - component: {fileID: 2122032084071874921}
-  m_Layer: 5
+  m_Layer: 9
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3666640046305488087}
   - component: {fileID: 3666640046305488084}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Keyboard Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -294,7 +294,7 @@ GameObject:
   - component: {fileID: 7387235778031055507}
   - component: {fileID: 7387235778031055510}
   - component: {fileID: 7387235778031055509}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +377,7 @@ GameObject:
   - component: {fileID: 7387235779626734558}
   - component: {fileID: 7387235779626734557}
   - component: {fileID: 7387235779626734528}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Collider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -409,8 +409,8 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 2.0404487, z: 1}
+  m_Center: {x: 0, y: -0.5202214, z: 0}
 --- !u!54 &7387235779626734558
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -553,7 +553,7 @@ GameObject:
   - component: {fileID: 7387235779955971853}
   - component: {fileID: 7387235779955971952}
   - component: {fileID: 7387235779955971855}
-  m_Layer: 7
+  m_Layer: 9
   m_Name: Press
   m_TagString: Untagged
   m_Icon: {fileID: 0}
