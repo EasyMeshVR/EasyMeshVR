@@ -54,7 +54,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\HandCollider.cs" />
     <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
     <Compile Include="Assets\Scripts\UI\RoomEntry.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonLibs\WebSocket\SocketWebTcp.cs" />
@@ -62,16 +61,14 @@
     <Compile Include="Assets\Scripts\Abilities\Locomotion\PulleyLocomotion.cs" />
     <Compile Include="Assets\Scripts\Tools\ToolClass.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\VirtualInput.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\Dvorak.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\ChangePOV.cs" />
     <Compile Include="Assets\Scripts\Interaction\MeshRebuilder.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+    <Compile Include="Assets\Scripts\UI\TypingArea.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layout.cs" />
     <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
     <Compile Include="Assets\Scripts\Misc\SwitchControllers.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ShiftKey.cs" />
     <Compile Include="Assets\Scripts\UI\PlayerEntry.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\CharacterInstantiation.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\TouchPad.cs" />
@@ -80,7 +77,6 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChannelSelector.cs" />
     <Compile Include="Assets\Scripts\Misc\ResizeRadius.cs" />
     <Compile Include="Assets\Scripts\Misc\ChangeMatClosest.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\SpaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\PhotonDemoExtensions.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\SidebarToggle.cs" />
@@ -89,11 +85,8 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\ChangeName.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\BetterToggle.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Layouts\French.cs" />
     <Compile Include="Assets\Scripts\Interaction\Vertex.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\FirstPersonController.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Example\DemoScene.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Placement.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\OLDTransRotateScale.cs" />
     <Compile Include="Assets\Scripts\UI\GeneralOptionsMenu.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\SoundsForJoinAndLeave.cs" />
@@ -103,7 +96,6 @@
     <Compile Include="Assets\Scripts\Interaction\MoveEdge.cs" />
     <Compile Include="Assets\Scripts\Networking\Launcher.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenuManager.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Mallet.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\MouseLookHelper.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkMeshManager.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkPlayer.cs" />
@@ -114,32 +106,28 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextButtonTransition.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\PointersController.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\ControllersMidpoint.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\CancelKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\Highlighter.cs" />
     <Compile Include="Assets\Scripts\Networking\XRGrabNetworkInteractable.cs" />
     <Compile Include="Assets\Scripts\Interaction\MoveVertices.cs" />
+    <Compile Include="Assets\Scripts\UI\KeyboardButton.cs" />
+    <Compile Include="Assets\Scripts\UI\ButtonVR.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\ProximityVoiceTrigger.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LetterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\MicrophoneDropdownFiller.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\BaseController.cs" />
     <Compile Include="Assets\Scripts\Networking\ApiRequester.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\CodecSettingsUI.cs" />
+    <Compile Include="Assets\Scripts\UI\Keyboard.cs" />
     <Compile Include="Assets\Scripts\Misc\Constants.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\BackspaceKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\UiExtensions.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\ClearKey.cs" />
     <Compile Include="Assets\Scripts\Tools\ToolManager.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\Tools\LockVertex.cs" />
     <Compile Include="Assets\Scripts\UI\InputField.cs" />
     <Compile Include="Assets\Scripts\Networking\ModelImportExport.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Keyboard.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Key.cs" />
     <Compile Include="Assets\Scripts\Tools\ToolRaycast.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\FriendItem.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\Controller.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\DemoVoiceUI.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatGui.cs" />
     <Compile Include="Assets\Scripts\UI\KeyInputManager.cs" />
@@ -148,15 +136,9 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\InputAxisScrollbar.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\ThirdPersonController.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\EnterKey.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\MobileControlRig.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
-    <Compile Include="Assets\ExternalAssets\VRKeys\Scripts\LayoutList.cs" />
-    <Compile Include="Assets\Scripts\UI\ButtonVR.cs" />
-    <Compile Include="Assets\Scripts\UI\KeyboardButton.cs" />
-    <Compile Include="Assets\Scripts\UI\Keyboard.cs" />
-    <Compile Include="Assets\Scripts\UI\TypingArea.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />

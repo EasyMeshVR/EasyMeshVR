@@ -60,7 +60,8 @@ public class ChangeMatClosest : MonoBehaviour
 
             if (materialSwap == null)
             {
-                Debug.LogWarning("material swap is null for object: " + nearObject.name);
+                Debug.LogWarning("MeshRenderer component is null for GameObject Name: " + nearObject.name 
+                    + "\nCheck that the collision matrix layers are setup properly in Project Settings.");
                 return;
             }
 

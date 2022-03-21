@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 namespace EasyMeshVR.UI
@@ -43,6 +45,32 @@ namespace EasyMeshVR.UI
             keyboard.Disable();
         }
 
+        public void AddButtonOnClick(Button button)
+        {
+            UnityAction action = delegate
+            {
+                button.onClick.Invoke();
+                Submit();
+            };
+
+            keyboard.AddEnterButtonOnReleaseEvent(action);
+        }
+
+        public void DisplayErrorMessage(string errorMsg)
+        {
+            keyboard.DisplayErrorMessage(errorMsg);
+        }
+
+        public void DisplaySuccessMessage(string successMsg)
+        {
+            keyboard.DisplaySuccessMessage(successMsg);
+        }
+
+        public void RemoveButtonOnClick()
+        {
+            keyboard.RemoveEnterButtonOnReleaseEvent();
+        }
+
         public void UpdateTextField(string text)
         {
             if (inputField != null)
@@ -53,8 +81,32 @@ namespace EasyMeshVR.UI
 
         public void Submit()
         {
-            this.inputField = null;
-            keyboard.SetText(string.Empty);
+            keyboard.ClearText();
+
+            if (inputField != null)
+            {
+                inputField.ReleaseSelection();
+            }
+        }
+
+        public void Cancel()
+        {
+            keyboard.ClearText();
+
+            if (inputField != null)
+            {
+                inputField.ReleaseSelection();
+            }
+
+            keyboard.Disable();
+        }
+
+        public void EnableKeyboardForImportingModel(Action<string> callback)
+        {
+            // TODO: enable keyboard with numpad and a custom background canvas
+            keyboard.Enable();
+            keyboard.DisplayImportModelPanel();
+            keyboard.AddEnterButtonOnReleaseEvent(callback);
         }
 
         #endregion

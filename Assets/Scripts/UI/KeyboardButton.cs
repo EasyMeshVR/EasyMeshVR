@@ -14,7 +14,7 @@ namespace EasyMeshVR.UI
         // Start is called before the first frame update
         void Start()
         {
-            if (buttonText.text.Length == 1)
+            if (buttonText.text.Length == 1 && !buttonText.text.Equals("X"))
             {
                 NameToButtonText();
                 button.onRelease.AddListener(delegate

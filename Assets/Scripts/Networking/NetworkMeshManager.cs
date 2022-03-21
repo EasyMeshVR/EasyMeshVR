@@ -23,7 +23,7 @@ namespace EasyMeshVR.Multiplayer
         #region Private Fields
 
         private PhotonView photonView;
-        private Action<bool> importCallback = null;
+        private Action<bool, string> importCallback = null;
 
         #endregion
 
@@ -57,11 +57,9 @@ namespace EasyMeshVR.Multiplayer
         {
             if (!string.IsNullOrEmpty(error))
             {
-                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
-
                 if (importCallback != null)
                 {
-                    importCallback.Invoke(false);
+                    importCallback.Invoke(false, error);
                 }
                 return;
             }
@@ -78,7 +76,7 @@ namespace EasyMeshVR.Multiplayer
 
                 if (importCallback != null)
                 {
-                    importCallback.Invoke(false);
+                    importCallback.Invoke(false, "Imported STL mesh was invalid.");
                 }
                 return;
             }
@@ -91,7 +89,7 @@ namespace EasyMeshVR.Multiplayer
 
             if (importCallback != null)
             {
-                importCallback.Invoke(true);
+                importCallback.Invoke(true, "");
             }
         }
 
@@ -99,7 +97,7 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
-        public void SynchronizeMeshImport(string modelCode, Action<bool> callback = null)
+        public void SynchronizeMeshImport(string modelCode, Action<bool, string> callback = null)
         {
             importCallback = callback;
 
