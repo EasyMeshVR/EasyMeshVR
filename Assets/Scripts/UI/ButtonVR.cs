@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class ButtonVR : MonoBehaviour
 {
@@ -27,6 +28,17 @@ public class ButtonVR : MonoBehaviour
     {
         if (!isPressed)
         {
+            ActionBasedController controller = other.GetComponentInParent<ActionBasedController>();
+
+            if (controller != null)
+            {
+                controller.SendHapticImpulse(0.3f, 0.05f);
+            }
+            else
+            {
+                Debug.LogWarningFormat("Could not find XRController in parent of GameObject {0}", other.name);
+            }
+            
             button.transform.localPosition = new Vector3(0, 0.003f, 0);
             presser = other.gameObject;
             onPress.Invoke();

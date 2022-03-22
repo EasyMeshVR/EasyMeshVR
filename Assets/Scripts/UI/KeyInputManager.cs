@@ -105,7 +105,6 @@ namespace EasyMeshVR.UI
 
         public void EnableKeyboardForImportingModel(Action<string> callback)
         {
-            // TODO: enable keyboard numpad layout and a custom background canvas
             keyboard.Enable();
             keyboard.DisplayImportModelPanel();
             keyboard.AddEnterButtonOnReleaseEvent(callback);
