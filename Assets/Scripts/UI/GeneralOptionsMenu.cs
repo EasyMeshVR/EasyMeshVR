@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using EasyMeshVR.Core;
 using EasyMeshVR.Multiplayer;
@@ -59,25 +61,55 @@ namespace EasyMeshVR.UI
         [SerializeField]
         private Color subOptionSelectedColor;
 
+        [SerializeField]
+        private GameObject playerInfoArea;
+
+        [SerializeField]
+        private GameObject playerEntryPrefab;
+
+        [SerializeField]
+        private TMP_Text roomName;
+
+        private Dictionary<int, PlayerEntry> playerEntries;
+
+        private bool initialized = false;
+
         #endregion
 
         #region MonoBehaviourCallbacks
 
         void Start()
         {
-            // Set colors of sub-option buttons
-            SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(clearCanvasSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(multiplayerSubOption, subOptionDefaultColor);
-            SetSubOptionButtonColor(activeSubOption, subOptionSelectedColor);
+            Initialize();
+        }
 
-            // Disable all MainMenu panels except the active one
-            saveQuitPanel.SetActive(false);
-            cloudUploadDownloadPanel.SetActive(false);
-            clearCanvasPanel.SetActive(false);
-            multiplayerPanel.SetActive(false);
-            activePanel.SetActive(true);
+        private void Initialize()
+        {
+            if (!initialized)
+            {
+                if (playerEntries == null)
+                {
+                    playerEntries = new Dictionary<int, PlayerEntry>();
+                }
+
+                roomName.text = (string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
+
+                // Set colors of sub-option buttons
+                SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(cloudUploadDownloadSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(clearCanvasSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(multiplayerSubOption, subOptionDefaultColor);
+                SetSubOptionButtonColor(activeSubOption, subOptionSelectedColor);
+
+                // Disable all MainMenu panels except the active one
+                saveQuitPanel.SetActive(false);
+                cloudUploadDownloadPanel.SetActive(false);
+                clearCanvasPanel.SetActive(false);
+                multiplayerPanel.SetActive(false);
+                activePanel.SetActive(true);
+
+                initialized = true;
+            }
         }
 
         #endregion
@@ -174,6 +206,74 @@ namespace EasyMeshVR.UI
 
             Debug.LogFormat("Successfully uploaded model, your model code is {0}", modelCode);
             exportModelButtonText.text = modelCode;
+        }
+
+        #endregion
+
+        #region Clear Canvas Methods
+
+        public void OnClickedClearCanvasButton()
+        {
+            NetworkMeshManager.instance.SynchronizeClearCanvas();
+        }
+
+        #endregion
+
+        #region Multiplayer Menu Methods
+
+        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction)
+        {
+            if (player == null)
+            {
+                Debug.LogWarning("GeneralOptionsMenu:CreatePlayerEntry(): Received a null player object!");
+                return;
+            }
+            if (playerEntries == null)
+            {
+                playerEntries = new Dictionary<int, PlayerEntry>();
+            }
+
+            GameObject playerEntryObj = Instantiate(playerEntryPrefab, playerInfoArea.transform);
+            PlayerEntry playerEntry = playerEntryObj.GetComponent<PlayerEntry>();
+
+            playerEntry.playerName = player.NickName;
+            playerEntry.isHost = player.IsMasterClient;
+            playerEntry.AddKickButtonOnClickAction(onKickAction);
+            playerEntry.AddMuteButtonOnClickAction(onMuteAction);
+
+            playerEntries.Add(player.ActorNumber, playerEntry);
+        }
+
+        public void RemovePlayerEntry(Player player)
+        {
+            if (player == null)
+            {
+                Debug.LogWarning("GeneralOptionsMenu:RemovePlayerEntry(): Received a null player object!");
+                return;
+            }
+
+            PlayerEntry removedPlayerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out removedPlayerEntry) && removedPlayerEntry)
+            {
+                Debug.LogFormat("Removing player number {0} with name {1} from the multiplayer menu", player.ActorNumber, player.NickName);
+                Destroy(removedPlayerEntry.gameObject);
+                playerEntries.Remove(player.ActorNumber);
+            }
+        }
+
+        public void UpdateHostEntry(Player host)
+        {
+            PlayerEntry hostEntry;
+            
+            if (playerEntries.TryGetValue(host.ActorNumber, out hostEntry) && hostEntry)
+            {
+                hostEntry.isHost = host.IsMasterClient;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update host entry - Name: {0} ActorNumber {1}", host.NickName, host.ActorNumber);
+            }
         }
 
         #endregion

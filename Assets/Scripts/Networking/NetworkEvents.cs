@@ -11,22 +11,27 @@ namespace EasyMeshVR.Multiplayer
         public Vector3 vertexPos { get; set; }
         public bool isCached { get; set; } = false;
         public bool released { get; set; } = false;
+        public int actorNumber { get; set; }
 
-        // TODO
-        public static object[] SerializeEvent(VertexPullEvent edgeEvent)
+        public static object[] SerializeEvent(VertexPullEvent vertexEvent)
         {
             return new object[]
             {
-                
+               vertexEvent.id,
+               vertexEvent.vertexPos,
+               vertexEvent.released,
+               vertexEvent.actorNumber
             };
         }
 
-        // TODO
         public static VertexPullEvent DeserializeEvent(object[] data)
         {
             return new VertexPullEvent()
             {
-                
+                id = (int)data[0],
+                vertexPos = (Vector3)data[1],
+                released = (bool)data[2],
+                actorNumber = (int)data[3]
             };
         }
     }
@@ -41,6 +46,7 @@ namespace EasyMeshVR.Multiplayer
         public Vector3 vertex2Pos { get; set; }
         public bool isCached { get; set; } = false;
         public bool released { get; set; } = false;
+        public int actorNumber { get; set; }
 
         public static object[] SerializeEvent(EdgePullEvent edgeEvent)
         {
@@ -53,6 +59,7 @@ namespace EasyMeshVR.Multiplayer
                 edgeEvent.vertex1Pos,
                 edgeEvent.vertex2Pos,
                 edgeEvent.released,
+                edgeEvent.actorNumber
             };
         }
 
@@ -66,7 +73,8 @@ namespace EasyMeshVR.Multiplayer
                 position = (Vector3)data[3],
                 vertex1Pos = (Vector3)data[4],
                 vertex2Pos = (Vector3)data[5],
-                released = (bool)data[6]
+                released = (bool)data[6],
+                actorNumber = (int)data[7]
             };
 
             return edgeEvent;

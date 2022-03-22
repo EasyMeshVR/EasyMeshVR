@@ -6,6 +6,7 @@ using Unity.XR.CoreUtils;
 using Photon.Pun;
 using TMPro;
 using EasyMeshVR.Core;
+using EasyMeshVR.UI;
 
 namespace EasyMeshVR.Multiplayer
 {
@@ -21,14 +22,15 @@ namespace EasyMeshVR.Multiplayer
         [SerializeField] private Animator rightHandAnimator;
         [SerializeField] private Canvas playerNameCanvas;
         [SerializeField] private TMP_Text playerNameText;
+        [SerializeField] private AudioSource micAudioSource;
 
         private Transform headOrigin;
         private Transform leftHandOrigin;
         private Transform rightHandOrigin;
         private Transform mainCameraTransform;
-        private PhotonView photonView;
         private GameObject editingSpace;
-        
+        public PhotonView photonView { get; private set; }
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -69,6 +71,9 @@ namespace EasyMeshVR.Multiplayer
                 // Disable Canvas of the player's name above the head of the local player
                 playerNameCanvas.enabled = false;
             }
+
+            // Finally add this NetworkPlayer to the NetworkPlayerManager dictionary
+            NetworkPlayerManager.instance.AddNetworkPlayer(this);
         }
 
         // Update is called once per frame
@@ -92,6 +97,15 @@ namespace EasyMeshVR.Multiplayer
         {
             playerNameCanvas.transform.LookAt(
                 playerNameCanvas.transform.position + mainCameraTransform.rotation * Vector3.forward);
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void ToggleMuteMic()
+        {
+            micAudioSource.mute = !micAudioSource.mute;
         }
 
         #endregion

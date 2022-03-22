@@ -19,10 +19,6 @@ namespace EasyMeshVR.Core
 
         public static ModelImportExport instance { get; private set; }
 
-        [SerializeField] GameObject EditingSpace;
-        [SerializeField] GameObject vertex;
-        [SerializeField] GameObject edge;
-
         #endregion
 
         #region Private Fields
@@ -32,6 +28,15 @@ namespace EasyMeshVR.Core
 
         [SerializeField]
         private GameObject modelObject;
+
+        [SerializeField] 
+        private GameObject vertex;
+
+        [SerializeField] 
+        private GameObject edge;
+
+        [SerializeField] 
+        private GameObject cubePrefab;
 
         private ApiRequester apiRequester;
 
@@ -116,13 +121,10 @@ namespace EasyMeshVR.Core
                 Mesh mesh = meshes[i];
                 mesh.name = "Mesh-" + name + "(" + i + ")";
                 go.GetComponent<MeshFilter>().sharedMesh = mesh;
-
                 MeshRebuilder rebuilder = go.AddComponent<MeshRebuilder>();
-                rebuilder.editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
                 rebuilder.vertex = vertex;
                 rebuilder.edge = edge;
                 rebuilder.enabled = true;
-                // rebuilder.RebuilderSetup();
             }
         }
 
@@ -137,6 +139,18 @@ namespace EasyMeshVR.Core
                     Destroy(child.gameObject);
                 }
             }
+        }
+
+        public void CreateCubeMeshObject()
+        {
+            GameObject go = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
+            go.transform.SetParent(modelObject.transform, false);
+        }
+
+        public void ClearCanvas()
+        {
+            DestroyMeshObjects();
+            CreateCubeMeshObject();
         }
 
         #endregion

@@ -83,6 +83,7 @@ MonoBehaviour:
   rightHandAnimator: {fileID: 7376840665451898350}
   playerNameCanvas: {fileID: 6233472594560948969}
   playerNameText: {fileID: 8483653956014972165}
+  micAudioSource: {fileID: 7864060972919199130}
 --- !u!114 &8643552817863895899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,13 +744,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 1913023388497410749, guid: 65847589f926b734d9eaed6e25f0046b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2805204655735474087, guid: 65847589f926b734d9eaed6e25f0046b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7303042259235259766, guid: 65847589f926b734d9eaed6e25f0046b,
         type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8598972761205811610, guid: 65847589f926b734d9eaed6e25f0046b,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7857922960900258541, guid: 65847589f926b734d9eaed6e25f0046b, type: 3}
+    - {fileID: 1701958012641712486, guid: 65847589f926b734d9eaed6e25f0046b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 65847589f926b734d9eaed6e25f0046b, type: 3}
 --- !u!95 &1911957437988134693 stripped
 Animator:

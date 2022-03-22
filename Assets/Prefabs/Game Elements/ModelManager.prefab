@@ -44,12 +44,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dcbd986d5fcb9e469d1b64085de6219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EditingSpace: {fileID: 0}
-  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
-  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
   meshObjectPrefab: {fileID: 7010387081677361842, guid: 1dcab2a0c531e984c98ebfc6f03f16f1,
     type: 3}
   modelObject: {fileID: 0}
+  EditingSpace: {fileID: 0}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  cubePrefab: {fileID: 4125524486932594784, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
+    type: 3}
 --- !u!114 &588212837
 MonoBehaviour:
   m_ObjectHideFlags: 0

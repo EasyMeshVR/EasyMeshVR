@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using Photon.Pun;
 using EasyMeshVR.Multiplayer;
 
 public class MoveEdge : MonoBehaviour
@@ -153,6 +154,7 @@ public class MoveEdge : MonoBehaviour
             vertex2Pos = vertex2Pos,
             isCached = true,
             released = true,
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
 
         NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
@@ -214,6 +216,7 @@ public class MoveEdge : MonoBehaviour
                 vertex2Pos = vertex2Pos,
                 isCached = false,
                 released = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
             };
 
             NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
