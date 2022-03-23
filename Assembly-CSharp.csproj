@@ -72,6 +72,7 @@
      <Compile Include="Assets\Scripts\Abilities\Locomotion\OLDTransRotateScale.cs" />
      <Compile Include="Assets\Scripts\UI\GeneralOptionsMenu.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\SoundsForJoinAndLeave.cs" />
+     <Compile Include="Assets\Scripts\Interaction\Face.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\OrthographicController.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\MobileInput.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\RemoteSpeakerUI.cs" />
@@ -122,8 +123,7 @@
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\MobileControlRig.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
-     <Compile Include="Assets\Scripts\Interaction\Face.cs" />
-     <Compile Include="Assets\Scripts\Interaction\HoverFace.cs" />
+     <Compile Include="Assets\Scripts\Interaction\MoveFace.cs" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\ExternalAssets\Photon\PhotonLibs\netstandard2.0\Photon3Unity3D.xml" />
      <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />

@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 10225722356434956}
   - component: {fileID: 5762717522507218653}
   - component: {fileID: 9077015157397384143}
-  - component: {fileID: 470521897476402273}
   - component: {fileID: 4924744274874640862}
+  - component: {fileID: -912958758790073531}
   m_Layer: 0
   m_Name: Face
   m_TagString: Face
@@ -231,22 +231,6 @@ MonoBehaviour:
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
   m_AttachPointCompatibilityMode: 0
---- !u!114 &470521897476402273
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fddb916d530c8ac41ab2cf4e6cfc8122, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 9077015157397384143}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
-  selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
 --- !u!114 &4924744274874640862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,6 +247,28 @@ MonoBehaviour:
   vert1: 0
   vert2: 0
   vert3: 0
+  isHeldByOther: 0
+  heldByActorNumber: -1
+  locked: 0
+--- !u!114 &-912958758790073531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7681d2f1cd2e0de438cdf4c42e5382d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabInteractable: {fileID: 9077015157397384143}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
+  locked: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
+  materialSwap: {fileID: 0}
+  grabHeld: 0
 --- !u!1 &9166179782120251241
 GameObject:
   m_ObjectHideFlags: 0

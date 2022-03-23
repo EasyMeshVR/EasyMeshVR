@@ -9,7 +9,12 @@ public class Face : MonoBehaviour
     public int vert2;
 
     public int vert3;
-    //public bool isHeldByOther;
-   // public int heldByActorNumber = -1;
-   // public bool locked;
+
+    public int edge1;
+    public int edge2;
+    public int edge3;
+    
+    public bool isHeldByOther;
+    public int heldByActorNumber = -1;
+    public bool locked;
 }
