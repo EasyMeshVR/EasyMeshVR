@@ -82,3 +82,6 @@ UserSettings/EditorUserSettings.asset
 Assembly-CSharp.csproj
 Assembly-CSharp.csproj
 Assembly-CSharp.csproj
+Assets/ExternalAssets/TextMesh Pro/Resources/Fonts & Materials/Roboto-Bold SDF.asset
+Assembly-CSharp.csproj
+Packages/packages-lock.json

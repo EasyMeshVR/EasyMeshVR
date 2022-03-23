@@ -14,11 +14,11 @@ GameObject:
   - component: {fileID: 10225722356434956}
   - component: {fileID: 5762717522507218653}
   - component: {fileID: 9077015157397384143}
-  - component: {fileID: -8109944905895446732}
-  - component: {fileID: -5656790495856781621}
+  - component: {fileID: 470521897476402273}
+  - component: {fileID: 4924744274874640862}
   m_Layer: 0
-  m_Name: Vertex
-  m_TagString: Vertex
+  m_Name: Face
+  m_TagString: Face
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 4962365024205514009}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
+  m_LocalScale: {x: 0.03, y: 0.03, z: 0.03}
   m_Children:
   - {fileID: 2894397423611400284}
   m_Father: {fileID: 0}
@@ -231,7 +231,7 @@ MonoBehaviour:
   m_ForceGravityOnDetach: 0
   m_RetainTransformParent: 1
   m_AttachPointCompatibilityMode: 0
---- !u!114 &-8109944905895446732
+--- !u!114 &470521897476402273
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -240,15 +240,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 4962365024205514009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a7d78e45826a6a42b4c3e9e8c31d7a1, type: 3}
+  m_Script: {fileID: 11500000, guid: fddb916d530c8ac41ab2cf4e6cfc8122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   grabInteractable: {fileID: 9077015157397384143}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
-  isLocked: 0
---- !u!114 &-5656790495856781621
+--- !u!114 &4924744274874640862
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -257,12 +256,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4962365024205514009}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca69a186a68a699448bcdfcf561c98b8, type: 3}
+  m_Script: {fileID: 11500000, guid: b4489a4c5ad759d4fb7f0f5ae3285fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
-  isHeldByOther: 0
-  heldByActorNumber: -1
+  vert1: 0
+  vert2: 0
+  vert3: 0
 --- !u!1 &9166179782120251241
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: 2894397423611400284}
   - component: {fileID: 2443746452989880466}
   m_Layer: 0
-  m_Name: Vertex Center
+  m_Name: Face Center
   m_TagString: Center
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

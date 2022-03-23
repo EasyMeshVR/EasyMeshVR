@@ -58,6 +58,21 @@ public class ResizeRadius : MonoBehaviour
           Vector3 spherePos = sphereVisual.transform.position;
         }
 
+        // max values , can change
+        if(sphereCollider.radius > .3f)
+        {
+          if(!matEnabled)
+          {
+            sphereVisual.GetComponent<MeshRenderer>().enabled = true;
+            matEnabled = true;
+          }
+          sphereVisual.GetComponent<MeshRenderer>().enabled = true;
+
+          sphereCollider.radius = .3f;
+          sphereVisual.transform.localScale = new Vector3(.6f, .6f, .6f);
+          Vector3 spherePos = sphereVisual.transform.position;
+        }
+
         // Show the new size for a second before disappearing
         if(value == 0f)
         {

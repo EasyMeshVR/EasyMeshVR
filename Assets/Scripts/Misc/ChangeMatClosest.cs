@@ -33,12 +33,15 @@ public class ChangeMatClosest : MonoBehaviour
         Collider[] allOverlappingColliders = Physics.OverlapSphere(center, sC.radius);
         foreach(Collider c in allOverlappingColliders)
         {
+            if(!c.CompareTag("Center"))
+                continue;
+            
             float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
  
-            if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag(Constants.GAME_CONTROLLER_TAG))
+            if ((!nearObject || curDistance < nearObjectDistance))
             {
                 nearObjectDistance = curDistance;
-                nearObject = c.gameObject;
+                nearObject = c.transform.parent.gameObject;
             }
         }
  
@@ -51,7 +54,7 @@ public class ChangeMatClosest : MonoBehaviour
                 return;
             }
 
-            // Bug if moving edge then grabbing vertex will allow locked edges to be highlighted
+            // Bug --  if moving edge then grabbing vertex will allow locked edges to be highlighted
             if(otherHand.nearObject!=null)
                 if(otherHand.nearObject.CompareTag("Edge") && nearObject.CompareTag("Edge") && otherHand.nearObject.GetComponent<MoveEdge>().grabHeld)
                     return;
@@ -59,9 +62,7 @@ public class ChangeMatClosest : MonoBehaviour
             materialSwap = nearObject.GetComponent<MeshRenderer>();
 
             if (materialSwap == null)
-            {
                 return;
-            }
 
             materialSwap.material = hoveredO;
         }

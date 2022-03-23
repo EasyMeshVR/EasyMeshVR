@@ -20,6 +20,8 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     public GameObject vertex;
     public GameObject edge;
 
+    public GameObject face;
+
     // Mesh data
     Mesh mesh;
     public Vector3[] vertices;
@@ -32,11 +34,16 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     public List<Edge> edgeObjects;
     public List<Vertex> vertexObjects;
 
+    public List<Face> faceObjects;
+
+
     // Setup
     public void Start()
     {
         edgeObjects = new List<Edge>();
         vertexObjects = new List<Vertex>();
+        faceObjects = new List<Face>();
+
         instance = this;
 
         editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
@@ -215,6 +222,26 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                 edgeComponent.vert2 = k;
                 edgeObjects.Add(edgeComponent);
             }
+        }
+
+        // Triangle handles
+        for(int i = 0; i < triangles.Length; i+=3)
+        {
+            GameObject newFace = Instantiate(face, model.transform);
+            // Add face to list and get vertices
+            Face faceComponent = newFace.GetComponent<Face>();
+            faceComponent.id = faceObjects.Count();
+            faceComponent.vert1 = triangles[i];
+            faceComponent.vert2 = triangles[i+1];
+            faceComponent.vert3 = triangles[i+2];
+            faceObjects.Add(faceComponent);
+            // Place face object in center of triangle
+            float totalX = vertices[faceComponent.vert1].x + vertices[faceComponent.vert2].x + vertices[faceComponent.vert3].x;
+            float totalY = vertices[faceComponent.vert1].y + vertices[faceComponent.vert2].y + vertices[faceComponent.vert3].y;
+            float totalZ = vertices[faceComponent.vert1].z + vertices[faceComponent.vert2].z + vertices[faceComponent.vert3].z;
+
+            newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
+            // newEdge.transform.localScale = new Vector3(newEdge.transform.localScale.x, edgeDistance, newEdge.transform.localScale.z);
         }
     }
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -368,6 +368,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube (Unity)
       objectReference: {fileID: 0}
+    - target: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
+        type: 3}
+      propertyPath: face
+      value: 
+      objectReference: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908,
+        type: 3}
     - target: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
         type: 3}
       propertyPath: editingSpace
