@@ -26,7 +26,7 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     Mesh mesh;
     public Vector3[] vertices;
     Vector3 vertexPosition;
-    int[] triangles;
+    public int[] triangles;
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
@@ -234,14 +234,24 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
             faceComponent.vert1 = triangles[i];
             faceComponent.vert2 = triangles[i+1];
             faceComponent.vert3 = triangles[i+2];
+
             faceObjects.Add(faceComponent);
             // Place face object in center of triangle
             float totalX = vertices[faceComponent.vert1].x + vertices[faceComponent.vert2].x + vertices[faceComponent.vert3].x;
             float totalY = vertices[faceComponent.vert1].y + vertices[faceComponent.vert2].y + vertices[faceComponent.vert3].y;
             float totalZ = vertices[faceComponent.vert1].z + vertices[faceComponent.vert2].z + vertices[faceComponent.vert3].z;
 
+            foreach(Edge edge in edgeObjects)
+            {
+                if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert2) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert2))
+                    faceComponent.edge1 = edge.id;
+                if((edge.vert1 == faceComponent.vert2 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert2 && edge.vert1 == faceComponent.vert3))
+                    faceComponent.edge2 = edge.id;
+                if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert3))
+                    faceComponent.edge3 = edge.id;
+            }
+
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
-            // newEdge.transform.localScale = new Vector3(newEdge.transform.localScale.x, edgeDistance, newEdge.transform.localScale.z);
         }
     }
 

@@ -42,9 +42,9 @@ public class MoveFace : MonoBehaviour
     Vertex vertex2;
     Vertex vertex3;
 
-    int selectedEdge1;
-    int selectedEdge2;
-    int selectedEdge3;
+    // int selectedEdge1;
+    // int selectedEdge2;
+    // int selectedEdge3;
 
     Edge edge1;
     Edge edge2;
@@ -101,7 +101,10 @@ public class MoveFace : MonoBehaviour
         // Keep mesh filter updated with most recent mesh data changes
         MeshRebuilder.instance.vertices = mesh.vertices;
 
-        print("Face " +thisFace.id + " vertices " + thisFace.vert1 + " " + thisFace.vert2 + " " + thisFace.vert3);
+                // Keep mesh filter updated with most recent mesh data changes
+       // MeshRebuilder.instance.triangles = mesh.triangles;
+
+        //print("Face " +thisFace.id + " vertices " + thisFace.vert1 + " " + thisFace.vert2 + " " + thisFace.vert3);
 
     }
 
@@ -129,6 +132,8 @@ public class MoveFace : MonoBehaviour
         SetActiveEdges(edge2, false);
         SetActiveEdges(edge3, false);
 
+        SetActiveFaces(thisFace, false);
+
 
         vertex1 = MeshRebuilder.instance.vertexObjects[thisFace.vert1];
         vertex2 = MeshRebuilder.instance.vertexObjects[thisFace.vert2];
@@ -137,7 +142,7 @@ public class MoveFace : MonoBehaviour
 
         thisFace.transform.parent = model.transform;
 
-        // Parent the two vertices to the edge
+        // Parent vertices and edges to face
         vertex1.transform.parent = thisFace.transform;
         vertex2.transform.parent = thisFace.transform;
         vertex3.transform.parent = thisFace.transform;
@@ -167,6 +172,9 @@ public class MoveFace : MonoBehaviour
         SetActiveEdges(edge2, true);
         SetActiveEdges(edge3, true);
 
+        SetActiveFaces(thisFace, true);
+
+
         materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
@@ -188,7 +196,7 @@ public class MoveFace : MonoBehaviour
 
         Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisFace.vert1];
         Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisFace.vert2];
-        Vector3 vertex3Pos = MeshRebuilder.instance.vertices[thisFace.vert2];
+        Vector3 vertex3Pos = MeshRebuilder.instance.vertices[thisFace.vert3];
 
 
         // Synchronize the position of the mesh vertex by sending a cached event to other players
@@ -207,8 +215,16 @@ public class MoveFace : MonoBehaviour
 
        // NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
 
+        // Update face position
+        float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
+        float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
+        float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
+
+        thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
+
 
         pulleyLocomotion.isMovingVertex = false;
+
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -291,6 +307,18 @@ public class MoveFace : MonoBehaviour
         }
     }
 
+    public void SetActiveFaces(Face face, bool active)
+    {
+        foreach (Face currFace in MeshRebuilder.instance.faceObjects)
+        {
+            if (currFace.id == face.id) continue;
+
+            currFace.locked = !active;
+            currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
+            currFace.GetComponent<XRGrabInteractable>().enabled = active;
+        }
+    }
+
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int vertex1Id, int vertex2Id, int vertex3Id, bool skipThisEdgeId = true)
     {
@@ -361,17 +389,9 @@ public class MoveFace : MonoBehaviour
             int vert3 = face.vert3;
 
             // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
-            if (vert1 == vertex1Id || vert2 == vertex1Id || vert3 == vertex1Id ||vert1 == vertex2Id || vert2 == vertex2Id || vert3 == vertex2Id)
+            if (vert1 == vertex1Id || vert2 == vertex1Id || vert3 == vertex1Id ||vert1 == vertex2Id || vert2 == vertex2Id || vert3 == vertex2Id ||
+             vert1 == vertex3Id || vert2 == vertex3Id || vert3 == vertex3Id)
             {
-                // // Set the edge's position to between the two vertices and scale it appropriately
-                // float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
-                // edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
-                // edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
-
-                // // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                // edgeObject.transform.LookAt(transform, Vector3.up);
-                // edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
-
                 float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
                 float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
                 float totalZ = vertices[vert1].z + vertices[vert2].z + vertices[vert3].z;
