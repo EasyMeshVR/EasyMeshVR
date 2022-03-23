@@ -50,7 +50,6 @@ namespace EasyMeshVR.UI
             UnityAction action = delegate
             {
                 button.onClick.Invoke();
-                Submit();
             };
 
             keyboard.AddEnterButtonOnReleaseEvent(action);
@@ -81,20 +80,16 @@ namespace EasyMeshVR.UI
 
         public void Submit()
         {
-            keyboard.ClearText();
-
             if (inputField != null)
             {
                 inputField.ReleaseSelection();
             }
+
+            keyboard.Disable();
         }
 
         public void Cancel()
         {
-            keyboard.ClearText();
-            keyboard.ClearErrorMessage();
-            keyboard.ClearSuccessMessage();
-
             if (inputField != null)
             {
                 inputField.ReleaseSelection();
