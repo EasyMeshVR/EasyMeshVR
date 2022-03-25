@@ -8,8 +8,13 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] public bool LockTool;
+    [SerializeField] public bool extrudeTool;
+
     [SerializeField] LockVertex lockScriptRay;
     [SerializeField] LockVertex lockScriptGrab;
+
+    [SerializeField] Extrude extrudeScriptRay;
+    [SerializeField] Extrude extrudeScriptGrab;
 
 
     List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
@@ -51,6 +56,12 @@ public class ToolManager : MonoBehaviour
         if(!LockTool)
             DisableLock();
 
+        if(extrudeTool)
+            EnableExtrude();
+            
+        if(!extrudeTool)
+            DisableExtrude();
+
         if(grabVertex)
             EnableVertex();
 
@@ -74,6 +85,18 @@ public class ToolManager : MonoBehaviour
     {
        lockScriptRay.Disable();
        lockScriptGrab.Disable();
+    }
+
+     void EnableExtrude()
+    {
+       extrudeScriptGrab.Enable();
+       extrudeScriptRay.Enable();
+    }
+
+    void DisableExtrude()
+    {
+       extrudeScriptGrab.Disable();
+       extrudeScriptRay.Disable();
     }
 
     void EnableVertex()

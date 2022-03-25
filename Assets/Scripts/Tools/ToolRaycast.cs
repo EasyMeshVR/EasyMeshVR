@@ -8,8 +8,8 @@ public class ToolRaycast : MonoBehaviour
 {
     public RaycastHit hit;
     public bool hitVertex;
-
     public bool hitEdge;
+    public bool hitFace;
     void FixedUpdate()
     {
         Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * Mathf.Infinity, Color.yellow);
@@ -19,5 +19,8 @@ public class ToolRaycast : MonoBehaviour
         
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Edge"))
             hitEdge = true;
+
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Face"))
+            hitFace = true;
     }
 }

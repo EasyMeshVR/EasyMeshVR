@@ -42,6 +42,7 @@ public class LockVertex : ToolClass
     private float holdTime = 0f;
 
     bool holdFinish = false;
+    
 
    void OnEnable()
     {

@@ -76,7 +76,7 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
     // Deletes the duplicate vertices Unity and STL files create
     // Re-references those duplicate vertices in the triangles array with unique ones only
-    void RemoveDuplicates()
+    public void RemoveDuplicates()
     {
         // Filter out unique vertices and triangles, and store indices of every duplicate of a vertex (2 or more dupes)
         HashSet<Vector3> vertexUnique = new HashSet<Vector3>();
@@ -155,14 +155,16 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     }
 
     // Actually create the vertex and edge GameObject interactables
-    void CreateVisuals()
+    public void CreateVisuals()
     {
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, model.transform);
+
             newVertex.transform.localPosition = vertices[i];
+
             newVertex.name = "Vertex" + i.ToString();
 
             // Set the id of the Vertex component to be the index in the vertices array
@@ -235,12 +237,17 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
             faceComponent.vert2 = triangles[i+1];
             faceComponent.vert3 = triangles[i+2];
 
-            faceObjects.Add(faceComponent);
+            // Store face normal
+            Vector3 e1 = vertices[faceComponent.vert2] - vertices[faceComponent.vert1];
+            Vector3 e2 = vertices[faceComponent.vert3] - vertices[faceComponent.vert2];
+            faceComponent.normal = Vector3.Normalize(Vector3.Cross(e1,e2));
+
             // Place face object in center of triangle
             float totalX = vertices[faceComponent.vert1].x + vertices[faceComponent.vert2].x + vertices[faceComponent.vert3].x;
             float totalY = vertices[faceComponent.vert1].y + vertices[faceComponent.vert2].y + vertices[faceComponent.vert3].y;
             float totalZ = vertices[faceComponent.vert1].z + vertices[faceComponent.vert2].z + vertices[faceComponent.vert3].z;
 
+            // Store edge
             foreach(Edge edge in edgeObjects)
             {
                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert2) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert2))
@@ -250,9 +257,21 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert3))
                     faceComponent.edge3 = edge.id;
             }
-
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
+
+            faceObjects.Add(faceComponent);
+
         }
+    }
+
+    public void removeVisuals()
+    {
+         foreach (Transform child in transform) 
+            GameObject.Destroy(child.gameObject);
+
+        edgeObjects.Clear();
+        vertexObjects.Clear();
+        faceObjects.Clear();
     }
 
     public void ClearHeldDataForPlayer(Player player)
