@@ -7,6 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 using UnityEngine.InputSystem;
 using EasyMeshVR.Core;
+using System.Linq;
 
 public class Extrude : ToolClass
 {
@@ -45,6 +46,7 @@ public class Extrude : ToolClass
 
     public MeshRebuilder meshRebuilder;
 
+    
 
 
     
@@ -97,7 +99,7 @@ public class Extrude : ToolClass
     // }
 
     // Change material, disable vertex grab interactable, set boolean
-    void extrudeFace()
+    public void extrudeFace()
     {
         // calculating normals is done in mesh rebuilder
 
@@ -108,25 +110,70 @@ public class Extrude : ToolClass
 
         // Add new vertices to list -> to array
         List<Vector3> vertList = new List<Vector3>(MeshRebuilder.instance.vertices);
+
+        
+
         vertList.Add(new1);
         vertList.Add(new2);
         vertList.Add(new3);
         Vector3[] vertices = vertList.ToArray();
 
-        int newVert1 = vertices.Length - 3;
-        int newVert2 = vertices.Length - 2;
-        int newVert3 = vertices.Length - 1;
+        int newVert1 = vertices.Length-3;
+        int newVert2 = vertices.Length-2;
+        int newVert3 = vertices.Length-1;
+       
+     
+        // for(int i = 0; i < vertices.Length; i++)
+        // {
+        //     for(int j = i+1; j < vertices.Length; j++)
+        //     {
+        //         if(Vector3.Distance(vertices[i], vertices[j]) < .0001)
+        //             vertices[j] = vertices[i];
+        //     }
+        //    // print("i is " + i);
+
+        // }
+
+        // vertList = new List<Vector3>(vertices);
+        // print("vertlist len1 " + vertList.Count);
+        // vertList = vertList.Distinct().ToList();
+        // print("vertlist len2 " + vertList.Count);
+
+
+        // if(vertices.Length > vertList.Count)
+        // {
+        //     int k = 0;
+        //     foreach(Vector3 v in vertList)
+        //     {
+        //         if(v == new1)
+        //             newVert1 = k;
+        //         if(v == new2)
+        //             newVert2 = k;
+        //         if(v == new3)
+        //             newVert3 = k;
+        //         k++;
+        //     }
+
+        // }
+
+        // vertices = vertList.ToArray();
+
+
+        // // problem -> sometimes newVert 1 and 2 are the same and newVert3 becomes out of bounds of the array
+        // // based on certain diagonals
+        // print("new indexes " + newVert1 + " " + newVert2 + " " + newVert3);
+        // print("new verticies " +vertices[newVert1] + vertices[newVert2] + vertices [newVert3]);
+
+
+
+      
+
 
         // new face indices = vertices.Length - 3, etc 
         // old face indices = face.vert1 etc
 
         // Add new triangles to list -> to array
         List<int> triList = new List<int>(MeshRebuilder.instance.triangles);
-
-        // new1, new3, new2
-        triList.Add(newVert1);
-        triList.Add(newVert3);
-        triList.Add(newVert2);
 
         // new1, old1, new2
         triList.Add(newVert1);
@@ -164,17 +211,25 @@ public class Extrude : ToolClass
         triList.Add(newVert3);
         int[] tris = triList.ToArray();
 
+        
         // Update mesh data
+        mesh.Clear();
         mesh.vertices = vertices;
         meshRebuilder.vertices = vertices;
         mesh.triangles = tris;
         meshRebuilder.triangles = tris;
         mesh.RecalculateNormals();
 
+       // meshRebuilder.RemoveDuplicates();
+      //  print("vert length after " + meshRebuilder.vertices.Length);
+
+
         // Update mesh visuals
-        //  meshRebuilder.RemoveDuplicates();
+       // meshRebuilder.RemoveDuplicates();
         meshRebuilder.removeVisuals();
         meshRebuilder.CreateVisuals();
+
+
         return;
     }
 
