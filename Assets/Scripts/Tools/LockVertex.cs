@@ -127,11 +127,25 @@ public class LockVertex : ToolClass
         }
     }
 
+    public override void Disable()
+    {
+        isEnabled = false;
+    }
+
+    public override void Enable()
+    {
+        isEnabled = true;
+    }
+
     // Separate raycast for raycast controllers, gets vertex info from raycast hit
     void Update()
     {
+       // print("lock enabled is " + enabled);
+       if(!isEnabled)
+                return;
         if(switchControllers.rayActive)
         {
+            
             if(ray.hitVertex)
             {
                 currentVertex = ray.hit.transform.gameObject;

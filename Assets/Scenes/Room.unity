@@ -441,7 +441,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb63dc0f6f12ede488d931560c1155af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LockTool: 0
+  LockTool: 1
   extrudeTool: 1
   lockScriptRay: {fileID: 1647071329}
   lockScriptGrab: {fileID: 2059701659}
@@ -499,6 +499,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 170edfd555a6f114984de140ecc798d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &498863531 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1575991932, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+    type: 3}
+  m_PrefabInstance: {fileID: 6885944694426427361}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &534883354 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3621981467535291324, guid: ddc38db09f9124241b4b4e9b2b9831eb,
@@ -1725,6 +1731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a79ad07946bab2c4aadfd4c23b30bc8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  RaycastOrigin: {fileID: 498863531}
   hitVertex: 0
   hitEdge: 0
   hitFace: 0

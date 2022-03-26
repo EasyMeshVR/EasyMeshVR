@@ -44,7 +44,7 @@ public class ResizeRadius : MonoBehaviour
             sphereVisual.transform.localScale += new Vector3(value/50, value/50, value/50);
         }
         // min values , can change
-        if(sphereCollider.radius < 0.05f)
+        if(sphereCollider.radius < 0.005f)
         {
           if(!matEnabled)
           {
@@ -53,8 +53,8 @@ public class ResizeRadius : MonoBehaviour
           }
           sphereVisual.GetComponent<MeshRenderer>().enabled = true;
 
-          sphereCollider.radius = .05f;
-          sphereVisual.transform.localScale = new Vector3(.1f, .1f, .1f);
+          sphereCollider.radius = .005f;
+          sphereVisual.transform.localScale = new Vector3(.01f, .01f, .01f);
           Vector3 spherePos = sphereVisual.transform.position;
         }
 

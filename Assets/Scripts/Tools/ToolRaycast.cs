@@ -7,20 +7,32 @@ using UnityEngine;
 public class ToolRaycast : MonoBehaviour
 {
     public RaycastHit hit;
+    [SerializeField] GameObject RaycastOrigin;
     public bool hitVertex;
     public bool hitEdge;
     public bool hitFace;
     void FixedUpdate()
     {
-        Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * Mathf.Infinity, Color.yellow);
+        Debug.DrawRay(RaycastOrigin.transform.position, transform.TransformDirection(Vector3.forward) * 2.5f, Color.yellow);
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Vertex"))
-            hitVertex = true;
+        if (Physics.Raycast(RaycastOrigin.transform.position, transform.TransformDirection(Vector3.forward), out hit, 2.5f))
+        {
+           // print("hit name " + hit.collider.gameObject.name);
+           // print("hit tag " + hit.collider.tag);
+            if(hit.transform.gameObject.CompareTag("Vertex"))
+                hitVertex = true;
+            else if (hit.transform.gameObject.CompareTag("Edge"))
+                hitEdge = true;
+            else if (hit.transform.gameObject.CompareTag("Face"))
+                hitFace = true;
+            
+        }
         
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Edge"))
-            hitEdge = true;
-
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity) && hit.transform.CompareTag("Face"))
-            hitFace = true;
+        else
+        {
+            hitVertex = false;
+            hitEdge = false;
+            hitFace = false;
+        }
     }
 }

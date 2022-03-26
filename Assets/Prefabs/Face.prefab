@@ -247,9 +247,13 @@ MonoBehaviour:
   vert1: 0
   vert2: 0
   vert3: 0
+  edge1: 0
+  edge2: 0
+  edge3: 0
   isHeldByOther: 0
   heldByActorNumber: -1
   locked: 0
+  normal: {x: 0, y: 0, z: 0}
 --- !u!114 &-912958758790073531
 MonoBehaviour:
   m_ObjectHideFlags: 0
