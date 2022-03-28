@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -51,9 +52,6 @@ namespace EasyMeshVR.UI
 
         [SerializeField]
         private Button exportModelButton;
-
-        [SerializeField]
-        private TMP_InputField importModelInputField;
 
         [SerializeField]
         private Color subOptionDefaultColor;
@@ -144,15 +142,18 @@ namespace EasyMeshVR.UI
 
         #region Cloud Upload Panel Methods
 
-        public void OnClickedImportModel()
+        public void OnClickedImportButton()
         {
-            if (string.IsNullOrWhiteSpace(importModelInputField.text))
-            {
-                Debug.Log("Cannot import a model with empty code!");
-                return;
-            }
-            Debug.Log("clicked import model");
-            NetworkMeshManager.instance.SynchronizeMeshImport(importModelInputField.text, ImportCallback);
+            KeyInputManager.instance.EnableKeyboardForImportingModel(OnClickedImportModel);
+        }
+
+        public void OnClickedImportModel(string modelCode)
+        {
+            // Set the ImportCallback
+            NetworkMeshManager.instance.SetImportModelCallback(ImportCallback);
+
+            // Import the model locally
+            ModelImportExport.instance.ImportModel(modelCode, NetworkMeshManager.instance.DownloadCallback);
         }
 
         public void OnClickedExportModel()
@@ -182,15 +183,26 @@ namespace EasyMeshVR.UI
 
         #region Import/Export Callbacks
 
-        private void ImportCallback(bool success)
+        private void ImportCallback(bool success, string errorMsg, string modelCode)
         {
             if (!success)
             {
-                Debug.Log("Error encountered while importing mesh!");
-                return;
+                if (errorMsg.Contains("403") || errorMsg.Contains("404"))
+                {
+                    KeyInputManager.instance.DisplayErrorMessage("File not found.");
+                }
+                else
+                {
+                    KeyInputManager.instance.DisplayErrorMessage("Encountered network error.");
+                }
             }
+            else
+            {
+                KeyInputManager.instance.DisplaySuccessMessage("Imported model into scene.");
 
-            Debug.Log("GeneralOptionsMenu: Successfully improted model into scene");
+                // Successfully imported the model locally, send the import event to others
+                NetworkMeshManager.instance.SynchronizeMeshImport(modelCode, ImportCallback);
+            }
         }
 
         private void ExportCallback(string modelCode, string error)

@@ -90,6 +90,10 @@ namespace EasyMeshVR.Multiplayer
                 Debug.Log("Destroying player prefab");
                 PhotonNetwork.Destroy(spawnedPlayerPrefab);
             }
+            else
+            {
+                Debug.LogError("Failed to destroy spawnedPlayerPrefab because it is null.");
+            }
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -104,7 +108,7 @@ namespace EasyMeshVR.Multiplayer
             RemovePlayerEntry(otherPlayer);
             RemoveNetworkPlayer(otherPlayer.ActorNumber);
 
-            MeshRebuilder.instance.ClearHeldDataForPlayer(otherPlayer);
+            NetworkMeshManager.instance.ClearHeldDataForPlayer(otherPlayer);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
