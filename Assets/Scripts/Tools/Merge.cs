@@ -6,6 +6,7 @@ using UnityEngine.XR.Interaction;
 using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 using System.Linq;
+using System;
 
 public class Merge : MonoBehaviour
 {
@@ -27,9 +28,10 @@ public class Merge : MonoBehaviour
     // Mesh updating
     public GameObject model;
     Mesh mesh;
-    Vector3[] vertices;
-    int[] triangles;
-    static List<int> triangleReferences;
+    static Vector3[] vertices;
+    static int[] triangles;
+    static List<int> triangleReferences = new List<int>();
+    static List<int> lastVertTriReferences = new List<int>();
 
     // Vertex lookup
     Vertex mergeVertex;
@@ -37,6 +39,7 @@ public class Merge : MonoBehaviour
     static Vertex takeoverVertex;
     static int vertex1;
     static int vertex2;
+    static int lastIndex;
     static bool connection;
 
     MeshRenderer materialSwap;
@@ -53,10 +56,11 @@ public class Merge : MonoBehaviour
         // Stealing triangles (and vertices if we need them)
         vertices = mesh.vertices;
         triangles = mesh.triangles;
-        triangleReferences = new List<int>();
 
+        /*
         for (int i = 0; i < triangles.Length; i += 3)
             Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+        */
 
         // To reference vertex ids
         mergeVertex = GetComponent<Vertex>();
@@ -122,14 +126,19 @@ public class Merge : MonoBehaviour
                 // Start blinking yellow to indicate merge
                 StartCoroutine(ShowMerging());
 
-                // Save id and of vertex 1
+                // Save id of vertex1
                 deleterVertex = mergeVertex;
                 vertex1 = deleterVertex.id;
 
-                // Get references to all edges the vertex is connected to (easiest to do this through edge ids from Vertex/Edge.cs)
-                // I don't think we need to do this since we have access to deleterVertex.connectedEdges
+                // Grab last index of the vertices array
+                // If our deleter vertex is the last index, we don't care about updating the vertex IDs
+                if (vertex1 == vertices.Length - 1)
+                    lastIndex = -1;
+                else
+                    lastIndex = vertices.Length - 1;
 
                 // Get references to all triangles the vertex is a part of (all adjacent vertices)
+                triangleReferences = new List<int>();
                 for (int i = 0; i < triangles.Length; i += 3)
                 {
                     // Save the starting vertex of the triangle triplet to access it faster later
@@ -144,11 +153,11 @@ public class Merge : MonoBehaviour
             // Vertex that vertex 1 will be merged into
             else if (chosenMerge == 2 && hover)
             {
-                // Save id of vertex 2
+                // Save id of vertex2
                 takeoverVertex = mergeVertex;
                 vertex2 = takeoverVertex.id;
 
-                // Check to see if vertex 2 shares an edge with vertex 1
+                // Check to see if vertex2 shares an edge with vertex1
                 foreach (Edge connectCheck in takeoverVertex.connectedEdges)
                     if (connectCheck.vert1 == vertex1 || connectCheck.vert2 == vertex1)
                         connection = true;
@@ -164,39 +173,22 @@ public class Merge : MonoBehaviour
                 }
                 connection = false;
 
-                // Turn the triangles array into a list to remove elements easier
+                // Update and remove triangles relative to vertex1
                 List<int> trianglesList = triangles.ToList();
+                trianglesList = UpdateTriangles(trianglesList, triangleReferences, vertex1, vertex2);
 
-                // Determine which triangles will be staying and which will be removed
-                // Go backwards through the references so we don't accidentally update while we remove
-                for (int i = triangleReferences.Count - 1; i >= 0; i--)
+                // Get references to all triangles the last vertex is a part of (all adjacent vertices)
+                if (lastIndex != -1)
                 {
-                    // Triangles with only vertex 1 referenced will have those values updated to vertex 2's ids
-                    if (trianglesList[triangleReferences[i]] == vertex1)
+                    lastVertTriReferences = new List<int>();
+
+                    for (int i = 0; i < trianglesList.Count; i += 3)
                     {
-                        if (trianglesList[triangleReferences[i] + 1] == vertex2 || trianglesList[triangleReferences[i] + 2] == vertex2)
-                            trianglesList.RemoveRange(triangleReferences[i], 3);
-                        else
-                            trianglesList[triangleReferences[i]] = vertex2;
-                    }
-                    else if (trianglesList[triangleReferences[i] + 1] == vertex1)
-                    {
-                        if (trianglesList[triangleReferences[i]] == vertex2 || trianglesList[triangleReferences[i] + 2] == vertex2)
-                            trianglesList.RemoveRange(triangleReferences[i], 3);
-                        else
-                            trianglesList[triangleReferences[i] + 1] = vertex2;
-                    }
-                    else if (trianglesList[triangleReferences[i] + 2] == vertex1)
-                    {
-                        if (trianglesList[triangleReferences[i]] == vertex2 || trianglesList[triangleReferences[i] + 1] == vertex2)
-                            trianglesList.RemoveRange(triangleReferences[i], 3);
-                        else
-                            trianglesList[triangleReferences[i] + 2] = vertex2;
+                        // Save the starting vertex of the triangle triplet for the last vertex in the array (for ID updates later)
+                        if (trianglesList[i] == lastIndex || trianglesList[i + 1] == lastIndex || trianglesList[i + 2] == lastIndex)
+                            lastVertTriReferences.Add(i);
                     }
                 }
-
-                // Update the triangles array with the new values
-                triangles = trianglesList.ToArray();
 
                 // All edges that were connected to vertex 1, connect to vertex 2
                 foreach (Edge reconnect in deleterVertex.connectedEdges)
@@ -206,15 +198,17 @@ public class Merge : MonoBehaviour
                     {
                         takeoverVertex.connectedEdges.Remove(reconnect);
                         Destroy(reconnect.thisEdge);
+                        MeshRebuilder.instance.edgeObjects.Remove(reconnect);
                     }
                     else
                     {
-                        // Update vert1 or vert2 ids in the Edge.cs and Vertex.cs scripts
+                        // Update vert1 or vert2 ids in the Edge.cs script
                         if (reconnect.vert1 == vertex1)
                             reconnect.vert1 = vertex2;
                         else
                             reconnect.vert2 = vertex2;
 
+                        // Update vert1 or vert2 ids in the Vertex.cs script
                         takeoverVertex.connectedEdges.Add(reconnect);
                     }
                 }
@@ -225,12 +219,43 @@ public class Merge : MonoBehaviour
                 // > NEW IDEA: If data from vertex 1 goes to vertex 2, there should be two copies of an edge with the same vertex ids
                 //             Look through all edges connected to vertex 2, if two share the same vertex ids, delete one of them
 
-                // Remove vertex1 from the vertices array and delete that vertex's GameObject(I bet there's a faster way to do this)
+                // Remove vertex1 from the vertices array
                 List<Vector3> verticesList = new List<Vector3>();
                 verticesList = vertices.ToList();
                 verticesList.RemoveAt(vertex1);
-                vertices = verticesList.ToArray();
+
+                // Update the last vertex to have the same IDs as the one we just deleted (to avoid out of bounds errors later)
+                // If the new last vertex is our takeover vertex, all this is unncessary
+                if (lastIndex != -1)
+                {
+                    // Move vertex in last position to the position of the one we just deleted
+                    Vector3 lastVertex = verticesList[verticesList.Count - 1];
+                    verticesList.RemoveAt(verticesList.Count - 1);
+                    verticesList.Insert(vertex1 - 1, lastVertex);
+
+                    // Update the triangles for the newly moved last vertex
+                    trianglesList = UpdateTriangles(trianglesList, lastVertTriReferences, vertices.Length - 1, vertex1);
+
+                    // Update IDs in Vertex.cs (Vertex.id) and Edge.cs (Vertex.connectedEdges -> Edge.vert1 or Edge.vert2)
+                    Vertex lastVertexGO = GameObject.Find("Vertex" + (vertices.Length - 1)).GetComponent<Vertex>();
+                    lastVertexGO.name = "Vertex" + vertex1.ToString();
+                    lastVertexGO.id = vertex1;
+                    foreach (Edge reconnect in lastVertexGO.connectedEdges)
+                    {
+                        // Update vert1 or vert2 ids in the Edge.cs script
+                        if (reconnect.vert1 == vertices.Length - 1)
+                            reconnect.vert1 = vertex1;
+                        else
+                            reconnect.vert2 = vertex1;
+                    }
+                }
+
+                // Delete the merged vertex
                 Destroy(deleterVertex.thisVertex);
+                MeshRebuilder.instance.vertexObjects.Remove(deleterVertex);
+
+                vertices = verticesList.ToArray();
+                triangles = trianglesList.ToArray();
 
                 // Update the mesh data and the the edges' direction (repeated code from MoveVertices.UpdateMesh();)
                 UpdateMesh(vertex2);
@@ -250,11 +275,12 @@ public class Merge : MonoBehaviour
     // Cancels Merge action (only works if first vertex was selected, not the second)
     private void secondaryButtonStart(InputAction.CallbackContext context)
     {
+        secondaryButtonPressed = true;
+
         // Change material back to unselected for all vertices and default back to first click
         StopAllCoroutines();
         materialSwap.material = unselected;
         chosenMerge = 1;
-        secondaryButtonPressed = true;
     }
 
     private void secondaryButtonEnd(InputAction.CallbackContext context)
@@ -274,6 +300,38 @@ public class Merge : MonoBehaviour
         }
     }
 
+    // Removes triangles with both deleter and takeover in it, replaces deleter ID with takeover ID otherwise
+    // Go backwards through the references so we don't accidentally update while we remove
+    private List<int> UpdateTriangles(List<int> trianglesList, List<int> triangleReferences, int deleter, int takeover)
+    {
+        for (int i = triangleReferences.Count - 1; i >= 0; i--)
+        {
+            if (trianglesList[triangleReferences[i]] == deleter)
+            {
+                if (trianglesList[triangleReferences[i] + 1] == takeover || trianglesList[triangleReferences[i] + 2] == takeover)
+                    trianglesList.RemoveRange(triangleReferences[i], 3);
+                else
+                    trianglesList[triangleReferences[i]] = takeover;
+            }
+            else if (trianglesList[triangleReferences[i] + 1] == deleter)
+            {
+                if (trianglesList[triangleReferences[i]] == takeover || trianglesList[triangleReferences[i] + 2] == takeover)
+                    trianglesList.RemoveRange(triangleReferences[i], 3);
+                else
+                    trianglesList[triangleReferences[i] + 1] = takeover;
+            }
+            else if (trianglesList[triangleReferences[i] + 2] == deleter)
+            {
+                if (trianglesList[triangleReferences[i]] == takeover || trianglesList[triangleReferences[i] + 1] == takeover)
+                    trianglesList.RemoveRange(triangleReferences[i], 3);
+                else
+                    trianglesList[triangleReferences[i] + 2] = takeover;
+            }
+        }
+
+        return trianglesList;
+    }
+
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
@@ -284,6 +342,14 @@ public class Merge : MonoBehaviour
         mesh.triangles = triangles;
         mesh.vertices = vertices;       // Error: Mesh.vertices is too small. The supplied vertex array has less vertices than are referenced by the triangles array
         mesh.RecalculateNormals();
+
+        /*
+        for (int i = 0; i < vertices.Length; i++)
+            Debug.Log("vertices = " + vertices[i]);
+
+        for (int i = 0; i < triangles.Length; i += 3)
+            Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+        */
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
         foreach (Edge edge in takeoverVertex.connectedEdges)
