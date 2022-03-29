@@ -33,19 +33,7 @@ public class Extrude : ToolClass
     public SphereCollider leftSphere;
     public SphereCollider rightSphere;
 
-    //public int selectedFace;
-
-    /*Vertex vertex1;
-    Vertex vertex2;
-    Vertex vertex3;*/
-
-    Mesh mesh;
-
-    GameObject model;
-
-    Face thisFace;
-
-    public MeshRebuilder meshRebuilder;
+    //GameObject model;
 
    // MeshRenderer materialSwap;
 
@@ -75,8 +63,12 @@ public class Extrude : ToolClass
 
         if(currentFace == null)
             return;
-        
-        extrudeFace(currentFace.GetComponent<Face>().id, meshRebuilder, mesh);
+
+        Face faceObj = currentFace.GetComponent<Face>();
+        MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
+        MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
+        Mesh mesh = moveFace.mesh;
+        extrudeFace(faceObj.id, meshRebuilder, mesh);
     }
 
     // Change material, disable vertex grab interactable, set boolean
@@ -223,16 +215,9 @@ public class Extrude : ToolClass
     // Get face info and 3 vertices
     public void OnTriggerEnter(Collider other)
     {
-        checkImport();
         if (other.CompareTag("Face"))
         {
             currentFace = other.gameObject; 
-            thisFace = currentFace.GetComponent<Face>();
-            //selectedFace = thisFace.id;
-
-            /*vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-            vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-            vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];*/
             inRadius = true;
         }
     }
@@ -244,10 +229,6 @@ public class Extrude : ToolClass
         {
             inRadius = false;
             currentFace = null;
-            thisFace = null;
-            /*vertex1 = null;
-            vertex2 = null;
-            vertex3 = null;*/
         }
     }
 
@@ -261,14 +242,6 @@ public class Extrude : ToolClass
         isEnabled = true;
     }
 
-    void checkImport()
-    {
-        //editingSpace = GameObject.Find("EditingSpace");
-        meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
-        model = meshRebuilder.model;
-        mesh = model.GetComponent<MeshFilter>().mesh;
-    }
-
     // Raycast checking
     void Update()
     {
@@ -278,30 +251,23 @@ public class Extrude : ToolClass
         {
             if(ray.hitFace)
             {
-                checkImport();
                 //currentVertex = ray.hit.transform.gameObject;
                 //vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
 
                 currentFace = ray.hit.transform.gameObject;
-               // print("currentFace name " + currentFace.name);
-                thisFace = currentFace.GetComponent<Face>();
-                //selectedFace = thisFace.id;
-                /*vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-                vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-                vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];*/
+                Face faceObj = currentFace.GetComponent<Face>();
+                MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
+                MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
+                Mesh mesh = moveFace.mesh;
                 inRadius = true;
                 
                 if(primaryButtonPressed)
-                    extrudeFace(thisFace.id, meshRebuilder, mesh);
+                    extrudeFace(faceObj.id, meshRebuilder, mesh);
             }
             else
             {
                 inRadius = false;
                 currentFace = null;
-                thisFace = null;
-                /*vertex1 = null;
-                vertex2 = null;
-                vertex3 = null;*/
             }
         }
     }

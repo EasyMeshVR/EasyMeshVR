@@ -26,8 +26,8 @@ public class MoveFace : MonoBehaviour
     PulleyLocomotion pulleyLocomotion;
 
     // Mesh data
-    Mesh mesh;
-    MeshRebuilder meshRebuilder;
+    public Mesh mesh;
+    public MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
 
     // Edge lookup
