@@ -433,8 +433,15 @@ namespace EasyMeshVR.Multiplayer
             MoveFace moveFace = faceObj.GetComponent<MoveFace>();
 
             int heldByActorNumber = (faceEvent.released) ? -1 : faceEvent.actorNumber;
-            faceObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = vert3Obj.isHeldByOther = !faceEvent.released;
-            faceObj.heldByActorNumber = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = vert3Obj.heldByActorNumber = heldByActorNumber;
+
+            faceObj.isHeldByOther 
+                = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = vert3Obj.isHeldByOther 
+                = edge1Obj.isHeldByOther = edge2Obj.isHeldByOther = edge3Obj.isHeldByOther = !faceEvent.released;
+
+            faceObj.heldByActorNumber 
+                = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = vert3Obj.heldByActorNumber 
+                = edge1Obj.heldByActorNumber = edge2Obj.heldByActorNumber = edge3Obj.heldByActorNumber = heldByActorNumber;
+
             vert1Obj.transform.localPosition = faceEvent.vertex1Pos;
             vert2Obj.transform.localPosition = faceEvent.vertex2Pos;
             vert3Obj.transform.localPosition = faceEvent.vertex3Pos;
