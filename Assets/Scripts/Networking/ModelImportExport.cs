@@ -35,6 +35,9 @@ namespace EasyMeshVR.Core
         [SerializeField] 
         private GameObject edge;
 
+        [SerializeField]
+        private GameObject face;
+
         [SerializeField] 
         private GameObject cubePrefab;
 
@@ -124,6 +127,7 @@ namespace EasyMeshVR.Core
                 MeshRebuilder rebuilder = go.AddComponent<MeshRebuilder>();
                 rebuilder.vertex = vertex;
                 rebuilder.edge = edge;
+                rebuilder.face = face;
                 rebuilder.enabled = true;
             }
         }
