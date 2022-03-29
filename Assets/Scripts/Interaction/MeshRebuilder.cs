@@ -309,5 +309,19 @@ public class MeshRebuilder : MonoBehaviour
 
             yield return null;
         }
+
+        foreach (Face faceObj in faceObjects)
+        {
+            if (faceObj.isHeldByOther && faceObj.heldByActorNumber == player.ActorNumber)
+            {
+                Debug.LogFormat("Cleared face id: {0} held by player Name: {1} ActorNumber: {2}", faceObj.id, player.NickName, player.ActorNumber);
+                faceObj.isHeldByOther = false;
+                faceObj.heldByActorNumber = -1;
+                faceObj.locked = false;
+                faceObj.GetComponent<MoveFace>().SetActiveFaces(faceObj, true);
+            }
+
+            yield return null;
+        }
     }
 }
