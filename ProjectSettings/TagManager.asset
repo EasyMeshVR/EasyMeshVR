@@ -12,6 +12,8 @@ TagManager:
   - LeftController
   - RightController
   - TypingSphereLeft
+  - Center
+  - Face
   layers:
   - Default
   - TransparentFX

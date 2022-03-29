@@ -214,5 +214,32 @@ public class MoveVertices : MonoBehaviour
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
         }
+
+        foreach (Face face in meshRebuilder.faceObjects)
+        {
+            GameObject faceObject = face.gameObject;
+            int vert1 = face.vert1;
+            int vert2 = face.vert2;
+            int vert3 = face.vert3;
+
+            // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
+            if (vert1 == index || vert2 == index || vert3 == index)
+            {
+                // // Set the edge's position to between the two vertices and scale it appropriately
+                // float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
+                // edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
+                // edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
+
+                // // Orient the edge to look at the vertices (specifically the one we're currently holding)
+                // edgeObject.transform.LookAt(transform, Vector3.up);
+                // edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
+
+                float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
+                float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
+                float totalZ = vertices[vert1].z + vertices[vert2].z + vertices[vert3].z;
+
+                faceObject.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
+            }
+        }
     }
 }

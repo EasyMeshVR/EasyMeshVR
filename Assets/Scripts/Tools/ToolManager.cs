@@ -8,8 +8,13 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] public bool LockTool;
+    [SerializeField] public bool extrudeTool;
+
     [SerializeField] LockVertex lockScriptRay;
     [SerializeField] LockVertex lockScriptGrab;
+
+    [SerializeField] Extrude extrudeScriptRay;
+    [SerializeField] Extrude extrudeScriptGrab;
 
 
 
@@ -71,6 +76,12 @@ public class ToolManager : MonoBehaviour
         if (!MergeTool)
             DisableMerge();
 
+        if(extrudeTool)
+            EnableExtrude();
+            
+        if(!extrudeTool)
+            DisableExtrude();
+
         if(grabVertex)
             EnableVertex();
 
@@ -106,6 +117,18 @@ public class ToolManager : MonoBehaviour
     {
         foreach (Merge script in mergeScripts)
             script.isEnabled = false;
+    }
+
+    void EnableExtrude()
+    {
+       extrudeScriptGrab.Enable();
+       extrudeScriptRay.Enable();
+    }
+
+    void DisableExtrude()
+    {
+       extrudeScriptGrab.Disable();
+       extrudeScriptRay.Disable();
     }
 
     void EnableVertex()

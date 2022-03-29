@@ -31,6 +31,7 @@ namespace EasyMeshVR.Multiplayer
         private Action<bool, string, string> importCallback = null;
         private Queue<NetworkEvent> networkEventQueue;
 
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -251,7 +252,6 @@ namespace EasyMeshVR.Multiplayer
                     {
                         if (photonEvent.CustomData != null)
                         {
-                            Debug.Log("Vertex sender: " + photonEvent.Sender);
                             object[] data = (object[])photonEvent.CustomData;
                             HandleMeshVertexPullEvent(data);
                         }
