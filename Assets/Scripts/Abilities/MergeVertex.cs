@@ -231,11 +231,23 @@ public class MergeVertex : MonoBehaviour
             edgeObject.transform.LookAt(transform, Vector3.up);
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
+        meshRebuilder.removeVisuals();
+        meshRebuilder.CreateVisuals();
+    }
+
+    void checkImport()
+    {
+        //editingSpace = GameObject.Find("EditingSpace");
+        meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
+        model = meshRebuilder.model;
+        mesh = model.GetComponent<MeshFilter>().mesh;
     }
 
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerEnter(Collider takeover)
     {
+        checkImport();
+
         // Since the trigger is on all vertices, two colliding calls this twice and screws the merge up
         // We also want only the second activation, not the first (it picks the vertex IDs in the wrong order)
         // This is a crude check to make sure that doesn't happen

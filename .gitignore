@@ -87,3 +87,6 @@ Assembly-CSharp.csproj
 Packages/packages-lock.json
 Assembly-CSharp.csproj
 UserSettings/EditorUserSettings.asset
+Assembly-CSharp.csproj
+Packages/packages-lock.json
+ProjectSettings/Packages/com.unity.learn.iet-framework/Settings.json
