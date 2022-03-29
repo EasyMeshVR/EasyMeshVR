@@ -4,24 +4,30 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using Photon.Pun;
 using EasyMeshVR.Multiplayer;
 
 public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
-    [SerializeField] LockVertex lockVertex;
+   // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
+    //[SerializeField] SwitchControllers switchControllers;
+
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
 
+    public bool isLocked;
+
     // Mesh data
     GameObject model;
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -34,12 +40,15 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
 
+        //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
+
         // Editing space objects
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
@@ -70,10 +79,12 @@ public class MoveVertices : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
 
+
+        //if(switchControllers.rayActive)
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        MeshRebuilder.instance.vertices = mesh.vertices;
+        meshRebuilder.vertices = mesh.vertices;
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -102,15 +113,25 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
+        VertexPullEvent vertexEvent = new VertexPullEvent()
+        {
+            id = selectedVertex,
+            meshId = meshRebuilder.id,
+            vertexPos = meshRebuilder.vertices[selectedVertex],
+            released = true,
+            isCached = true,
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+        };
+
         // Synchronize the position of the mesh vertex by sending a cached event to other players
-        NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, true, true);
+        NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
-        if (pulleyLocomotion.isMovingEditingSpace || lockVertex.isLocked || thisvertex.isHeldByOther)
+        if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
         {
             grabInteractable.enabled = false;
             return;
@@ -125,8 +146,18 @@ public class MoveVertices : MonoBehaviour
             UpdateVertex(transform, selectedVertex);
             UpdateMesh(selectedVertex);
 
+            VertexPullEvent vertexEvent = new VertexPullEvent()
+            {
+                id = selectedVertex,
+                meshId = meshRebuilder.id,
+                vertexPos = meshRebuilder.vertices[selectedVertex],
+                released = false,
+                isCached = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
+
             // Continuously synchronize the position of the vertex without caching it until we release it
-            NetworkMeshManager.instance.SynchronizeMeshVertexPull(MeshRebuilder.instance.vertices[selectedVertex], selectedVertex, false, false);
+            NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         }
     }
 
@@ -149,7 +180,7 @@ public class MoveVertices : MonoBehaviour
 
         // Translate, Scale, and Rotate the vertex position based on the current transform
         // of the editingSpace object.
-        MeshRebuilder.instance.vertices[index] =
+        meshRebuilder.vertices[index] =
             Quaternion.Inverse(editingSpace.transform.rotation)
             * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
     }
@@ -157,14 +188,14 @@ public class MoveVertices : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge edge in meshRebuilder.edgeObjects)
         {
             GameObject edgeObject = edge.gameObject;
             int vert1 = edge.vert1;

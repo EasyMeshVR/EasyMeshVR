@@ -8,7 +8,9 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class ToolManager : MonoBehaviour
 {
     [SerializeField] public bool LockTool;
-    List<LockVertex> lockScripts = new List<LockVertex>();
+    [SerializeField] LockVertex lockScriptRay;
+    [SerializeField] LockVertex lockScriptGrab;
+
 
 
     [SerializeField] public bool MergeTool;
@@ -32,7 +34,6 @@ public class ToolManager : MonoBehaviour
 
     void checkImport()
     {
-        lockScripts.Clear();
         vertexGrab.Clear();
         edgeGrab.Clear();
         GameObject [] vertices = GameObject.FindGameObjectsWithTag("Vertex");
@@ -40,8 +41,6 @@ public class ToolManager : MonoBehaviour
 
         foreach(GameObject vertex in vertices)
         {
-            lockScripts.Add(vertex.GetComponent<LockVertex>());
-            mergeScripts.Add(vertex.GetComponent<Merge>());
             vertexGrab.Add(vertex.GetComponent<XRGrabInteractable>());
         }
 
@@ -60,7 +59,6 @@ public class ToolManager : MonoBehaviour
     // For now use update to check but when this gets hooked up to the UI another script will call the functions
     void Update()
     {
-        // Commented these out for now, it was throwing continuous errors on model import
         if(LockTool)
             EnableLock();
             
@@ -88,16 +86,14 @@ public class ToolManager : MonoBehaviour
 
     void EnableLock()
     {
-        foreach(LockVertex script in lockScripts)
-           // script.enabled = true;
-           script.isEnabled = true;
+       lockScriptRay.Enable();
+       lockScriptGrab.Enable();
     }
 
     void DisableLock()
     {
-        foreach(LockVertex script in lockScripts)
-            //script.enabled = false;
-            script.isEnabled = false;
+       lockScriptRay.Disable();
+       lockScriptGrab.Disable();
     }
 
     void EnableMerge()

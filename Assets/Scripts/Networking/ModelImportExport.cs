@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using EasyMeshVR.Web;
 using Parabox.Stl;
+using EasyMeshVR.Multiplayer;
 
 namespace EasyMeshVR.Core
 {
@@ -19,10 +20,6 @@ namespace EasyMeshVR.Core
 
         public static ModelImportExport instance { get; private set; }
 
-        [SerializeField] GameObject EditingSpace;
-        [SerializeField] GameObject vertex;
-        [SerializeField] GameObject edge;
-
         #endregion
 
         #region Private Fields
@@ -32,6 +29,15 @@ namespace EasyMeshVR.Core
 
         [SerializeField]
         private GameObject modelObject;
+
+        [SerializeField] 
+        private GameObject vertex;
+
+        [SerializeField] 
+        private GameObject edge;
+
+        [SerializeField] 
+        private GameObject cubePrefab;
 
         private ApiRequester apiRequester;
 
@@ -57,7 +63,7 @@ namespace EasyMeshVR.Core
 
         #region Public Methods
 
-        public void ImportModel(string modelCode, Action<DownloadHandler, string> callback = null)
+        public void ImportModel(string modelCode, Action<DownloadHandler, string, string> callback = null)
         {
             apiRequester.DownloadModel(modelCode, callback);
         }
@@ -116,18 +122,19 @@ namespace EasyMeshVR.Core
                 Mesh mesh = meshes[i];
                 mesh.name = "Mesh-" + name + "(" + i + ")";
                 go.GetComponent<MeshFilter>().sharedMesh = mesh;
-
-                MeshRebuilder rebuilder = go.AddComponent<MeshRebuilder>();
-                rebuilder.editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
-                rebuilder.vertex = vertex;
-                rebuilder.edge = edge;
+                MeshRebuilder rebuilder = go.GetComponent<MeshRebuilder>();
+                rebuilder.id = i;
+                rebuilder.Initialize();
                 rebuilder.enabled = true;
-                // rebuilder.RebuilderSetup();
+                NetworkMeshManager.instance.meshRebuilders.Add(rebuilder);
             }
         }
 
         public void DestroyMeshObjects()
         {
+            // Clear previous MeshRebuilders stored in NetworkMeshManager
+            NetworkMeshManager.instance.meshRebuilders.Clear();
+
             // This will delete all the mesh-related game objects under the modelObject prefab
             // but we make sure we don't delete the Network Players that were parented in the editing space
             foreach (Transform child in modelObject.transform)
@@ -137,6 +144,19 @@ namespace EasyMeshVR.Core
                     Destroy(child.gameObject);
                 }
             }
+        }
+
+        public void CreateCubeMeshObject()
+        {
+            GameObject go = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
+            go.transform.SetParent(modelObject.transform, false);
+            NetworkMeshManager.instance.meshRebuilders.Add(go.GetComponent<MeshRebuilder>());
+        }
+
+        public void ClearCanvas()
+        {
+            DestroyMeshObjects();
+            CreateCubeMeshObject();
         }
 
         #endregion

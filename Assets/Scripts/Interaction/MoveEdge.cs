@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
+using Photon.Pun;
 using EasyMeshVR.Multiplayer;
 
 public class MoveEdge : MonoBehaviour
@@ -15,6 +16,9 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material selected;     // light blue
     [SerializeField] Material locked;     // gray with reduced opacity
 
+   // [SerializeField] SwitchControllers switchControllers;
+
+
     GameObject model;
 
     // Editing Space Objects
@@ -23,6 +27,7 @@ public class MoveEdge : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
 
     // Edge lookup
@@ -32,18 +37,22 @@ public class MoveEdge : MonoBehaviour
     int selectedVertex2;
     Vertex vertex1;
     Vertex vertex2;
-    bool grabHeld = false;
+    public bool grabHeld = false;
+
 
     // Get all references we need and add control listeners
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisedge = GetComponent<Edge>();
+        //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
+
 
         // Editing space objects
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
@@ -74,10 +83,11 @@ public class MoveEdge : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
             return;
 
+        //if(switchControllers.rayActive)
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        MeshRebuilder.instance.vertices = mesh.vertices;
+        meshRebuilder.vertices = mesh.vertices;
     }
 
     // Set material back to Unselected
@@ -97,8 +107,8 @@ public class MoveEdge : MonoBehaviour
 
         SetActiveEdges(thisedge, false);
 
-        vertex1 = MeshRebuilder.instance.vertexObjects[thisedge.vert1];
-        vertex2 = MeshRebuilder.instance.vertexObjects[thisedge.vert2];
+        vertex1 = meshRebuilder.vertexObjects[thisedge.vert1];
+        vertex2 = meshRebuilder.vertexObjects[thisedge.vert2];
 
         thisedge.transform.parent = model.transform;
 
@@ -132,13 +142,14 @@ public class MoveEdge : MonoBehaviour
 
         grabHeld = false;
 
-        Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisedge.vert1];
-        Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisedge.vert2];
+        Vector3 vertex1Pos = meshRebuilder.vertices[thisedge.vert1];
+        Vector3 vertex2Pos = meshRebuilder.vertices[thisedge.vert2];
 
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         EdgePullEvent edgeEvent = new EdgePullEvent
         {
             id = thisedge.id,
+            meshId = meshRebuilder.id,
             vert1 = thisedge.vert1,
             vert2 = thisedge.vert2,
             position = thisedge.transform.position,
@@ -146,6 +157,7 @@ public class MoveEdge : MonoBehaviour
             vertex2Pos = vertex2Pos,
             isCached = true,
             released = true,
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
 
         NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
@@ -183,23 +195,24 @@ public class MoveEdge : MonoBehaviour
             );
 
             // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
-            MeshRebuilder.instance.vertices[thisedge.vert1] = 
+            meshRebuilder.vertices[thisedge.vert1] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex1.transform.position - editingSpace.transform.position);
 
-            MeshRebuilder.instance.vertices[thisedge.vert2] = 
+            meshRebuilder.vertices[thisedge.vert2] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex2.transform.position - editingSpace.transform.position);
 
             UpdateMesh(thisedge.id, thisedge.vert1, thisedge.vert2);
 
-            Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisedge.vert1];
-            Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisedge.vert2];
+            Vector3 vertex1Pos = meshRebuilder.vertices[thisedge.vert1];
+            Vector3 vertex2Pos = meshRebuilder.vertices[thisedge.vert2];
 
             // Continuously synchronize the position of the vertex without caching it until we release it
             EdgePullEvent edgeEvent = new EdgePullEvent
             {
                 id = thisedge.id,
+                meshId = meshRebuilder.id,
                 vert1 = thisedge.vert1,
                 vert2 = thisedge.vert2,
                 position = thisedge.transform.position,
@@ -207,6 +220,7 @@ public class MoveEdge : MonoBehaviour
                 vertex2Pos = vertex2Pos,
                 isCached = false,
                 released = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
             };
 
             NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
@@ -215,7 +229,7 @@ public class MoveEdge : MonoBehaviour
 
     public void SetActiveEdges(Edge edge, bool active)
     {
-        foreach (Edge currEdge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
             if (currEdge.id == edge.id) continue;
 
@@ -228,17 +242,17 @@ public class MoveEdge : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int edgeId, int vertex1Id, int vertex2Id, bool skipThisEdgeId = true)
     {
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
-        Transform vertex1Transform = MeshRebuilder.instance.vertexObjects[vertex1Id].transform;
-        Transform vertex2Transform = MeshRebuilder.instance.vertexObjects[vertex2Id].transform;
+        Transform vertex1Transform = meshRebuilder.vertexObjects[vertex1Id].transform;
+        Transform vertex2Transform = meshRebuilder.vertexObjects[vertex2Id].transform;
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge edge in meshRebuilder.edgeObjects)
         {
             if (skipThisEdgeId && edge.id == edgeId) continue;
 

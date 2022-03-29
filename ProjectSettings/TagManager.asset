@@ -9,6 +9,9 @@ TagManager:
   - Model
   - EditingSpace
   - NetworkPlayer
+  - LeftController
+  - RightController
+  - TypingSphereLeft
   layers:
   - Default
   - TransparentFX
@@ -16,12 +19,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Hands
+  - Interactive
+  - Typing Hands
+  - Keyboard
+  - RadiusSphere
+  - KeyboardGrabInteractable
   - 
   - 
   - 

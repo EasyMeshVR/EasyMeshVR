@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6800640985288528783}
   - component: {fileID: 2831225403854444420}
   - component: {fileID: 7293621934099200431}
+  - component: {fileID: -5923948473232030042}
   m_Layer: 0
   m_Name: Network Mesh
   m_TagString: Untagged
@@ -81,3 +82,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-5923948473232030042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7010387081677361842}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7fdc9789f0ede04a81c9e63765f6879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 0
+  isInitialized: 0
+  editingSpace: {fileID: 0}
+  model: {fileID: 0}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  vertices: []
+  edgeObjects: []
+  vertexObjects: []

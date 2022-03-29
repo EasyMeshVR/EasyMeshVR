@@ -22,6 +22,7 @@ public class MergeVertex : MonoBehaviour
     // Mesh updating
     public GameObject model;
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     static Vector3[] vertices;
     static int[] triangles;
     static List<int> triangleReferences = new List<int>();
@@ -43,7 +44,8 @@ public class MergeVertex : MonoBehaviour
     void OnEnable()
     {
         // Get MeshFilter to steal triangles
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
 
         // Stealing triangles (and vertices if we need them)
@@ -55,7 +57,7 @@ public class MergeVertex : MonoBehaviour
         mergeVertex = GetComponent<Vertex>();
 
         // Used to check if we're currently holding a vertex
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // You know what this is
@@ -110,7 +112,7 @@ public class MergeVertex : MonoBehaviour
             {
                 takeoverVertex.connectedEdges.Remove(reconnect);
                 Destroy(reconnect.thisEdge);
-                MeshRebuilder.instance.edgeObjects.Remove(reconnect);
+                meshRebuilder.edgeObjects.Remove(reconnect);
             }
             else
             {
@@ -164,7 +166,7 @@ public class MergeVertex : MonoBehaviour
 
         // Delete the merged vertex
         Destroy(deleterVertex.thisVertex);
-        MeshRebuilder.instance.vertexObjects.Remove(deleterVertex);
+        meshRebuilder.vertexObjects.Remove(deleterVertex);
 
         vertices = verticesList.ToArray();
         triangles = trianglesList.ToArray();
@@ -206,7 +208,7 @@ public class MergeVertex : MonoBehaviour
     public void UpdateMesh(int index)
     {
         // Not sure why this is needed, but without it, the mesh doesn't get updated properly after a merge
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.triangles = triangles;
@@ -244,8 +246,8 @@ public class MergeVertex : MonoBehaviour
         }
         triggerCheck = 1;
 
-        MeshRebuilder.instance.vertices = mesh.vertices;
-        MeshRebuilder.instance.triangles = mesh.triangles;
+        meshRebuilder.vertices = mesh.vertices;
+        meshRebuilder.triangles = mesh.triangles;
 
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")

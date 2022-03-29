@@ -8,8 +8,7 @@ public class Edge : MonoBehaviour
     public int vert1;
     public int vert2;
     public bool isHeldByOther;
+    public int heldByActorNumber = -1;
     public bool locked;
-
     public GameObject thisEdge;
-
 }

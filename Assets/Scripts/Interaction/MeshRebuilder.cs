@@ -2,14 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 using EasyMeshVR.Core;
 
-public class MeshRebuilder : MonoBehaviour, IOnEventCallback
+public class MeshRebuilder : MonoBehaviour
 {
-    public static MeshRebuilder instance { get; private set; }
+    public int id = 0;
+    public bool isInitialized = false;
 
     [SerializeField]
     public GameObject editingSpace;
@@ -37,10 +36,26 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     // Setup
     public void Start()
     {
-        vertexObjects = new List<Vertex>();
+        Debug.Log("In MeshRebuilder:Start() - GameObject: " + name);
+
+        if (!isInitialized)
+        {
+            Debug.Log("In MeshRebuilder:Start() - Initializing GameObject: " + name);
+            Initialize();
+        }
+    }
+
+    public void Initialize()
+    {
+        Debug.Log("In MeshRebuilder:Initialize() - GameObject: " + name);
+
+        isInitialized = true;
+
         edgeObjects = new List<Edge>();
-        instance = this;
-        
+        vertexObjects = new List<Vertex>();
+
+        editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
+
         // For importing in real time we would need the script to get the model automatically
         model = gameObject;
         model.tag = ("Model");
@@ -53,16 +68,6 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         // Start visualizing the mesh
         RemoveDuplicates();
         CreateVisuals();
-    }
-
-    void OnEnable()
-    {
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    void OnDisable()
-    {
-        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     // Deletes the duplicate vertices Unity and STL files create
@@ -239,38 +244,41 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         }
     }
 
-    public void OnEvent(EventData photonEvent)
+    public void ClearHeldDataForPlayer(Player player)
     {
-        byte eventCode = photonEvent.Code;
+        Debug.LogFormat("Called ClearHeldDataForPlayer for player Name: {0} ActorNumber: {1}", player.NickName, player.ActorNumber);
 
-        if (photonEvent.CustomData == null)
-        {
-            return;
-        }
-
-        switch (eventCode)
-        {
-            case Constants.MESH_VERTEX_PULL_EVENT_CODE:
-            {
-                object[] data = (object[])photonEvent.CustomData;
-                HandleMeshVertexPullEvent(data);
-                break;
-            }
-            default:
-                break;
-        }
+        // We start a coroutine since this may be a long running process
+        // and we don't want to hang the main thread
+        StartCoroutine(ClearHeldData(player));
     }
 
-    private void HandleMeshVertexPullEvent(object[] data)
+    private IEnumerator ClearHeldData(Player player)
     {
-        Vector3 vertex = (Vector3)data[0];
-        int index = (int)data[1];
-        bool released = (bool)data[2];
-        Vertex vertexObj = vertexObjects[index];
-        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
-        vertexObj.transform.localPosition = vertex;
-        vertexObj.isHeldByOther = !released;
-        vertices[index] = vertex;
-        moveVertices.UpdateMesh(index);
+        foreach (Vertex vertexObj in vertexObjects)
+        {
+            if (vertexObj.isHeldByOther && vertexObj.heldByActorNumber == player.ActorNumber)
+            {
+                Debug.LogFormat("Cleared vertex id: {0} held by player Name: {1} ActorNumber: {2}", vertexObj.id, player.NickName, player.ActorNumber);
+                vertexObj.isHeldByOther = false;
+                vertexObj.heldByActorNumber = -1;
+            }
+
+            yield return null;
+        }
+
+        foreach (Edge edgeObj in edgeObjects)
+        {
+            if (edgeObj.isHeldByOther && edgeObj.heldByActorNumber == player.ActorNumber)
+            {
+                Debug.LogFormat("Cleared edge id: {0} held by player Name: {1} ActorNumber: {2}", edgeObj.id, player.NickName, player.ActorNumber);
+                edgeObj.isHeldByOther = false;
+                edgeObj.heldByActorNumber = -1;
+                edgeObj.locked = false;
+                edgeObj.GetComponent<MoveEdge>().SetActiveEdges(edgeObj, true);
+            }
+
+            yield return null;
+        }
     }
 }

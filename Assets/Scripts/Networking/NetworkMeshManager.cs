@@ -18,12 +18,18 @@ namespace EasyMeshVR.Multiplayer
 
         public static NetworkMeshManager instance { get; private set; }
 
+        public bool isImportingMesh { get; private set; } = false;
+
+        [SerializeField]
+        public List<MeshRebuilder> meshRebuilders;
+
         #endregion
 
         #region Private Fields
 
         private PhotonView photonView;
-        private Action<bool> importCallback = null;
+        private Action<bool, string, string> importCallback = null;
+        private Queue<NetworkEvent> networkEventQueue;
 
         #endregion
 
@@ -32,6 +38,12 @@ namespace EasyMeshVR.Multiplayer
         void Awake()
         {
             instance = this;
+            networkEventQueue = new Queue<NetworkEvent>();
+
+            if (meshRebuilders == null)
+            {
+                meshRebuilders = new List<MeshRebuilder>();
+            }
         }
 
         void Start()
@@ -53,15 +65,15 @@ namespace EasyMeshVR.Multiplayer
 
         #region Model Import Callback
 
-        async void DownloadCallback(DownloadHandler downloadHandler, string error)
+        public async void DownloadCallback(DownloadHandler downloadHandler, string error, string modelCode)
         {
             if (!string.IsNullOrEmpty(error))
             {
-                Debug.LogErrorFormat("Error encountered when downloading model: {0}", error);
-
+                isImportingMesh = false;
                 if (importCallback != null)
                 {
-                    importCallback.Invoke(false);
+                    importCallback.Invoke(false, error, modelCode);
+                    SetImportModelCallback(null);
                 }
                 return;
             }
@@ -74,11 +86,13 @@ namespace EasyMeshVR.Multiplayer
             // Local instantiation of game objects with the imported meshes
             if (meshes == null || meshes.Length < 1)
             {
+                isImportingMesh = false;
                 Debug.LogError("Meshes array is null or empty");
 
                 if (importCallback != null)
                 {
-                    importCallback.Invoke(false);
+                    importCallback.Invoke(false, "Imported STL mesh was invalid.", modelCode);
+                    SetImportModelCallback(null);
                 }
                 return;
             }
@@ -89,69 +103,81 @@ namespace EasyMeshVR.Multiplayer
             watch.Stop();
             Debug.LogFormat("Importing model took {0} ms", watch.ElapsedMilliseconds);
 
+            isImportingMesh = false;
+
             if (importCallback != null)
             {
-                importCallback.Invoke(true);
+                importCallback.Invoke(true, "", modelCode);
+                SetImportModelCallback(null);
             }
+
+            ProcessNetworkEventQueue();
         }
 
         #endregion
 
         #region Public Methods
 
-        public void SynchronizeMeshImport(string modelCode, Action<bool> callback = null)
+        public void ClearHeldDataForPlayer(Player otherPlayer)
+        {
+            foreach (MeshRebuilder meshRebuilder in meshRebuilders)
+            {
+                if (meshRebuilder == null)
+                {
+                    Debug.LogWarning("NetworkMeshManager:ClearHeldDataForPlayer() - MeshRebuilder was null in the meshRebuilders list");
+                    continue;
+                }
+
+                meshRebuilder.ClearHeldDataForPlayer(otherPlayer);
+            }
+        }
+
+        public void SetImportModelCallback(Action<bool, string, string> callback)
         {
             importCallback = callback;
+        }
 
-            // We clear the previous buffered event for importing a model so that newly joining
-            // players are not importing older models.
-            RaiseEventOptions removeImportModelEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
+        public void SynchronizeMeshImport(string modelCode, Action<bool, string, string> callback = null)
+        {
+            SetImportModelCallback(callback);
 
-            RaiseEventOptions removeMeshVertexPullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
+            RemoveAllCachedEvents();
 
-            RaiseEventOptions removeMeshEdgePullEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.RemoveFromRoomCache
-            };
-
-            PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, null, removeMeshVertexPullEventOptions, SendOptions.SendReliable);
-            PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, null, removeMeshEdgePullEventOptions, SendOptions.SendReliable);
-            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, null, removeImportModelEventOptions, SendOptions.SendReliable);
-
-            // We tell all clients to import the model from the web server given the model code.
+            // We tell all other clients to import the model from the web server given the model code.
             // EventCaching.AddToRoomCacheGlobal caches the event globally so that it persists until the room is closed (all players leave),
             // so that new players can import the current model in the scene.
             RaiseEventOptions importModelEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCacheGlobal
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCacheGlobal,
             };
 
-            object[] content = new object[] { modelCode };
-
-            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, content, importModelEventOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, modelCode, importModelEventOptions, SendOptions.SendReliable);
         }
 
-        public void SynchronizeMeshVertexPull(Vector3 vertex, int index, bool isCached = false, bool released = false)
+        public void SynchronizeClearCanvas()
         {
-            EventCaching cachingOption = (isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+            RemoveAllCachedEvents();
 
+            RaiseEventOptions clearCanvasEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.DoNotCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.CLEAR_CANVAS_EVENT_CODE, null, clearCanvasEventOptions, SendOptions.SendReliable);
+        }
+
+        public void SynchronizeMeshVertexPull(VertexPullEvent vertexEvent)
+        {
+            EventCaching cachingOption = (vertexEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
             RaiseEventOptions meshVertexPullEventOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.Others,
                 CachingOption = cachingOption
             };
 
-            object[] content = new object[] { vertex, index, released };
+            object[] content = VertexPullEvent.SerializeEvent(vertexEvent);
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, content, meshVertexPullEventOptions, SendOptions.SendReliable);
         }
 
@@ -169,6 +195,32 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, content, meshEdgePullEventOptions, SendOptions.SendReliable);
         }
 
+        public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
+        {
+            RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
+            {
+                Receivers = receiverGroup,
+                CachingOption = EventCaching.RemoveFromRoomCache
+            };
+
+            PhotonNetwork.RaiseEvent(eventCode, eventContent, removeCachedEventOptions, SendOptions.SendReliable);
+        }
+
+        public void RemoveCachedEditEvents()
+        {
+            // This function just removes mesh edit events
+            RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, ReceiverGroup.Others);
+        }
+
+        public void RemoveAllCachedEvents()
+        {
+            // We clear the previous buffered events for importing a model and any cached edits,
+            // so that newly joining players aren't importing older models and messing with null data.
+            RemoveCachedEvent(Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEditEvents();
+        }
+
         #endregion
 
         #region Pun Callbacks
@@ -180,17 +232,142 @@ namespace EasyMeshVR.Multiplayer
             switch (eventCode)
             {
                 case Constants.IMPORT_MODEL_FROM_WEB_EVENT_CODE:
-                    Debug.Log("Importing model from web...");
-                    if (photonEvent.CustomData != null)
                     {
-                        object[] data = (object[])photonEvent.CustomData;
-                        string modelCode = (string)data[0];
-                        ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+                        Debug.Log("Importing model from web...");
+                        if (photonEvent.CustomData != null)
+                        {
+                            string modelCode = (string)photonEvent.CustomData;
+                            isImportingMesh = true;
+                            ModelImportExport.instance.ImportModel(modelCode, DownloadCallback);
+                        }
+                        break;
                     }
-                    break;
+                case Constants.CLEAR_CANVAS_EVENT_CODE:
+                    {
+                        ModelImportExport.instance.ClearCanvas();
+                        break;
+                    }
+                case Constants.MESH_VERTEX_PULL_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            Debug.Log("Vertex sender: " + photonEvent.Sender);
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshVertexPullEvent(data);
+                        }
+                        break;
+                    }
+                case Constants.MESH_EDGE_PULL_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshEdgePullEvent(data);
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
+        }
+
+        public void ProcessNetworkEventQueue()
+        {
+            Debug.Log("NetworkMeshManager:ProcessNetworkEventQueue() - Processing network event queue of size: " + networkEventQueue.Count);
+
+            while (networkEventQueue.Count > 0)
+            {
+                NetworkEvent networkEvent = networkEventQueue.Dequeue();
+                System.Type eventType = networkEvent.GetType();
+
+                if (eventType == typeof(VertexPullEvent))
+                {
+                    HandleMeshVertexPullEvent((VertexPullEvent)networkEvent);
+                }
+                else if (eventType == typeof(EdgePullEvent))
+                {
+                    HandleMeshEdgePullEvent((EdgePullEvent)networkEvent);
+                }
+            }
+        }
+
+        private void HandleMeshVertexPullEvent(object[] data)
+        {
+            VertexPullEvent vertexEvent = VertexPullEvent.DeserializeEvent(data);
+
+            // Put the vertexEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(vertexEvent);
+            }
+            else
+            {
+                HandleMeshVertexPullEvent(vertexEvent);
+            }
+        }
+
+        private void HandleMeshVertexPullEvent(VertexPullEvent vertexEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[vertexEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshVertexPullEvent() - meshRebuilder is null for meshId {0}", vertexEvent.meshId);
+                return;
+            }
+
+            Vector3 vertexPos = vertexEvent.vertexPos;
+            int index = vertexEvent.id;
+            bool released = vertexEvent.released;
+            Vertex vertexObj = meshRebuilder.vertexObjects[index];
+            MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
+
+            vertexObj.transform.localPosition = vertexPos;
+            vertexObj.isHeldByOther = !released;
+            vertexObj.heldByActorNumber = (released) ? -1 : vertexEvent.actorNumber;
+            meshRebuilder.vertices[index] = vertexPos;
+            moveVertices.UpdateMesh(index);
+        }
+
+        private void HandleMeshEdgePullEvent(object[] data)
+        {
+            EdgePullEvent edgeEvent = EdgePullEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(edgeEvent);
+            }
+            else
+            {
+                HandleMeshEdgePullEvent(edgeEvent);
+            }
+        }
+
+        private void HandleMeshEdgePullEvent(EdgePullEvent edgeEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[edgeEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshEdgePullEvent() - meshRebuilder is null for meshId {0}", edgeEvent.meshId);
+                return;
+            }
+
+            Edge edgeObj = meshRebuilder.edgeObjects[edgeEvent.id];
+            Vertex vert1Obj = meshRebuilder.vertexObjects[edgeEvent.vert1];
+            Vertex vert2Obj = meshRebuilder.vertexObjects[edgeEvent.vert2];
+            MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+
+            int heldByActorNumber = (edgeEvent.released) ? -1 : edgeEvent.actorNumber;
+            edgeObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = !edgeEvent.released;
+            edgeObj.heldByActorNumber = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = heldByActorNumber;
+            vert1Obj.transform.localPosition = edgeEvent.vertex1Pos;
+            vert2Obj.transform.localPosition = edgeEvent.vertex2Pos;
+            meshRebuilder.vertices[edgeEvent.vert1] = edgeEvent.vertex1Pos;
+            meshRebuilder.vertices[edgeEvent.vert2] = edgeEvent.vertex2Pos;
+            moveEdge.SetActiveEdges(edgeObj, edgeEvent.released);
+            moveEdge.UpdateMesh(edgeEvent.id, edgeEvent.vert1, edgeEvent.vert2, false);
         }
 
         #endregion

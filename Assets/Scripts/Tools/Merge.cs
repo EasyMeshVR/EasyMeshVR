@@ -28,6 +28,7 @@ public class Merge : MonoBehaviour
     // Mesh updating
     public GameObject model;
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     static Vector3[] vertices;
     static int[] triangles;
     static List<int> triangleReferences = new List<int>();
@@ -50,7 +51,8 @@ public class Merge : MonoBehaviour
     void OnEnable()
     {
         // Get MeshFilter to steal triangles
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
 
         // Stealing triangles (and vertices if we need them)
@@ -79,8 +81,8 @@ public class Merge : MonoBehaviour
         if (isEnabled) // Swap isEnabled with 'chosenMerge == 2' if this doesn't work out
             materialSwap.material = merge;
 
-        MeshRebuilder.instance.vertices = mesh.vertices;
-        MeshRebuilder.instance.triangles = mesh.triangles;
+        meshRebuilder.vertices = mesh.vertices;
+        meshRebuilder.triangles = mesh.triangles;
 
         hover = true;
     }
@@ -198,7 +200,7 @@ public class Merge : MonoBehaviour
                     {
                         takeoverVertex.connectedEdges.Remove(reconnect);
                         Destroy(reconnect.thisEdge);
-                        MeshRebuilder.instance.edgeObjects.Remove(reconnect);
+                        meshRebuilder.edgeObjects.Remove(reconnect);
                     }
                     else
                     {
@@ -252,7 +254,7 @@ public class Merge : MonoBehaviour
 
                 // Delete the merged vertex
                 Destroy(deleterVertex.thisVertex);
-                MeshRebuilder.instance.vertexObjects.Remove(deleterVertex);
+                meshRebuilder.vertexObjects.Remove(deleterVertex);
 
                 vertices = verticesList.ToArray();
                 triangles = trianglesList.ToArray();

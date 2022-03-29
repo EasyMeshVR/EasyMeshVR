@@ -14,16 +14,27 @@ namespace EasyMeshVR.Core
 
         private InputDevice targetDevice;
         private GameObject spawnedController;
-        private GameObject spawnedHandModel;
+        public GameObject spawnedHandModel { get; private set; }
         private Animator handAnimator;
+
+        public bool initialized = false;
+        public bool initializing = false;
+
+        private void Awake()
+        {
+            initializing = true;
+        }
 
         // Start is called before the first frame update
         void Start()
         {
-            TryInitialize();
+            if (!initialized && !initializing)
+            {
+                TryInitialize();
+            }
         }
 
-        void TryInitialize()
+        public void TryInitialize()
         {
             List<InputDevice> devices = new List<InputDevice>();
 
@@ -46,6 +57,9 @@ namespace EasyMeshVR.Core
                 spawnedHandModel = Instantiate(handModelPrefab, transform);
                 handAnimator = spawnedHandModel.GetComponent<Animator>();
             }
+
+            initialized = true;
+            initializing = false;
         }
 
         void UpdateHandAnimation()

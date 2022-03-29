@@ -8,10 +8,14 @@ namespace EasyMeshVR.UI
 {
     public class GameMenuManager : MonoBehaviour
     {
-        #region Private Fields
+        #region Public Fields
 
         [SerializeField]
-        GameMenu gameMenu;
+        public GameMenu gameMenu;
+
+        #endregion
+
+        #region Private Fields
 
         [SerializeField]
         InputActionReference toggleGameMenuRef;
@@ -26,6 +30,7 @@ namespace EasyMeshVR.UI
 
         void Awake()
         {
+            Debug.Log("In GameMenuManager Awake()");
             toggleGameMenuRef.action.started += ToggleGameMenuAction;
         }
 

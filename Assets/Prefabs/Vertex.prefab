@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 9077015157397384143}
   - component: {fileID: -8109944905895446732}
   - component: {fileID: -5656790495856781621}
-  - component: {fileID: -8713780636455507863}
   - component: {fileID: 502973961573988433}
   - component: {fileID: -5827613723937013234}
   m_Layer: 0
@@ -246,7 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabInteractable: {fileID: 9077015157397384143}
-  lockVertex: {fileID: -8713780636455507863}
+  lockVertex: {fileID: 0}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
@@ -266,28 +265,6 @@ MonoBehaviour:
   isHeldByOther: 0
   thisVertex: {fileID: 0}
   connectedEdges: []
---- !u!114 &-8713780636455507863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 631ca2cfefda48348a58ee2f8a492d5b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 9077015157397384143}
-  primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  isEnabled: 0
-  locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
-  isLocked: 0
 --- !u!114 &502973961573988433
 MonoBehaviour:
   m_ObjectHideFlags: 0
