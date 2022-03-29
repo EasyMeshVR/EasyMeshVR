@@ -11461,7 +11461,7 @@ PrefabInstance:
     - target: {fileID: 7387235779626734528, guid: a80e26673f6add04d832524fdf5cfc98,
         type: 3}
       propertyPath: onRelease.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7387235779626734528, guid: a80e26673f6add04d832524fdf5cfc98,
         type: 3}
@@ -11481,7 +11481,11 @@ PrefabInstance:
     - target: {fileID: 7387235779626734528, guid: a80e26673f6add04d832524fdf5cfc98,
         type: 3}
       propertyPath: onRelease.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+<<<<<<< HEAD
       value: ClearText
+=======
+      value: Submit
+>>>>>>> b82e24b8b18704980bb57ef6b4e5419eeddc1ece
       objectReference: {fileID: 0}
     - target: {fileID: 7387235779626734528, guid: a80e26673f6add04d832524fdf5cfc98,
         type: 3}

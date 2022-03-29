@@ -79,7 +79,7 @@ namespace EasyMeshVR.Web
 
         #region Public Methods
 
-        public void DownloadModel(string modelCode, Action<DownloadHandler, string> callback = null)
+        public void DownloadModel(string modelCode, Action<DownloadHandler, string, string> callback = null)
         {
             StartCoroutine(RequestPresignedGet(modelCode, callback));
         }
@@ -112,7 +112,7 @@ namespace EasyMeshVR.Web
             return uriBuilder.Uri;
         }
 
-        private IEnumerator RequestPresignedGet(string modelCode, Action<DownloadHandler, string> callback = null)
+        private IEnumerator RequestPresignedGet(string modelCode, Action<DownloadHandler, string, string> callback = null)
         {
             Dictionary<string, string> queryParams = new Dictionary<string, string>()
             {
@@ -128,17 +128,17 @@ namespace EasyMeshVR.Web
             {
                 if (callback != null)
                 {
-                    callback.Invoke(webRequest.downloadHandler, webRequest.error);
+                    callback.Invoke(webRequest.downloadHandler, webRequest.error, modelCode);
                 }
             }
             else
             {
                 PresignedGetJSON presignedGetJSON = JsonConvert.DeserializeObject<PresignedGetJSON>(webRequest.downloadHandler.text);
-                StartCoroutine(FetchModelData(presignedGetJSON.url, callback));
+                StartCoroutine(FetchModelData(modelCode, presignedGetJSON.url, callback));
             }
         }
 
-        private IEnumerator FetchModelData(string presignedGetUrl, Action<DownloadHandler, string> callback = null)
+        private IEnumerator FetchModelData(string modelCode, string presignedGetUrl, Action<DownloadHandler, string, string> callback = null)
         {
             UnityWebRequest webRequest = UnityWebRequest.Get(presignedGetUrl);
 
@@ -148,12 +148,12 @@ namespace EasyMeshVR.Web
             {
                 if (callback != null)
                 {
-                    callback.Invoke(webRequest.downloadHandler, webRequest.error);
+                    callback.Invoke(webRequest.downloadHandler, webRequest.error, modelCode);
                 }
             }
             else if (callback != null)
             {
-                callback.Invoke(webRequest.downloadHandler, null);
+                callback.Invoke(webRequest.downloadHandler, null, modelCode);
             }
         }
 

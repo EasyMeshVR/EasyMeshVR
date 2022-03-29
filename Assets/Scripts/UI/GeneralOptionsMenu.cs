@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -148,7 +149,11 @@ namespace EasyMeshVR.UI
 
         public void OnClickedImportModel(string modelCode)
         {
-            NetworkMeshManager.instance.SynchronizeMeshImport(modelCode, ImportCallback);
+            // Set the ImportCallback
+            NetworkMeshManager.instance.SetImportModelCallback(ImportCallback);
+
+            // Import the model locally
+            ModelImportExport.instance.ImportModel(modelCode, NetworkMeshManager.instance.DownloadCallback);
         }
 
         public void OnClickedExportModel()
@@ -178,7 +183,7 @@ namespace EasyMeshVR.UI
 
         #region Import/Export Callbacks
 
-        private void ImportCallback(bool success, string errorMsg)
+        private void ImportCallback(bool success, string errorMsg, string modelCode)
         {
             if (!success)
             {
@@ -190,11 +195,13 @@ namespace EasyMeshVR.UI
                 {
                     KeyInputManager.instance.DisplayErrorMessage("Encountered network error.");
                 }
-                return;
             }
             else
             {
                 KeyInputManager.instance.DisplaySuccessMessage("Imported model into scene.");
+
+                // Successfully imported the model locally, send the import event to others
+                NetworkMeshManager.instance.SynchronizeMeshImport(modelCode, ImportCallback);
             }
         }
 

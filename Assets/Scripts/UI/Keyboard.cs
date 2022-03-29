@@ -261,6 +261,8 @@ namespace EasyMeshVR.UI
         public void ClearText()
         {
             activeInputField.text = string.Empty;
+            ClearErrorMessage();
+            ClearSuccessMessage();
             OnUpdate.Invoke(activeInputField.text);
         }
     }

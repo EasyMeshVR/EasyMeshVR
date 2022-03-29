@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Events;
 using TMPro;
 
@@ -50,7 +51,6 @@ namespace EasyMeshVR.UI
             UnityAction action = delegate
             {
                 button.onClick.Invoke();
-                Submit();
             };
 
             keyboard.AddEnterButtonOnReleaseEvent(action);
@@ -81,23 +81,19 @@ namespace EasyMeshVR.UI
 
         public void Submit()
         {
-            keyboard.ClearText();
-
             if (inputField != null)
             {
-                inputField.ReleaseSelection();
+                DeselectInputField();
             }
+
+            keyboard.Disable();
         }
 
         public void Cancel()
         {
-            keyboard.ClearText();
-            keyboard.ClearErrorMessage();
-            keyboard.ClearSuccessMessage();
-
             if (inputField != null)
             {
-                inputField.ReleaseSelection();
+                DeselectInputField();
             }
 
             keyboard.Disable();
@@ -108,6 +104,20 @@ namespace EasyMeshVR.UI
             keyboard.Enable();
             keyboard.DisplayImportModelPanel();
             keyboard.AddEnterButtonOnReleaseEvent(callback);
+        }
+
+        #endregion
+
+        #region Private Method
+
+        private void DeselectInputField()
+        {
+            EventSystem eventSystem = EventSystem.current;
+
+            if (!eventSystem.alreadySelecting)
+            {
+                eventSystem.SetSelectedGameObject(null);
+            }
         }
 
         #endregion

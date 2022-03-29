@@ -29,6 +29,7 @@ public class MoveVertices : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -41,14 +42,15 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
 
         //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
         // Editing space objects
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
@@ -84,7 +86,7 @@ public class MoveVertices : MonoBehaviour
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        MeshRebuilder.instance.vertices = mesh.vertices;
+        meshRebuilder.vertices = mesh.vertices;
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -116,7 +118,8 @@ public class MoveVertices : MonoBehaviour
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
             id = selectedVertex,
-            vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+            meshId = meshRebuilder.id,
+            vertexPos = meshRebuilder.vertices[selectedVertex],
             released = true,
             isCached = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
@@ -148,7 +151,8 @@ public class MoveVertices : MonoBehaviour
             VertexPullEvent vertexEvent = new VertexPullEvent()
             {
                 id = selectedVertex,
-                vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+                meshId = meshRebuilder.id,
+                vertexPos = meshRebuilder.vertices[selectedVertex],
                 released = false,
                 isCached = false,
                 actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
@@ -178,7 +182,7 @@ public class MoveVertices : MonoBehaviour
 
         // Translate, Scale, and Rotate the vertex position based on the current transform
         // of the editingSpace object.
-        MeshRebuilder.instance.vertices[index] =
+        meshRebuilder.vertices[index] =
             Quaternion.Inverse(editingSpace.transform.rotation)
             * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
     }
@@ -186,14 +190,14 @@ public class MoveVertices : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge edge in meshRebuilder.edgeObjects)
         {
             GameObject edgeObject = edge.gameObject;
             int vert1 = edge.vert1;

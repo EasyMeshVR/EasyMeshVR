@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Photon.Pun;
 using Photon.Realtime;
-using ExitGames.Client.Photon;
 using EasyMeshVR.Core;
-using EasyMeshVR.Multiplayer;
 
-public class MeshRebuilder : MonoBehaviour, IOnEventCallback
+public class MeshRebuilder : MonoBehaviour
 {
-    public static MeshRebuilder instance { get; private set; }
+    public int id = 0;
+    public bool isInitialized = false;
 
     [SerializeField]
     public GameObject editingSpace;
@@ -40,11 +38,24 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
     // Setup
     public void Start()
     {
+        Debug.Log("In MeshRebuilder:Start() - GameObject: " + name);
+
+        if (!isInitialized)
+        {
+            Debug.Log("In MeshRebuilder:Start() - Initializing GameObject: " + name);
+            Initialize();
+        }
+    }
+
+    public void Initialize()
+    {
+        Debug.Log("In MeshRebuilder:Initialize() - GameObject: " + name);
+
+        isInitialized = true;
+
         edgeObjects = new List<Edge>();
         vertexObjects = new List<Vertex>();
         faceObjects = new List<Face>();
-
-        instance = this;
 
         editingSpace = GameObject.FindGameObjectWithTag(Constants.EDITING_SPACE_TAG);
 
@@ -60,18 +71,6 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
         // Start visualizing the mesh
         RemoveDuplicates();
         CreateVisuals();
-    }
-
-    void OnEnable()
-    {
-
-        PhotonNetwork.AddCallbackTarget(this);
-    }
-
-    void OnDisable()
-    {
-
-        PhotonNetwork.RemoveCallbackTarget(this);
     }
 
     // Deletes the duplicate vertices Unity and STL files create
@@ -310,68 +309,5 @@ public class MeshRebuilder : MonoBehaviour, IOnEventCallback
 
             yield return null;
         }
-    }
-
-    public void OnEvent(EventData photonEvent)
-    {
-        byte eventCode = photonEvent.Code;
-
-        if (photonEvent.CustomData == null)
-        {
-            return;
-        }
-
-        switch (eventCode)
-        {
-            case Constants.MESH_VERTEX_PULL_EVENT_CODE:
-            {
-                object[] data = (object[])photonEvent.CustomData;
-                HandleMeshVertexPullEvent(data);
-                break;
-            }
-            case Constants.MESH_EDGE_PULL_EVENT_CODE:
-            {
-                object[] data = (object[])photonEvent.CustomData;
-                HandleMeshEdgePullEvent(data);
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
-    private void HandleMeshVertexPullEvent(object[] data)
-    {
-        VertexPullEvent vertexEvent = VertexPullEvent.DeserializeEvent(data);
-
-        Vector3 vertexPos = vertexEvent.vertexPos;
-        int index = vertexEvent.id;
-        bool released = vertexEvent.released;
-        Vertex vertexObj = vertexObjects[index];
-        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
-        vertexObj.transform.localPosition = vertexPos;
-        vertexObj.isHeldByOther = !released;
-        vertexObj.heldByActorNumber = (released) ? -1 : vertexEvent.actorNumber;
-        vertices[index] = vertexPos;
-        moveVertices.UpdateMesh(index);
-    }
-
-    private void HandleMeshEdgePullEvent(object[] data)
-    {
-        EdgePullEvent edgeEvent = EdgePullEvent.DeserializeEvent(data);
-
-        Edge edgeObj = edgeObjects[edgeEvent.id];
-        Vertex vert1Obj = vertexObjects[edgeEvent.vert1];
-        Vertex vert2Obj = vertexObjects[edgeEvent.vert2];
-        MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
-        int heldByActorNumber = (edgeEvent.released) ? -1 : edgeEvent.actorNumber;
-        edgeObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = !edgeEvent.released;
-        edgeObj.heldByActorNumber = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = heldByActorNumber;
-        vert1Obj.transform.localPosition = edgeEvent.vertex1Pos;
-        vert2Obj.transform.localPosition = edgeEvent.vertex2Pos;
-        vertices[edgeEvent.vert1] = edgeEvent.vertex1Pos;
-        vertices[edgeEvent.vert2] = edgeEvent.vertex2Pos;
-        moveEdge.SetActiveEdges(edgeObj, edgeEvent.released);
-        moveEdge.UpdateMesh(edgeEvent.id, edgeEvent.vert1, edgeEvent.vert2, false);
     }
 }

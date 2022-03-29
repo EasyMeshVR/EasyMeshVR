@@ -38,6 +38,7 @@ public class ChangeMatClosest : MonoBehaviour
             
             float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
  
+            // if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag(Constants.GAME_CONTROLLER_TAG))
             if ((!nearObject || curDistance < nearObjectDistance))
             {
                 nearObjectDistance = curDistance;

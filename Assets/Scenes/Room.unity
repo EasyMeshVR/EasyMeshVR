@@ -381,6 +381,18 @@ PrefabInstance:
       objectReference: {fileID: 2063562609}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0, type: 3}
+--- !u!114 &157689796 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
+    type: 3}
+  m_PrefabInstance: {fileID: 157689795}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7fdc9789f0ede04a81c9e63765f6879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &170521011
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,7 +1563,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DisconnectAfterKeepAlive: 0
   KeepAliveInBackground: 60000
-  ApplyDontDestroyOnLoad: 1
+  ApplyDontDestroyOnLoad: 0
   logLevel: 1
   enableSupportLogger: 0
   updateInterval: 50
@@ -3168,6 +3180,16 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: meshRebuilders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8680544116246475860, guid: 74394877d94ba124799358359acb774c,
+        type: 3}
+      propertyPath: meshRebuilders.Array.data[0]
+      value: 
+      objectReference: {fileID: 157689796}
     - target: {fileID: 8680544116335626896, guid: 74394877d94ba124799358359acb774c,
         type: 3}
       propertyPath: head
