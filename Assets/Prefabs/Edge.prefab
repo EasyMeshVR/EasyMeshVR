@@ -247,8 +247,8 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
   locked: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
-  switchControllers: {fileID: 0}
   materialSwap: {fileID: 0}
+  grabHeld: 0
 --- !u!114 &-2442381604478648354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,5 +265,6 @@ MonoBehaviour:
   vert1: 0
   vert2: 0
   isHeldByOther: 0
+  heldByActorNumber: -1
   locked: 0
   thisEdge: {fileID: 6331143426899357056}
