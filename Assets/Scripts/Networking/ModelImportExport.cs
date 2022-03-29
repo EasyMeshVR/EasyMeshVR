@@ -36,6 +36,9 @@ namespace EasyMeshVR.Core
         [SerializeField] 
         private GameObject edge;
 
+        [SerializeField]
+        private GameObject face;
+
         [SerializeField] 
         private GameObject cubePrefab;
 

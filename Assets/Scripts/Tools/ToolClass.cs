@@ -83,12 +83,12 @@ public class ToolClass : MonoBehaviour
         //print("secondary parent");
     }
 
-    public void Enable()
+    public virtual void Enable()
     {
         isEnabled = true;
     }
 
-    public void Disable()
+    public virtual void Disable()
     {
         isEnabled = false;
     }
