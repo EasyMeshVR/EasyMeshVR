@@ -200,22 +200,27 @@ public class MoveFace : MonoBehaviour
         Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
         Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
-
         // Synchronize the position of the mesh vertex by sending a cached event to other players
-        // EdgePullEvent edgeEvent = new EdgePullEvent
-        // {
-        //     id = thisedge.id,
-        //     vert1 = thisedge.vert1,
-        //     vert2 = thisedge.vert2,
-        //     position = thisedge.transform.position,
-        //     vertex1Pos = vertex1Pos,
-        //     vertex2Pos = vertex2Pos,
-        //     isCached = true,
-        //     released = true,
-        //     actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
-        // };
+        FacePullEvent faceEvent = new FacePullEvent
+        {
+            id = thisFace.id,
+            vert1 = thisFace.vert1,
+            vert2 = thisFace.vert2,
+            vert3 = thisFace.vert3,
+            edge1 = thisFace.edge1,
+            edge2 = thisFace.edge2,
+            edge3 = thisFace.edge3,
+            position = thisFace.transform.position,
+            vertex1Pos = vertex1Pos,
+            vertex2Pos = vertex2Pos,
+            vertex3Pos = vertex3Pos,
+            normal = thisFace.normal,
+            isCached = true,
+            released = true,
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+        };
 
-       // NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
+        NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
 
         // Update face position
         float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
@@ -278,22 +283,27 @@ public class MoveFace : MonoBehaviour
             Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
             Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
+            // Continuously synchronize the face without caching it until we release it
+            FacePullEvent faceEvent = new FacePullEvent
+            {
+                id = thisFace.id,
+                vert1 = thisFace.vert1,
+                vert2 = thisFace.vert2,
+                vert3 = thisFace.vert3,
+                edge1 = thisFace.edge1,
+                edge2 = thisFace.edge2,
+                edge3 = thisFace.edge3,
+                position = thisFace.transform.position,
+                vertex1Pos = vertex1Pos,
+                vertex2Pos = vertex2Pos,
+                vertex3Pos = vertex3Pos,
+                normal = thisFace.normal,
+                isCached = false,
+                released = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
 
-            // // Continuously synchronize the position of the vertex without caching it until we release it
-            // EdgePullEvent edgeEvent = new EdgePullEvent
-            // {
-            //     id = thisedge.id,
-            //     vert1 = thisedge.vert1,
-            //     vert2 = thisedge.vert2,
-            //     position = thisedge.transform.position,
-            //     vertex1Pos = vertex1Pos,
-            //     vertex2Pos = vertex2Pos,
-            //     isCached = false,
-            //     released = false,
-            //     actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
-            // };
-
-           // NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
+            NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
         }
     }
 
