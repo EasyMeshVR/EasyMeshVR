@@ -150,4 +150,32 @@ namespace EasyMeshVR.Multiplayer
             return faceEvent;
         }
     }
+
+    public class FaceExtrudeEvent : NetworkEvent
+    {
+        public int id { get; set; }
+        public int meshId { get; set; }
+
+        public static object[] SerializeEvent(FaceExtrudeEvent faceExtrudeEvent)
+        {
+            return new object[] 
+            {
+                faceExtrudeEvent.id,
+                faceExtrudeEvent.released,
+                faceExtrudeEvent.actorNumber,
+                faceExtrudeEvent.meshId,
+            };
+        }
+
+        public static FaceExtrudeEvent DeserializeEvent(object[] data)
+        {
+            return new FaceExtrudeEvent
+            {
+                id = (int)data[0],
+                released = (bool)data[1],
+                actorNumber = (int)data[2],
+                meshId = (int)data[3]
+            };
+        }
+    }
 }

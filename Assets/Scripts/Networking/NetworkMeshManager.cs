@@ -210,6 +210,20 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_FACE_PULL_EVENT_CODE, content, meshFacePullEventOptions, SendOptions.SendReliable);
         }
 
+        public void SynchronizeMeshFaceExtrude(FaceExtrudeEvent faceExtrudeEvent)
+        {
+            EventCaching cachingOption = (faceExtrudeEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
+            RaiseEventOptions meshFaceExtrudeEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = cachingOption
+            };
+
+            object[] content = FaceExtrudeEvent.SerializeEvent(faceExtrudeEvent);
+            PhotonNetwork.RaiseEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, content, meshFaceExtrudeEventOptions, SendOptions.SendReliable);
+        }
+
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
@@ -227,6 +241,7 @@ namespace EasyMeshVR.Multiplayer
             RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_FACE_PULL_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, ReceiverGroup.Others);
         }
 
         public void RemoveAllCachedEvents()
@@ -290,6 +305,15 @@ namespace EasyMeshVR.Multiplayer
                         }
                         break;
                     }
+                case Constants.MESH_FACE_EXTRUDE_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshFaceExtrudeEvent(data);
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
@@ -315,6 +339,10 @@ namespace EasyMeshVR.Multiplayer
                 else if (eventType == typeof(FacePullEvent))
                 {
                     HandleMeshFacePullEvent((FacePullEvent)networkEvent);
+                }
+                else if (eventType == typeof(FaceExtrudeEvent))
+                {
+                    HandleMeshFaceExtrudeEvent((FaceExtrudeEvent)networkEvent);
                 }
             }
         }
@@ -453,6 +481,37 @@ namespace EasyMeshVR.Multiplayer
             moveFace.SetActiveEdges(edge3Obj, faceEvent.released);
             moveFace.SetActiveFaces(faceObj, faceEvent.released);
             moveFace.UpdateMesh(faceEvent.vert1, faceEvent.vert2, faceEvent.vert3, false);
+        }
+        
+        private void HandleMeshFaceExtrudeEvent(object[] data)
+        {
+            FaceExtrudeEvent faceExtrudeEvent = FaceExtrudeEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(faceExtrudeEvent);
+            }
+            else
+            {
+                HandleMeshFaceExtrudeEvent(faceExtrudeEvent);
+            }
+        }
+
+        private void HandleMeshFaceExtrudeEvent(FaceExtrudeEvent faceExtrudeEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[faceExtrudeEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshFaceExtrudeEvent() - meshRebuilder is null for meshId {0}", faceExtrudeEvent.meshId);
+                return;
+            }
+
+            Mesh mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
+            
+            Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
+            extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, false);
         }
 
         #endregion

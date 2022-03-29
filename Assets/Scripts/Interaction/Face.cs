@@ -7,7 +7,6 @@ public class Face : MonoBehaviour
     public int id;
     public int vert1;
     public int vert2;
-
     public int vert3;
 
     public int edge1;
