@@ -27,6 +27,7 @@ public class MoveFace : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
+    MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
 
     // Edge lookup
@@ -57,14 +58,15 @@ public class MoveFace : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisFace = GetComponent<Face>();
         //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
 
         // Editing space objects
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
@@ -99,10 +101,10 @@ public class MoveFace : MonoBehaviour
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        MeshRebuilder.instance.vertices = mesh.vertices;
+        meshRebuilder.vertices = mesh.vertices;
 
                 // Keep mesh filter updated with most recent mesh data changes
-       // MeshRebuilder.instance.triangles = mesh.triangles;
+       // meshRebuilder.triangles = mesh.triangles;
 
         //print("Face " +thisFace.id + " vertices " + thisFace.vert1 + " " + thisFace.vert2 + " " + thisFace.vert3);
 
@@ -124,9 +126,9 @@ public class MoveFace : MonoBehaviour
             return;
 
 
-        edge1 = MeshRebuilder.instance.edgeObjects[thisFace.edge1];
-        edge2 = MeshRebuilder.instance.edgeObjects[thisFace.edge2];
-        edge3 = MeshRebuilder.instance.edgeObjects[thisFace.edge3];
+        edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
+        edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
+        edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
 
         SetActiveEdges(edge1, false);
         SetActiveEdges(edge2, false);
@@ -135,9 +137,9 @@ public class MoveFace : MonoBehaviour
         SetActiveFaces(thisFace, false);
 
 
-        vertex1 = MeshRebuilder.instance.vertexObjects[thisFace.vert1];
-        vertex2 = MeshRebuilder.instance.vertexObjects[thisFace.vert2];
-        vertex3 = MeshRebuilder.instance.vertexObjects[thisFace.vert3];
+        vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
+        vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
+        vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
 
 
         thisFace.transform.parent = model.transform;
@@ -194,9 +196,9 @@ public class MoveFace : MonoBehaviour
 
         grabHeld = false;
 
-        Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisFace.vert1];
-        Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisFace.vert2];
-        Vector3 vertex3Pos = MeshRebuilder.instance.vertices[thisFace.vert3];
+        Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
+        Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
+        Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
 
         // Synchronize the position of the mesh vertex by sending a cached event to other players
@@ -258,23 +260,23 @@ public class MoveFace : MonoBehaviour
             );
 
             // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
-            MeshRebuilder.instance.vertices[thisFace.vert1] = 
+            meshRebuilder.vertices[thisFace.vert1] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex1.transform.position - editingSpace.transform.position);
 
-            MeshRebuilder.instance.vertices[thisFace.vert2] = 
+            meshRebuilder.vertices[thisFace.vert2] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex2.transform.position - editingSpace.transform.position);
 
-            MeshRebuilder.instance.vertices[thisFace.vert3] = 
+            meshRebuilder.vertices[thisFace.vert3] = 
                 Quaternion.Inverse(editingSpace.transform.rotation)
                 * Vector3.Scale(inverseScale, vertex3.transform.position - editingSpace.transform.position);
 
             UpdateMesh(thisFace.vert1, thisFace.vert2, thisFace.vert3);
 
-            Vector3 vertex1Pos = MeshRebuilder.instance.vertices[thisFace.vert1];
-            Vector3 vertex2Pos = MeshRebuilder.instance.vertices[thisFace.vert2];
-            Vector3 vertex3Pos = MeshRebuilder.instance.vertices[thisFace.vert3];
+            Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
+            Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
+            Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
 
             // // Continuously synchronize the position of the vertex without caching it until we release it
@@ -297,7 +299,7 @@ public class MoveFace : MonoBehaviour
 
     public void SetActiveEdges(Edge edge, bool active)
     {
-        foreach (Edge currEdge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
             if (currEdge.id == edge.id) continue;
 
@@ -309,7 +311,7 @@ public class MoveFace : MonoBehaviour
 
     public void SetActiveFaces(Face face, bool active)
     {
-        foreach (Face currFace in MeshRebuilder.instance.faceObjects)
+        foreach (Face currFace in meshRebuilder.faceObjects)
         {
             if (currFace.id == face.id) continue;
 
@@ -322,18 +324,18 @@ public class MoveFace : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int vertex1Id, int vertex2Id, int vertex3Id, bool skipThisEdgeId = true)
     {
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
-        Transform vertex1Transform = MeshRebuilder.instance.vertexObjects[vertex1Id].transform;
-        Transform vertex2Transform = MeshRebuilder.instance.vertexObjects[vertex2Id].transform;
-        Transform vertex3Transform = MeshRebuilder.instance.vertexObjects[vertex3Id].transform;
+        Transform vertex1Transform = meshRebuilder.vertexObjects[vertex1Id].transform;
+        Transform vertex2Transform = meshRebuilder.vertexObjects[vertex2Id].transform;
+        Transform vertex3Transform = meshRebuilder.vertexObjects[vertex3Id].transform;
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge edge in meshRebuilder.edgeObjects)
         {
             if (skipThisEdgeId && (edge.id == thisFace.edge1 ||edge.id == thisFace.edge2 ||edge.id == thisFace.edge3)) continue;
 
@@ -381,7 +383,7 @@ public class MoveFace : MonoBehaviour
             }
         }
 
-        foreach (Face face in MeshRebuilder.instance.faceObjects)
+        foreach (Face face in meshRebuilder.faceObjects)
         {
             GameObject faceObject = face.gameObject;
             int vert1 = face.vert1;

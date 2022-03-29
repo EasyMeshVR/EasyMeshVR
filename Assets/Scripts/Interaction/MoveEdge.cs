@@ -287,7 +287,7 @@ public class MoveEdge : MonoBehaviour
             }
         }
 
-        foreach (Face face in MeshRebuilder.instance.faceObjects)
+        foreach (Face face in meshRebuilder.faceObjects)
         {
             GameObject faceObject = face.gameObject;
             int vert1 = face.vert1;

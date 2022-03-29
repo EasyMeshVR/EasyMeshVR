@@ -95,7 +95,7 @@ public class Extrude : ToolClass
         Vector3 new3 = vertex3.transform.localPosition + ((thisFace.normal  + vertex3.transform.localPosition *.005f).normalized );
 
        
-        List<Vector3> vertList = new List<Vector3>(MeshRebuilder.instance.vertices);
+        List<Vector3> vertList = new List<Vector3>(meshRebuilder.vertices);
         Vector3[] vertices = vertList.ToArray();
         vertList.Add(new1);
         vertList.Add(new2);
@@ -118,7 +118,7 @@ public class Extrude : ToolClass
 
 
 
-       List<Vector3> vertUnique = new List<Vector3>(MeshRebuilder.instance.vertices);
+       List<Vector3> vertUnique = new List<Vector3>(meshRebuilder.vertices);
 
 
         // Only add to list if vertex isn't already in
@@ -143,7 +143,7 @@ public class Extrude : ToolClass
 
         // Add new triangles
         // maybe look thru tris for old 123 and then skip
-        List<int> triList = new List<int>(MeshRebuilder.instance.triangles);
+        List<int> triList = new List<int>(meshRebuilder.triangles);
 
 
         // new1, old1, new2
