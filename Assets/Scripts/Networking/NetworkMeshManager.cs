@@ -252,7 +252,6 @@ namespace EasyMeshVR.Multiplayer
                     {
                         if (photonEvent.CustomData != null)
                         {
-                            Debug.Log("Vertex sender: " + photonEvent.Sender);
                             object[] data = (object[])photonEvent.CustomData;
                             HandleMeshVertexPullEvent(data);
                         }
