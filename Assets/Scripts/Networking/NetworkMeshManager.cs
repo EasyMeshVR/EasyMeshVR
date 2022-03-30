@@ -196,6 +196,34 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, content, meshEdgePullEventOptions, SendOptions.SendReliable);
         }
 
+        public void SynchronizeMeshFacePull(FacePullEvent faceEvent)
+        {
+            EventCaching cachingOption = (faceEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
+            RaiseEventOptions meshFacePullEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = cachingOption
+            };
+
+            object[] content = FacePullEvent.SerializeEvent(faceEvent);
+            PhotonNetwork.RaiseEvent(Constants.MESH_FACE_PULL_EVENT_CODE, content, meshFacePullEventOptions, SendOptions.SendReliable);
+        }
+
+        public void SynchronizeMeshFaceExtrude(FaceExtrudeEvent faceExtrudeEvent)
+        {
+            EventCaching cachingOption = (faceExtrudeEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
+            RaiseEventOptions meshFaceExtrudeEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = cachingOption
+            };
+
+            object[] content = FaceExtrudeEvent.SerializeEvent(faceExtrudeEvent);
+            PhotonNetwork.RaiseEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, content, meshFaceExtrudeEventOptions, SendOptions.SendReliable);
+        }
+
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
@@ -212,6 +240,8 @@ namespace EasyMeshVR.Multiplayer
             // This function just removes mesh edit events
             RemoveCachedEvent(Constants.MESH_VERTEX_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_FACE_PULL_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, ReceiverGroup.Others);
         }
 
         public void RemoveAllCachedEvents()
@@ -266,6 +296,24 @@ namespace EasyMeshVR.Multiplayer
                         }
                         break;
                     }
+                case Constants.MESH_FACE_PULL_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshFacePullEvent(data);
+                        }
+                        break;
+                    }
+                case Constants.MESH_FACE_EXTRUDE_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshFaceExtrudeEvent(data);
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
@@ -287,6 +335,14 @@ namespace EasyMeshVR.Multiplayer
                 else if (eventType == typeof(EdgePullEvent))
                 {
                     HandleMeshEdgePullEvent((EdgePullEvent)networkEvent);
+                }
+                else if (eventType == typeof(FacePullEvent))
+                {
+                    HandleMeshFacePullEvent((FacePullEvent)networkEvent);
+                }
+                else if (eventType == typeof(FaceExtrudeEvent))
+                {
+                    HandleMeshFaceExtrudeEvent((FaceExtrudeEvent)networkEvent);
                 }
             }
         }
@@ -368,6 +424,94 @@ namespace EasyMeshVR.Multiplayer
             meshRebuilder.vertices[edgeEvent.vert2] = edgeEvent.vertex2Pos;
             moveEdge.SetActiveEdges(edgeObj, edgeEvent.released);
             moveEdge.UpdateMesh(edgeEvent.id, edgeEvent.vert1, edgeEvent.vert2, false);
+        }
+
+        private void HandleMeshFacePullEvent(object[] data)
+        {
+            FacePullEvent faceEvent = FacePullEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(faceEvent);
+            }
+            else
+            {
+                HandleMeshFacePullEvent(faceEvent);
+            }
+        }
+
+        private void HandleMeshFacePullEvent(FacePullEvent faceEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[faceEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshFacePullEvent() - meshRebuilder is null for meshId {0}", faceEvent.meshId);
+                return;
+            }
+
+            Face faceObj = meshRebuilder.faceObjects[faceEvent.id];
+            Vertex vert1Obj = meshRebuilder.vertexObjects[faceEvent.vert1];
+            Vertex vert2Obj = meshRebuilder.vertexObjects[faceEvent.vert2];
+            Vertex vert3Obj = meshRebuilder.vertexObjects[faceEvent.vert3];
+            Edge edge1Obj = meshRebuilder.edgeObjects[faceEvent.edge1];
+            Edge edge2Obj = meshRebuilder.edgeObjects[faceEvent.edge2];
+            Edge edge3Obj = meshRebuilder.edgeObjects[faceEvent.edge3];
+            MoveFace moveFace = faceObj.GetComponent<MoveFace>();
+
+            int heldByActorNumber = (faceEvent.released) ? -1 : faceEvent.actorNumber;
+
+            faceObj.isHeldByOther 
+                = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = vert3Obj.isHeldByOther 
+                = edge1Obj.isHeldByOther = edge2Obj.isHeldByOther = edge3Obj.isHeldByOther = !faceEvent.released;
+
+            faceObj.heldByActorNumber 
+                = vert1Obj.heldByActorNumber = vert2Obj.heldByActorNumber = vert3Obj.heldByActorNumber 
+                = edge1Obj.heldByActorNumber = edge2Obj.heldByActorNumber = edge3Obj.heldByActorNumber = heldByActorNumber;
+
+            vert1Obj.transform.localPosition = faceEvent.vertex1Pos;
+            vert2Obj.transform.localPosition = faceEvent.vertex2Pos;
+            vert3Obj.transform.localPosition = faceEvent.vertex3Pos;
+            meshRebuilder.vertices[faceEvent.vert1] = faceEvent.vertex1Pos;
+            meshRebuilder.vertices[faceEvent.vert2] = faceEvent.vertex2Pos;
+            meshRebuilder.vertices[faceEvent.vert3] = faceEvent.vertex3Pos;
+            moveFace.SetActiveEdges(edge1Obj, faceEvent.released);
+            moveFace.SetActiveEdges(edge2Obj, faceEvent.released);
+            moveFace.SetActiveEdges(edge3Obj, faceEvent.released);
+            moveFace.SetActiveFaces(faceObj, faceEvent.released);
+            moveFace.UpdateMesh(faceEvent.vert1, faceEvent.vert2, faceEvent.vert3, false);
+        }
+        
+        private void HandleMeshFaceExtrudeEvent(object[] data)
+        {
+            FaceExtrudeEvent faceExtrudeEvent = FaceExtrudeEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(faceExtrudeEvent);
+            }
+            else
+            {
+                HandleMeshFaceExtrudeEvent(faceExtrudeEvent);
+            }
+        }
+
+        private void HandleMeshFaceExtrudeEvent(FaceExtrudeEvent faceExtrudeEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[faceExtrudeEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshFaceExtrudeEvent() - meshRebuilder is null for meshId {0}", faceExtrudeEvent.meshId);
+                return;
+            }
+
+            Mesh mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
+            
+            Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
+            extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, false);
         }
 
         #endregion

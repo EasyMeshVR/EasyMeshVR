@@ -95,6 +95,6 @@ public class ChangeMatClosest : MonoBehaviour
     // Get a new reference to the pulley locomotion script if a new editing space is imported
      void checkImport()
     {
-        pm = GameObject.FindObjectOfType<PulleyLocomotion>();
+        //pm = GameObject.FindObjectOfType<PulleyLocomotion>();
     }
 }

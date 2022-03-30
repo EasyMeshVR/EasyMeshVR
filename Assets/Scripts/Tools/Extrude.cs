@@ -7,6 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 using UnityEngine.InputSystem;
 using EasyMeshVR.Core;
+using EasyMeshVR.Multiplayer;
+using Photon.Pun;
 using System.Linq;
 
 public class Extrude : ToolClass
@@ -31,19 +33,7 @@ public class Extrude : ToolClass
     public SphereCollider leftSphere;
     public SphereCollider rightSphere;
 
-    public int selectedFace;
-
-    Vertex vertex1;
-    Vertex vertex2;
-    Vertex vertex3;
-
-    Mesh mesh;
-
-    GameObject model;
-
-    Face thisFace;
-
-    public MeshRebuilder meshRebuilder;
+    //GameObject model;
 
    // MeshRenderer materialSwap;
 
@@ -73,15 +63,26 @@ public class Extrude : ToolClass
 
         if(currentFace == null)
             return;
-        
-            extrudeFace();
+
+        Face faceObj = currentFace.GetComponent<Face>();
+        MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
+        MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
+        Mesh mesh = moveFace.mesh;
+        extrudeFace(faceObj.id, meshRebuilder, mesh);
     }
 
     // Change material, disable vertex grab interactable, set boolean
-    public void extrudeFace()
+    public void extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, bool sendFaceExtrudeEvent = true)
     {
+        Face faceObj = meshRebuilder.faceObjects[faceId];
+        Vertex vertex1 = meshRebuilder.vertexObjects[faceObj.vert1];
+        Vertex vertex2 = meshRebuilder.vertexObjects[faceObj.vert2];
+        Vertex vertex3 = meshRebuilder.vertexObjects[faceObj.vert3];
+
         // Don't extrude if one of the vertices is locked
-        if(vertex1.GetComponent<MoveVertices>().isLocked || vertex2.GetComponent<MoveVertices>().isLocked || vertex3.GetComponent<MoveVertices>().isLocked )
+        if (vertex1.GetComponent<MoveVertices>().isLocked ||
+            vertex2.GetComponent<MoveVertices>().isLocked ||
+            vertex3.GetComponent<MoveVertices>().isLocked)
         {
             print("Unlock face vertices before extruding.");
             return;
@@ -90,9 +91,9 @@ public class Extrude : ToolClass
         // calculating normals is done in mesh rebuilder
 
         // align new vertices w/ face normal
-        Vector3 new1 = vertex1.transform.localPosition + ((thisFace.normal  + vertex1.transform.localPosition *.005f).normalized );
-        Vector3 new2 = vertex2.transform.localPosition + ((thisFace.normal  + vertex2.transform.localPosition *.005f).normalized );
-        Vector3 new3 = vertex3.transform.localPosition + ((thisFace.normal  + vertex3.transform.localPosition *.005f).normalized );
+        Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized );
+        Vector3 new2 = vertex2.transform.localPosition + ((faceObj.normal  + vertex2.transform.localPosition *.005f).normalized );
+        Vector3 new3 = vertex3.transform.localPosition + ((faceObj.normal  + vertex3.transform.localPosition *.005f).normalized );
 
        
         List<Vector3> vertList = new List<Vector3>(meshRebuilder.vertices);
@@ -116,10 +117,7 @@ public class Extrude : ToolClass
                 newVert3 = i;
         }
 
-
-
        List<Vector3> vertUnique = new List<Vector3>(meshRebuilder.vertices);
-
 
         // Only add to list if vertex isn't already in
         if(newVert1 == vertList.Count-3)
@@ -148,32 +146,32 @@ public class Extrude : ToolClass
 
         // new1, old1, new2
         triList.Add(newVert1);
-        triList.Add(thisFace.vert1);
+        triList.Add(faceObj.vert1);
         triList.Add(newVert2);
 
         // new2, old1, old2
         triList.Add(newVert2);
-        triList.Add(thisFace.vert1);
-        triList.Add(thisFace.vert2);
+        triList.Add(faceObj.vert1);
+        triList.Add(faceObj.vert2);
         
         //new3, new2, old2
         triList.Add(newVert3);
         triList.Add(newVert2);
-        triList.Add(thisFace.vert2);
+        triList.Add(faceObj.vert2);
 
         //new3, old2, old3
         triList.Add(newVert3);
-        triList.Add(thisFace.vert2);
-        triList.Add(thisFace.vert3);
+        triList.Add(faceObj.vert2);
+        triList.Add(faceObj.vert3);
 
         //new3, old3, old1
         triList.Add(newVert3);
-        triList.Add(thisFace.vert3);
-        triList.Add(thisFace.vert1);
+        triList.Add(faceObj.vert3);
+        triList.Add(faceObj.vert1);
 
         //new3, old1, new1
         triList.Add(newVert3);
-        triList.Add(thisFace.vert1);
+        triList.Add(faceObj.vert1);
         triList.Add(newVert1);
 
         // new123
@@ -195,22 +193,31 @@ public class Extrude : ToolClass
        // meshRebuilder.RemoveDuplicates();
         meshRebuilder.removeVisuals();
         meshRebuilder.CreateVisuals(vertices, tris);
+
+        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+        if (sendFaceExtrudeEvent)
+        {
+            // Synchronize the cached face extrusion event to other players by face id
+            FaceExtrudeEvent faceExtrudeEvent = new FaceExtrudeEvent()
+            {
+                id = faceObj.id,
+                meshId = meshRebuilder.id,
+                isCached = true,
+                released = true,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
+
+            NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
+        }
         return;
     }
 
     // Get face info and 3 vertices
     public void OnTriggerEnter(Collider other)
     {
-        checkImport();
         if (other.CompareTag("Face"))
         {
             currentFace = other.gameObject; 
-            thisFace = currentFace.GetComponent<Face>();
-            selectedFace = thisFace.id;
-
-            vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-            vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-            vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
             inRadius = true;
         }
     }
@@ -222,10 +229,6 @@ public class Extrude : ToolClass
         {
             inRadius = false;
             currentFace = null;
-            thisFace = null;
-            vertex1 = null;
-            vertex2 = null;
-            vertex3 = null;
         }
     }
 
@@ -239,14 +242,6 @@ public class Extrude : ToolClass
         isEnabled = true;
     }
 
-    void checkImport()
-    {
-        //editingSpace = GameObject.Find("EditingSpace");
-        meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
-        model = meshRebuilder.model;
-        mesh = model.GetComponent<MeshFilter>().mesh;
-    }
-
     // Raycast checking
     void Update()
     {
@@ -256,30 +251,23 @@ public class Extrude : ToolClass
         {
             if(ray.hitFace)
             {
-                checkImport();
                 //currentVertex = ray.hit.transform.gameObject;
                 //vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
 
                 currentFace = ray.hit.transform.gameObject;
-               // print("currentFace name " + currentFace.name);
-                thisFace = currentFace.GetComponent<Face>();
-                selectedFace = thisFace.id;
-                vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-                vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-                vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
+                Face faceObj = currentFace.GetComponent<Face>();
+                MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
+                MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
+                Mesh mesh = moveFace.mesh;
                 inRadius = true;
                 
                 if(primaryButtonPressed)
-                    extrudeFace();
+                    extrudeFace(faceObj.id, meshRebuilder, mesh);
             }
             else
             {
                 inRadius = false;
                 currentFace = null;
-                thisFace = null;
-                vertex1 = null;
-                vertex2 = null;
-                vertex3 = null;
             }
         }
     }
