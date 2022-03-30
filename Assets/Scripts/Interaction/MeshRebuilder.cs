@@ -72,7 +72,7 @@ public class MeshRebuilder : MonoBehaviour
 
         // Start visualizing the mesh
         RemoveDuplicates();
-        CreateVisuals();
+        CreateVisuals(vertices, triangles);
     }
 
     // Deletes the duplicate vertices Unity and STL files create
@@ -156,7 +156,7 @@ public class MeshRebuilder : MonoBehaviour
     }
 
     // Actually create the vertex and edge GameObject interactables
-    public void CreateVisuals()
+    public void CreateVisuals(Vector3[] vertices, int[] triangles)
     {
         int edgeCount = 0;
 
@@ -164,10 +164,8 @@ public class MeshRebuilder : MonoBehaviour
         for (int i = 0; i < vertices.Length; i++)
         {
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
-            GameObject newVertex = Instantiate(vertex, model.transform);
-
+            newVertex = Instantiate(vertex, model.transform);
             newVertex.transform.localPosition = vertices[i];
-
             newVertex.name = "Vertex" + i.ToString();
 
             // Set the id of the Vertex component to be the index in the vertices array (Vertex.cs script)
@@ -250,10 +248,14 @@ public class MeshRebuilder : MonoBehaviour
             edgeCount--;
         }
 
-        // Triangle handles
-        for(int i = 0; i < triangles.Length; i+=3)
+        // Triangle handles / Creating Faces
+        int faceCount = 0;
+        for (int i = 0; i < triangles.Length; i+=3)
         {
+
             GameObject newFace = Instantiate(face, model.transform);
+            newFace.name = "Face" + (faceCount++).ToString();
+
             // Add face to list and get vertices
             Face faceComponent = newFace.GetComponent<Face>();
             faceComponent.id = faceObjects.Count();
@@ -281,10 +283,10 @@ public class MeshRebuilder : MonoBehaviour
                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert3))
                     faceComponent.edge3 = edge.id;
             }
+
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
 
             faceObjects.Add(faceComponent);
-
         }
     }
 

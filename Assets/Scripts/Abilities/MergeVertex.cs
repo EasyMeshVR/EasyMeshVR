@@ -91,6 +91,8 @@ public class MergeVertex : MonoBehaviour
         List<int> trianglesList = triangles.ToList();
         trianglesList = UpdateTriangles(trianglesList, triangleReferences, vertex1, vertex2);
 
+        // Delete the FaceObjects corresponding to the triangles
+
         // Get references to all triangles the last vertex is a part of (all adjacent vertices)
         if (lastIndex != -1)
         {
@@ -150,6 +152,10 @@ public class MergeVertex : MonoBehaviour
             // Update the triangles for the newly moved last vertex
             trianglesList = UpdateTriangles(trianglesList, lastVertTriReferences, vertices.Length - 1, vertex1);
 
+            // Update the Face vertIDs to correspond to the last vertex that was just moved
+            // If we merge 4 into 5, we delete vertex 4, then move vertex 7 into 4's spot as well as rename vertex 7 to vertex 4
+            // We need to go through the Faces and re-ID vertex 7s to vertex 4s so they correspond correctly
+
             // Update IDs in Vertex.cs (Vertex.id) and Edge.cs (Vertex.connectedEdges -> Edge.vert1 or Edge.vert2)
             Vertex lastVertexGO = GameObject.Find("Vertex" + (vertices.Length - 1)).GetComponent<Vertex>();
             lastVertexGO.name = "Vertex" + vertex1.ToString();
@@ -163,6 +169,8 @@ public class MergeVertex : MonoBehaviour
                     reconnect.vert2 = vertex1;
             }
         }
+
+        Debug.Log("in mergeWithTakeover(), deleterVertex.id = " + deleterVertex.id);
 
         // Delete the merged vertex
         Destroy(deleterVertex.thisVertex);
@@ -215,6 +223,13 @@ public class MergeVertex : MonoBehaviour
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
+        for (int i = 0; i < mesh.vertices.Length; i++)
+            Debug.Log("vertices = " + mesh.vertices[i]);
+
+        for (int i = 0; i < mesh.triangles.Length; i+=3)
+            Debug.Log("triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i+1] + ", " + mesh.triangles[i+2]);
+
+        /*
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
@@ -231,8 +246,10 @@ public class MergeVertex : MonoBehaviour
             edgeObject.transform.LookAt(transform, Vector3.up);
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
+        */
+
         meshRebuilder.removeVisuals();
-        meshRebuilder.CreateVisuals();
+        meshRebuilder.CreateVisuals(vertices, triangles);
     }
 
     void checkImport()
@@ -248,6 +265,10 @@ public class MergeVertex : MonoBehaviour
     {
         checkImport();
 
+        // If we collide with something that isn't a vertex, we don't want to continue
+        if (takeover.gameObject.tag != "Vertex")
+            return;
+
         // Since the trigger is on all vertices, two colliding calls this twice and screws the merge up
         // We also want only the second activation, not the first (it picks the vertex IDs in the wrong order)
         // This is a crude check to make sure that doesn't happen
@@ -260,10 +281,6 @@ public class MergeVertex : MonoBehaviour
 
         meshRebuilder.vertices = mesh.vertices;
         meshRebuilder.triangles = mesh.triangles;
-
-        // If we collide with something that isn't a vertex, we don't want to continue
-        if (takeover.gameObject.tag != "Vertex")
-            return;
 
         // Get Vertex references (and turn them yellow)
         materialSwap.material = merge;
@@ -286,6 +303,9 @@ public class MergeVertex : MonoBehaviour
             return;
         }
         connection = false;
+
+        Debug.Log("vertex1 = " + deleterVertex.id);
+        Debug.Log("vertex2 = " + takeoverVertex.id);
 
         // If we manage to get this far, start the merging process
         // Don't merge if you're still holding the vertex, tho

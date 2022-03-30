@@ -10,13 +10,13 @@ using EasyMeshVR.Multiplayer;
 public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
-   // [SerializeField] LockVertex lockVertex;
+    // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-    //[SerializeField] SwitchControllers switchControllers;
+    // [SerializeField] SwitchControllers switchControllers;
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -45,7 +45,7 @@ public class MoveVertices : MonoBehaviour
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
 
-        //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
+        // switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
         // Editing space objects
         editingSpace = meshRebuilder.editingSpace;
@@ -78,7 +78,6 @@ public class MoveVertices : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
-
 
         //if(switchControllers.rayActive)
         materialSwap.material = hovered;

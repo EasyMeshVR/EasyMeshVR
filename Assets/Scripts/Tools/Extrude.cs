@@ -194,7 +194,7 @@ public class Extrude : ToolClass
         // Update mesh visuals
        // meshRebuilder.RemoveDuplicates();
         meshRebuilder.removeVisuals();
-        meshRebuilder.CreateVisuals();
+        meshRebuilder.CreateVisuals(vertices, tris);
         return;
     }
 

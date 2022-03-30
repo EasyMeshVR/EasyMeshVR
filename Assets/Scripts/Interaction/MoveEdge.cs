@@ -18,7 +18,6 @@ public class MoveEdge : MonoBehaviour
 
    // [SerializeField] SwitchControllers switchControllers;
 
-
     GameObject model;
 
     // Editing Space Objects
@@ -39,7 +38,6 @@ public class MoveEdge : MonoBehaviour
     Vertex vertex2;
     public bool grabHeld = false;
 
-
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -49,7 +47,6 @@ public class MoveEdge : MonoBehaviour
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisedge = GetComponent<Edge>();
         //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
-
 
         // Editing space objects
         editingSpace = meshRebuilder.editingSpace;
@@ -295,7 +292,7 @@ public class MoveEdge : MonoBehaviour
             int vert3 = face.vert3;
 
             // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
-            if (vert1 == vertex1Id || vert2 == vertex1Id || vert3 == vertex1Id ||vert1 == vertex2Id || vert2 == vertex2Id || vert3 == vertex2Id)
+            if (vert1 == vertex1Id || vert2 == vertex1Id || vert3 == vertex1Id || vert1 == vertex2Id || vert2 == vertex2Id || vert3 == vertex2Id)
             {
                 // // Set the edge's position to between the two vertices and scale it appropriately
                 // float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
