@@ -108,6 +108,7 @@ public class ToolManager : MonoBehaviour
 
     void EnableVertex()
     {
+        Debug.Log("in enableVertex");
         checkImport();
         foreach(XRGrabInteractable v in vertexGrab)
             v.enabled = true;
@@ -129,6 +130,7 @@ public class ToolManager : MonoBehaviour
 
     void EnableEdge()
     {
+        Debug.Log("in enableEdge");
         checkImport();
         foreach(XRGrabInteractable e in edgeGrab)
             e.enabled = true;

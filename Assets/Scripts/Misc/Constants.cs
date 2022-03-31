@@ -6,16 +6,28 @@ namespace EasyMeshVR.Core
 {
     public static class Constants
     {
+        // Multiplayer
         public const byte MAX_PLAYERS_PER_ROOM = 4;
-        public const string PLAYER_NAME_PREF_KEY = "PLAYER_NAME";
-        public const string PLAYER_NAME_PREF_DEFAULT = "Player";
+        
+        // Tags
         public const string NETWORK_PLAYER_TAG = "NetworkPlayer";
         public const string EDITING_SPACE_TAG = "EditingSpace";
         public const string GAME_CONTROLLER_TAG = "GameController";
 
-        /*
-         * Photon Custom Event Codes
-        */
+        // Player Prefs Keys/Defaults
+        public const string PLAYER_NAME_PREF_KEY = "PLAYER_NAME";
+        public const string PLAYER_NAME_PREF_DEFAULT = "Player";
+
+        public const string HIDE_CLOSE_PLAYERS_PREF_KEY = "HIDE_CLOSE_PLAYERS";
+        public const int HIDE_CLOSE_PLAYERS_PREF_DEFAULT = 1;
+
+        public const string HIDE_PLAYER_NAMES_PREF_KEY = "HIDE_PLAYER_NAMES";
+        public const int HIDE_PLAYER_NAMES_PREF_DEFAULT = 0;
+
+        public const string MUTE_MIC_ON_JOIN_PREF_KEY = "MUTE_MIC_ON_JOIN";
+        public const int MUTE_MIC_ON_JOIN_PREF_DEFAULT = 1;
+
+        // Photon Custom Event Codes
         public const byte IMPORT_MODEL_FROM_WEB_EVENT_CODE = 1;
         public const byte MESH_VERTEX_PULL_EVENT_CODE = 2;
         public const byte MESH_EDGE_PULL_EVENT_CODE = 3;
