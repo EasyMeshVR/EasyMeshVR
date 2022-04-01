@@ -13,6 +13,9 @@ namespace EasyMeshVR.UI
         [SerializeField]
         public GeneralOptionsMenu generalOptionsMenuPanel;
 
+        [SerializeField]
+        public AbilitiesMenu abilitiesMenuPanel;
+
         #endregion
 
         #region Private Fields
@@ -22,9 +25,6 @@ namespace EasyMeshVR.UI
 
         [SerializeField]
         GameObject activeMainOption;
-
-        [SerializeField]
-        GameObject toolsPanel;
 
         [SerializeField]
         GameObject settingsPanel;
@@ -57,7 +57,7 @@ namespace EasyMeshVR.UI
             SetMainOptionColor(activeMainOption, mainOptionSelectedColor);
 
             // Disable all panels except the active one
-            toolsPanel.SetActive(false);
+            abilitiesMenuPanel.gameObject.SetActive(false);
             generalOptionsMenuPanel.gameObject.SetActive(false);
             settingsPanel.SetActive(false);
             activeMenuPanel.SetActive(true);
@@ -70,7 +70,7 @@ namespace EasyMeshVR.UI
         public void OnClickedToolsButton()
         {
             SwapActiveMainOption(toolsOption);
-            SwapActivePanels(toolsPanel);
+            SwapActivePanels(abilitiesMenuPanel.gameObject);
         }
 
         public void OnClickedGeneralOptionsButton()

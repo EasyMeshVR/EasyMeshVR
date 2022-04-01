@@ -113,6 +113,7 @@ namespace EasyMeshVR.Multiplayer
             }
 
             ProcessNetworkEventQueue();
+            NetworkPlayerManager.instance.radiusGameMenuManager.gameMenu.abilitiesMenuPanel.HandleAbilities();
         }
 
         #endregion

@@ -6,7 +6,7 @@ using EasyMeshVR.Core;
 // When using radius controllers, only highlight nearest object
 public class ChangeMatClosest : MonoBehaviour
 {
-
+    [SerializeField] LayerMask meshInteractableLayerMask;
     [SerializeField] SphereCollider sC;
     [SerializeField] Material hoveredO;
     [SerializeField] Material unselected;
@@ -18,7 +18,7 @@ public class ChangeMatClosest : MonoBehaviour
     MeshRenderer materialSwap;
 
 
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider other)
     { 
         checkImport();
 
@@ -28,21 +28,25 @@ public class ChangeMatClosest : MonoBehaviour
 
         float nearObjectDistance = 0f;
         Vector3 center = sC.transform.position + sC.center;
-    
+
         // Get all colliders in collision and find closest
-        Collider[] allOverlappingColliders = Physics.OverlapSphere(center, sC.radius);
+        Collider[] allOverlappingColliders = Physics.OverlapSphere(center, sC.radius, meshInteractableLayerMask);
+
+        if (allOverlappingColliders.Length > 10)
+        {
+            Debug.Log("Way too many colliders overlapping, skipping this OnTriggerStay call");
+            return;
+        }
+
         foreach(Collider c in allOverlappingColliders)
         {
-            if(!c.CompareTag("Center"))
-                continue;
-            
-            float curDistance = Vector3.Distance(c.transform.position, sC.transform.position) *.5f;
- 
+            float curDistance = Vector3.Distance(c.bounds.center, sC.transform.position) *.5f;
+
             // if ((!nearObject || curDistance < nearObjectDistance) && !c.CompareTag(Constants.GAME_CONTROLLER_TAG))
             if ((!nearObject || curDistance < nearObjectDistance))
             {
                 nearObjectDistance = curDistance;
-                nearObject = c.transform.parent.gameObject;
+                nearObject = c.gameObject;
             }
         }
  

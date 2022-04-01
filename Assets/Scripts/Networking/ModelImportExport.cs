@@ -160,6 +160,7 @@ namespace EasyMeshVR.Core
         {
             DestroyMeshObjects();
             CreateCubeMeshObject();
+            NetworkPlayerManager.instance.radiusGameMenuManager.gameMenu.abilitiesMenuPanel.HandleAbilities();
         }
 
         #endregion

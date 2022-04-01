@@ -18,6 +18,10 @@ namespace EasyMeshVR.Multiplayer
 
         public static NetworkPlayerManager instance { get; private set; }
 
+        public GameMenuManager radiusGameMenuManager;
+
+        public GameMenuManager raycastGameMenuManager;
+
         #endregion
 
         #region Private Fields
@@ -39,10 +43,6 @@ namespace EasyMeshVR.Multiplayer
 
         [SerializeField]
         private Recorder micRecorder;
-
-        private GameMenuManager radiusGameMenuManager;
-
-        private GameMenuManager raycastGameMenuManager;
 
         private GameObject spawnedPlayerPrefab;
 

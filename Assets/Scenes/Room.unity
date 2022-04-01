@@ -461,6 +461,7 @@ MonoBehaviour:
   extrudeScriptGrab: {fileID: 2059701660}
   grabVertex: 1
   grabEdge: 1
+  grabFace: 1
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
@@ -1334,6 +1335,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247af6b3aefef7f4a8fc0e467fef2b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshInteractableLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
   sC: {fileID: 1282352287}
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
@@ -1773,8 +1777,6 @@ MonoBehaviour:
   inRadius: 0
   leftSphere: {fileID: 0}
   rightSphere: {fileID: 0}
-  selectedFace: 0
-  meshRebuilder: {fileID: 0}
 --- !u!114 &1647071329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2385,6 +2387,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 247af6b3aefef7f4a8fc0e467fef2b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meshInteractableLayerMask:
+    serializedVersion: 2
+    m_Bits: 4096
   sC: {fileID: 2059701656}
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
@@ -2446,8 +2451,6 @@ MonoBehaviour:
   inRadius: 0
   leftSphere: {fileID: 1282352287}
   rightSphere: {fileID: 2059701656}
-  selectedFace: 0
-  meshRebuilder: {fileID: 0}
 --- !u!1 &2063562609
 GameObject:
   m_ObjectHideFlags: 0
