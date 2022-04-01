@@ -6,10 +6,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using Photon.Pun;
 using EasyMeshVR.Multiplayer;
+using EasyMeshVR.Core;
 
 public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] XRSimpleInteractable simpleInteractable;
    // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
@@ -24,6 +26,7 @@ public class MoveVertices : MonoBehaviour
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
+    Quaternion originalVertRot;
 
     public bool isLocked;
 
@@ -57,21 +60,21 @@ public class MoveVertices : MonoBehaviour
         materialSwap = GetComponent<MeshRenderer>();
 
         // Hover listeners to change vertex color
-        grabInteractable.hoverEntered.AddListener(HoverOver);
-        grabInteractable.hoverExited.AddListener(HoverExit);
+        simpleInteractable.hoverEntered.AddListener(HoverOver);
+        simpleInteractable.hoverExited.AddListener(HoverExit);
 
         // This checks if the grab has been pressed or released
-        grabInteractable.selectEntered.AddListener(GrabPulled);
-        grabInteractable.selectExited.AddListener(GrabReleased);
+        simpleInteractable.selectEntered.AddListener(GrabPulled);
+        simpleInteractable.selectExited.AddListener(GrabReleased);
     }
 
     // We don't need the control listeners if OnDisable() is ever called
     void OnDisable()
     {
-        grabInteractable.hoverEntered.RemoveListener(HoverOver);
-        grabInteractable.hoverExited.RemoveListener(HoverExit);
-        grabInteractable.selectEntered.RemoveListener(GrabPulled);
-        grabInteractable.selectExited.RemoveListener(GrabReleased);
+        simpleInteractable.hoverEntered.RemoveListener(HoverOver);
+        simpleInteractable.hoverExited.RemoveListener(HoverExit);
+        simpleInteractable.selectEntered.RemoveListener(GrabPulled);
+        simpleInteractable.selectExited.RemoveListener(GrabReleased);
     }
 
     // Get original position of Vertex before moving
@@ -80,7 +83,6 @@ public class MoveVertices : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
-
 
         //if(switchControllers.rayActive)
         materialSwap.material = hovered;
@@ -101,8 +103,17 @@ public class MoveVertices : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace)
+        GameObject controllerObj = arg0.interactorObject.transform.gameObject;
+
+        if (pulleyLocomotion.isMovingEditingSpace || SwitchControllers.instance.ControllerIsRaycast(controllerObj))
             return;
+
+        HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
+
+        // Parent the vertex object to the controller interactable attach point
+        originalVertRot = transform.rotation;
+        transform.position = handModel.interactableAttachPoint.position;
+        transform.SetParent(handModel.interactableAttachPoint, true);
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -111,6 +122,8 @@ public class MoveVertices : MonoBehaviour
     // Stop updating the mesh data
     void GrabReleased(SelectExitEventArgs arg0)
     {
+        transform.SetParent(model.transform, true);
+        
         materialSwap.material = unselected;
 
         grabHeld = false;
@@ -134,14 +147,12 @@ public class MoveVertices : MonoBehaviour
     void Update()
     {
         if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
-        {
-            grabInteractable.enabled = false;
             return;
-        }
-        grabInteractable.enabled = true;
 
         if (grabHeld)
         {
+            transform.rotation = originalVertRot;
+
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertex GameObject's position

@@ -6,10 +6,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using Photon.Pun;
 using EasyMeshVR.Multiplayer;
+using EasyMeshVR.Core;
 
 public class MoveFace : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
@@ -50,7 +52,15 @@ public class MoveFace : MonoBehaviour
     Edge edge1;
     Edge edge2;
     Edge edge3;
-    
+
+    Quaternion originalFaceRot;
+    Quaternion originalVert1Rot;
+    Quaternion originalVert2Rot;
+    Quaternion originalVert3Rot;
+    Quaternion originalEdge1Rot;
+    Quaternion originalEdge2Rot;
+    Quaternion originalEdge3Rot;
+
     public bool grabHeld = false;
 
 
@@ -73,21 +83,21 @@ public class MoveFace : MonoBehaviour
         materialSwap = GetComponent<MeshRenderer>();
 
         // Hover listeners to change edge color
-        grabInteractable.hoverEntered.AddListener(HoverOver);
-        grabInteractable.hoverExited.AddListener(HoverExit);
+        simpleInteractable.hoverEntered.AddListener(HoverOver);
+        simpleInteractable.hoverExited.AddListener(HoverExit);
 
         // This checks if the grab has been pressed or released
-        grabInteractable.selectEntered.AddListener(GrabPulled);
-        grabInteractable.selectExited.AddListener(GrabReleased);
+        simpleInteractable.selectEntered.AddListener(GrabPulled);
+        simpleInteractable.selectExited.AddListener(GrabReleased);
     }
 
     // We don't need the control listeners if OnDisable() is ever called
     void OnDisable()
     {
-        grabInteractable.hoverEntered.RemoveListener(HoverOver);
-        grabInteractable.hoverExited.RemoveListener(HoverExit);
-        grabInteractable.selectEntered.RemoveListener(GrabPulled);
-        grabInteractable.selectExited.RemoveListener(GrabReleased);
+        simpleInteractable.hoverEntered.RemoveListener(HoverOver);
+        simpleInteractable.hoverExited.RemoveListener(HoverExit);
+        simpleInteractable.selectEntered.RemoveListener(GrabPulled);
+        simpleInteractable.selectExited.RemoveListener(GrabReleased);
     }
 
     // Get original position of Vertex before moving
@@ -122,13 +132,18 @@ public class MoveFace : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace || thisFace.locked)
-            return;
+        GameObject controllerObj = arg0.interactorObject.transform.gameObject;
 
+        if (pulleyLocomotion.isMovingEditingSpace || thisFace.locked || SwitchControllers.instance.ControllerIsRaycast(controllerObj))
+            return;
 
         edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
         edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
         edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
+
+        originalEdge1Rot = edge1.transform.rotation;
+        originalEdge2Rot = edge2.transform.rotation;
+        originalEdge3Rot = edge3.transform.rotation;
 
         SetActiveEdges(edge1, false);
         SetActiveEdges(edge2, false);
@@ -141,6 +156,9 @@ public class MoveFace : MonoBehaviour
         vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
         vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
 
+        originalVert1Rot = vertex1.transform.rotation;
+        originalVert2Rot = vertex2.transform.rotation;
+        originalVert3Rot = vertex3.transform.rotation;
 
         thisFace.transform.parent = model.transform;
 
@@ -158,6 +176,13 @@ public class MoveFace : MonoBehaviour
         vertex1.gameObject.SetActive(false);
         vertex2.gameObject.SetActive(false);
         vertex3.gameObject.SetActive(false);
+
+        HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
+
+        // Parent the vertex object to the controller interactable attach point
+        originalFaceRot = transform.rotation;
+        transform.position = handModel.interactableAttachPoint.position;
+        transform.SetParent(handModel.interactableAttachPoint, true);
 
 
         grabHeld = true;
@@ -188,6 +213,7 @@ public class MoveFace : MonoBehaviour
         edge2.transform.parent = model.transform;
         edge3.transform.parent = model.transform;
 
+        transform.SetParent(model.transform, true);
 
         vertex1.gameObject.SetActive(true);
         vertex2.gameObject.SetActive(true);
@@ -238,14 +264,18 @@ public class MoveFace : MonoBehaviour
     void Update()
     {
         if (pulleyLocomotion.isMovingEditingSpace || thisFace.isHeldByOther || thisFace.locked)
-        {
-            grabInteractable.enabled = false;
             return;
-        }
-        grabInteractable.enabled = true;
 
         if (grabHeld)
         {
+            transform.rotation = originalFaceRot;
+            vertex1.transform.rotation = originalVert1Rot;
+            vertex2.transform.rotation = originalVert2Rot;
+            vertex3.transform.rotation = originalVert3Rot;
+            edge1.transform.rotation = originalEdge1Rot;
+            edge2.transform.rotation = originalEdge2Rot;
+            edge3.transform.rotation = originalEdge3Rot;
+
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
@@ -315,7 +345,7 @@ public class MoveFace : MonoBehaviour
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
-            currEdge.GetComponent<XRGrabInteractable>().enabled = active;
+            currEdge.GetComponent<XRSimpleInteractable>().enabled = active;
         }
     }
 
@@ -327,7 +357,7 @@ public class MoveFace : MonoBehaviour
 
             currFace.locked = !active;
             currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
-            currFace.GetComponent<XRGrabInteractable>().enabled = active;
+            currFace.GetComponent<XRSimpleInteractable>().enabled = active;
         }
     }
 

@@ -34,7 +34,7 @@ public class ChangeMatClosest : MonoBehaviour
 
         if (allOverlappingColliders.Length > 10)
         {
-            Debug.Log("Way too many colliders overlapping, skipping this OnTriggerStay call");
+            //Debug.Log("Way too many colliders overlapping, skipping this OnTriggerStay call");
             return;
         }
 

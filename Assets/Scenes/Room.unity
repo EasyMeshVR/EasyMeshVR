@@ -370,12 +370,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
         type: 3}
-      propertyPath: face
-      value: 
-      objectReference: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908,
-        type: 3}
-    - target: {fileID: 6080322365346342989, guid: 2e16bf7aaea333d40a2f4d6b6848a9d0,
-        type: 3}
       propertyPath: editingSpace
       value: 
       objectReference: {fileID: 2063562609}
@@ -999,6 +993,7 @@ GameObject:
   - component: {fileID: 1282352286}
   - component: {fileID: 1282352285}
   - component: {fileID: 1282352289}
+  - component: {fileID: 1282352290}
   m_Layer: 10
   m_Name: LeftRadius
   m_TagString: GameController
@@ -1343,6 +1338,22 @@ MonoBehaviour:
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   pm: {fileID: 2063562610}
   otherHand: {fileID: 2059701658}
+--- !u!54 &1282352290
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282352283}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1319448459
 GameObject:
   m_ObjectHideFlags: 0
@@ -2051,6 +2062,7 @@ GameObject:
   - component: {fileID: 2059701658}
   - component: {fileID: 2059701659}
   - component: {fileID: 2059701660}
+  - component: {fileID: 2059701661}
   m_Layer: 10
   m_Name: RightRadius
   m_TagString: GameController
@@ -2451,6 +2463,22 @@ MonoBehaviour:
   inRadius: 0
   leftSphere: {fileID: 1282352287}
   rightSphere: {fileID: 2059701656}
+--- !u!54 &2059701661
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059701652}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &2063562609
 GameObject:
   m_ObjectHideFlags: 0
@@ -2575,6 +2603,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: ModelManager
       objectReference: {fileID: 0}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: edge
+      value: 
+      objectReference: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68,
+        type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: face
+      value: 
+      objectReference: {fileID: 4962365024205514009, guid: 59b887ad925d02644825b5b741363eaa,
+        type: 3}
+    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
+        type: 3}
+      propertyPath: vertex
+      value: 
+      objectReference: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732,
+        type: 3}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
       propertyPath: modelObject

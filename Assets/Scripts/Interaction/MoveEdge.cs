@@ -6,10 +6,12 @@ using UnityEngine.InputSystem;
 using UnityEngine.XR.Interaction.Toolkit;
 using Photon.Pun;
 using EasyMeshVR.Multiplayer;
+using EasyMeshVR.Core;
 
 public class MoveEdge : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
@@ -59,21 +61,21 @@ public class MoveEdge : MonoBehaviour
         materialSwap = GetComponent<MeshRenderer>();
 
         // Hover listeners to change edge color
-        grabInteractable.hoverEntered.AddListener(HoverOver);
-        grabInteractable.hoverExited.AddListener(HoverExit);
+        simpleInteractable.hoverEntered.AddListener(HoverOver);
+        simpleInteractable.hoverExited.AddListener(HoverExit);
 
         // This checks if the grab has been pressed or released
-        grabInteractable.selectEntered.AddListener(GrabPulled);
-        grabInteractable.selectExited.AddListener(GrabReleased);
+        simpleInteractable.selectEntered.AddListener(GrabPulled);
+        simpleInteractable.selectExited.AddListener(GrabReleased);
     }
 
     // We don't need the control listeners if OnDisable() is ever called
     void OnDisable()
     {
-        grabInteractable.hoverEntered.RemoveListener(HoverOver);
-        grabInteractable.hoverExited.RemoveListener(HoverExit);
-        grabInteractable.selectEntered.RemoveListener(GrabPulled);
-        grabInteractable.selectExited.RemoveListener(GrabReleased);
+        simpleInteractable.hoverEntered.RemoveListener(HoverOver);
+        simpleInteractable.hoverExited.RemoveListener(HoverExit);
+        simpleInteractable.selectEntered.RemoveListener(GrabPulled);
+        simpleInteractable.selectExited.RemoveListener(GrabReleased);
     }
 
     // Get original position of Vertex before moving
@@ -102,7 +104,9 @@ public class MoveEdge : MonoBehaviour
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
     void GrabPulled(SelectEnterEventArgs arg0)
     {
-        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked)
+        GameObject controllerObj = arg0.interactorObject.transform.gameObject;
+
+        if (pulleyLocomotion.isMovingEditingSpace || thisedge.locked || SwitchControllers.instance.ControllerIsRaycast(controllerObj))
             return;
 
         SetActiveEdges(thisedge, false);
@@ -119,6 +123,12 @@ public class MoveEdge : MonoBehaviour
         vertex1.gameObject.SetActive(false);
         vertex2.gameObject.SetActive(false);
 
+        HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
+
+        // Parent the vertex object to the controller interactable attach point
+        transform.position = handModel.interactableAttachPoint.position;
+        transform.SetParent(handModel.interactableAttachPoint, true);
+
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
     }
@@ -128,6 +138,8 @@ public class MoveEdge : MonoBehaviour
     {
         if (thisedge.locked)
             return;
+
+        transform.SetParent(model.transform, true);
 
         SetActiveEdges(thisedge, true);
 
@@ -168,11 +180,7 @@ public class MoveEdge : MonoBehaviour
     void Update()
     {
         if (pulleyLocomotion.isMovingEditingSpace || thisedge.isHeldByOther || thisedge.locked)
-        {
-            grabInteractable.enabled = false;
             return;
-        }
-        grabInteractable.enabled = true;
 
         if (grabHeld)
         {
@@ -235,7 +243,7 @@ public class MoveEdge : MonoBehaviour
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
-            currEdge.GetComponent<XRGrabInteractable>().enabled = active;
+            currEdge.GetComponent<XRSimpleInteractable>().enabled = active;
         }
     }
 

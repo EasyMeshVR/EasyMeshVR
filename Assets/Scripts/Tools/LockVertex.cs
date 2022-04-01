@@ -20,7 +20,7 @@ public class LockVertex : ToolClass
     [SerializeField] ToolRaycast ray;
 
 
-    public XRGrabInteractable vertexGrabInteractable;
+    public XRSimpleInteractable vertexGrabInteractable;
 
    // public PulleyLocomotion pulleyLocomotion;
    // public GameObject editingSpace;
@@ -114,7 +114,7 @@ public class LockVertex : ToolClass
         {
             currentVertex = other.gameObject; 
             selectedVertex = currentVertex.GetComponent<Vertex>().id;
-            vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
+            vertexGrabInteractable = currentVertex.GetComponent<XRSimpleInteractable>();
             inRadius = true;
         }
     }
@@ -149,7 +149,7 @@ public class LockVertex : ToolClass
             if(ray.hitVertex)
             {
                 currentVertex = ray.hit.transform.gameObject;
-                vertexGrabInteractable = currentVertex.GetComponent<XRGrabInteractable>();
+                vertexGrabInteractable = currentVertex.GetComponent<XRSimpleInteractable>();
                 if(primaryButtonPressed)
                     Lock();
                 if(secondaryButtonPressed)

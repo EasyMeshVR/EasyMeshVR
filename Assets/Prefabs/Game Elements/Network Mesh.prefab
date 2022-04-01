@@ -98,9 +98,9 @@ MonoBehaviour:
   isInitialized: 0
   editingSpace: {fileID: 0}
   model: {fileID: 0}
-  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
-  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
-  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  vertex: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732, type: 3}
+  edge: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68, type: 3}
+  face: {fileID: 4962365024205514009, guid: 59b887ad925d02644825b5b741363eaa, type: 3}
   vertices: []
   triangles: 
   edgeObjects: []
