@@ -41,6 +41,7 @@ public class MoveEdge : MonoBehaviour
     Vertex vertex2;
     public bool grabHeld = false;
 
+    Quaternion originalEdgeRot;
 
     // Get all references we need and add control listeners
     void OnEnable()
@@ -126,6 +127,7 @@ public class MoveEdge : MonoBehaviour
         HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
 
         // Parent the vertex object to the controller interactable attach point
+        originalEdgeRot = transform.rotation;
         transform.position = handModel.interactableAttachPoint.position;
         transform.SetParent(handModel.interactableAttachPoint, true);
 
@@ -184,6 +186,11 @@ public class MoveEdge : MonoBehaviour
 
         if (grabHeld)
         {
+            if (ToolManager.instance.lockEdgeRotation)
+            {
+                transform.rotation = originalEdgeRot;
+            }
+
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions

@@ -151,6 +151,12 @@ public class MoveFace : MonoBehaviour
 
         SetActiveFaces(thisFace, false);
 
+        HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
+
+        // Parent the vertex object to the controller interactable attach point
+        originalFaceRot = transform.rotation;
+        //transform.position = handModel.interactableAttachPoint.position;
+        transform.SetParent(handModel.interactableAttachPoint, true);
 
         vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
         vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
@@ -159,8 +165,6 @@ public class MoveFace : MonoBehaviour
         originalVert1Rot = vertex1.transform.rotation;
         originalVert2Rot = vertex2.transform.rotation;
         originalVert3Rot = vertex3.transform.rotation;
-
-        thisFace.transform.parent = model.transform;
 
         // Parent vertices and edges to face
         vertex1.transform.parent = thisFace.transform;
@@ -171,19 +175,9 @@ public class MoveFace : MonoBehaviour
         edge2.transform.parent = thisFace.transform;
         edge3.transform.parent = thisFace.transform;
 
-        
-
         vertex1.gameObject.SetActive(false);
         vertex2.gameObject.SetActive(false);
         vertex3.gameObject.SetActive(false);
-
-        HandModel handModel = controllerObj.GetComponentInChildren<HandModel>();
-
-        // Parent the vertex object to the controller interactable attach point
-        originalFaceRot = transform.rotation;
-        transform.position = handModel.interactableAttachPoint.position;
-        transform.SetParent(handModel.interactableAttachPoint, true);
-
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
@@ -201,8 +195,20 @@ public class MoveFace : MonoBehaviour
 
         SetActiveFaces(thisFace, true);
 
-
         materialSwap.material = unselected;
+
+        transform.SetParent(model.transform, true);
+
+        Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
+        Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
+        Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
+
+        // Update face position
+        float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
+        float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
+        float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
+
+        thisFace.transform.localPosition = new Vector3(totalX / 3, totalY / 3, totalZ / 3);
 
         // Unparent the vertices from the edge
         vertex1.transform.parent = model.transform;
@@ -213,18 +219,15 @@ public class MoveFace : MonoBehaviour
         edge2.transform.parent = model.transform;
         edge3.transform.parent = model.transform;
 
-        transform.SetParent(model.transform, true);
-
         vertex1.gameObject.SetActive(true);
         vertex2.gameObject.SetActive(true);
         vertex3.gameObject.SetActive(true);
 
+        vertex1.GetComponent<MoveVertices>().UpdateMesh(vertex1.id);
+        vertex2.GetComponent<MoveVertices>().UpdateMesh(vertex2.id);
+        vertex3.GetComponent<MoveVertices>().UpdateMesh(vertex3.id);
 
         grabHeld = false;
-
-        Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
-        Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
-        Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         FacePullEvent faceEvent = new FacePullEvent
@@ -248,14 +251,6 @@ public class MoveFace : MonoBehaviour
 
         NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
 
-        // Update face position
-        float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
-        float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
-        float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
-
-        thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
-
-
         pulleyLocomotion.isMovingVertex = false;
 
     }
@@ -268,13 +263,16 @@ public class MoveFace : MonoBehaviour
 
         if (grabHeld)
         {
-            transform.rotation = originalFaceRot;
-            vertex1.transform.rotation = originalVert1Rot;
-            vertex2.transform.rotation = originalVert2Rot;
-            vertex3.transform.rotation = originalVert3Rot;
-            edge1.transform.rotation = originalEdge1Rot;
-            edge2.transform.rotation = originalEdge2Rot;
-            edge3.transform.rotation = originalEdge3Rot;
+            if (ToolManager.instance.lockFaceRotation)
+            {
+                transform.rotation = originalFaceRot;
+                /*vertex1.transform.rotation = originalVert1Rot;
+                vertex2.transform.rotation = originalVert2Rot;
+                vertex3.transform.rotation = originalVert3Rot;
+                edge1.transform.rotation = originalEdge1Rot;
+                edge2.transform.rotation = originalEdge2Rot;
+                edge3.transform.rotation = originalEdge3Rot;*/
+            }
 
             materialSwap.material = selected;
 
@@ -362,7 +360,7 @@ public class MoveFace : MonoBehaviour
     }
 
     // Update MeshFilter and re-draw in-game visuals
-    public void UpdateMesh(int vertex1Id, int vertex2Id, int vertex3Id, bool skipThisEdgeId = true)
+    public void UpdateMesh(int vertex1Id, int vertex2Id, int vertex3Id, bool skipThisEdgeId = true, bool skipThisFaceId = true)
     {
         Vector3[] vertices = meshRebuilder.vertices;
 
@@ -425,6 +423,8 @@ public class MoveFace : MonoBehaviour
 
         foreach (Face face in meshRebuilder.faceObjects)
         {
+            if (skipThisFaceId && thisFace.id == face.id) continue;
+
             GameObject faceObject = face.gameObject;
             int vert1 = face.vert1;
             int vert2 = face.vert2;

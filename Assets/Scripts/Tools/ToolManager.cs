@@ -19,6 +19,9 @@ public class ToolManager : MonoBehaviour
     [SerializeField] public Extrude extrudeScriptRay;
     [SerializeField] public Extrude extrudeScriptGrab;
 
+    [SerializeField] public bool lockFaceRotation = false;
+    [SerializeField] public bool lockEdgeRotation = false;
+
     /*List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
     List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
     List<XRGrabInteractable> faceGrab = new List<XRGrabInteractable>();*/
@@ -160,5 +163,15 @@ public class ToolManager : MonoBehaviour
                 f.gameObject.SetActive(false);
             }
         }
+    }
+
+    public void ToggleLockFaceRotation()
+    {
+        lockFaceRotation = !lockFaceRotation;
+    }
+
+    public void ToggleLockEdgeRotation()
+    {
+        lockEdgeRotation = !lockEdgeRotation;
     }
 }
