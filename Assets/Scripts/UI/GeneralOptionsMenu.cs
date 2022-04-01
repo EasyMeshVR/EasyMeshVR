@@ -90,7 +90,8 @@ namespace EasyMeshVR.UI
                     playerEntries = new Dictionary<int, PlayerEntry>();
                 }
 
-                roomName.text = (string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
+                roomName.text = (PhotonNetwork.CurrentRoom == null || string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) 
+                    ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
 
                 // Set colors of sub-option buttons
                 SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);

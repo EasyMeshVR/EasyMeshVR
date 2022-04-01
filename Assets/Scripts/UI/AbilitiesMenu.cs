@@ -10,9 +10,6 @@ namespace EasyMeshVR.UI
     {
         #region Private Fields
 
-        private static Color untoggledButtonColor = new Color(255, 255, 255, 150);
-        private static Color toggledButtonColor = new Color(255, 255, 255, 255);
-
         private bool extrudeToolToggled;
         private bool lockToolToggled;
 
@@ -26,6 +23,12 @@ namespace EasyMeshVR.UI
         [SerializeField] private Button lockToolButton;
         [SerializeField] private Button resetDefaultsToggle;
 
+        [SerializeField] private Color untoggledButtonColor;
+        [SerializeField] private Color toggledButtonColor;
+
+        [SerializeField] private Image extrudeToolImage;
+        [SerializeField] private Image lockToolImage;
+
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -35,9 +38,10 @@ namespace EasyMeshVR.UI
             extrudeToolToggled = false;
             lockToolToggled = false;
 
-            extrudeToolButton.image.color = untoggledButtonColor;
-            lockToolButton.image.color = untoggledButtonColor;
+            extrudeToolImage.color = untoggledButtonColor;
+            lockToolImage.color = untoggledButtonColor;
 
+            DisableAllTools();
             SetDefaultAbilities();
         }
 
@@ -112,7 +116,7 @@ namespace EasyMeshVR.UI
             {
                 DisableAllTools();
                 ToolManager.instance.EnableExtrude();
-                extrudeToolButton.image.color = toggledButtonColor;
+                extrudeToolImage.color = toggledButtonColor;
                 extrudeToolToggled = true;
             }
         }
@@ -123,7 +127,7 @@ namespace EasyMeshVR.UI
             {
                 DisableAllTools();
                 ToolManager.instance.EnableLock();
-                extrudeToolButton.image.color = toggledButtonColor;
+                lockToolImage.color = toggledButtonColor;
                 lockToolToggled = true;
             }
         }
@@ -168,8 +172,8 @@ namespace EasyMeshVR.UI
             if (extrudeToolToggled)
             {
                 ToolManager.instance.DisableExtrude();
-                extrudeToolButton.image.color = untoggledButtonColor;
-                extrudeToolToggled = true;
+                extrudeToolImage.color = untoggledButtonColor;
+                extrudeToolToggled = false;
             }
         }
 
@@ -178,8 +182,8 @@ namespace EasyMeshVR.UI
             if (lockToolToggled)
             {
                 ToolManager.instance.DisableLock();
-                lockToolButton.image.color = untoggledButtonColor;
-                lockToolToggled = true;
+                lockToolImage.color = untoggledButtonColor;
+                lockToolToggled = false;
             }
         }
 
