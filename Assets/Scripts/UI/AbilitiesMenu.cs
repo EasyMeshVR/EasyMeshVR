@@ -156,7 +156,7 @@ namespace EasyMeshVR.UI
             grabEdgesToggle.isOn = true;
             grabFacesToggle.isOn = true;
             autoMergeVerticesToggle.isOn = true;
-            //raycastGrabToggle.isOn = false;
+            raycastGrabToggle.isOn = false;
 
             HandleAbilities();
         }

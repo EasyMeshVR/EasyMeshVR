@@ -19,10 +19,6 @@ public class ToolManager : MonoBehaviour
     [SerializeField] public Extrude extrudeScriptRay;
     [SerializeField] public Extrude extrudeScriptGrab;
 
-    /*List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
-    List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
-    List<XRGrabInteractable> faceGrab = new List<XRGrabInteractable>();*/
-
     public bool grabVertex = true;
     public bool grabEdge = true;
     public bool grabFace = true;
@@ -32,14 +28,8 @@ public class ToolManager : MonoBehaviour
         instance = this;
     }
 
-    void Start()
-    {
-    }
-
     public void EnableLock()
     {
-        Debug.Log("Enabling lock tool");
-
         LockTool = true;
         lockScriptRay.Enable();
         lockScriptGrab.Enable();
@@ -47,8 +37,6 @@ public class ToolManager : MonoBehaviour
 
     public void DisableLock()
     {
-        Debug.Log("Disabling lock tool");
-
         LockTool = false;
         lockScriptRay.Disable();
         lockScriptGrab.Disable();
@@ -56,8 +44,6 @@ public class ToolManager : MonoBehaviour
 
     public void EnableExtrude()
     {
-        Debug.Log("Enabling extrude tool");
-
         extrudeTool = true;
         extrudeScriptGrab.Enable();
         extrudeScriptRay.Enable();
@@ -65,8 +51,6 @@ public class ToolManager : MonoBehaviour
 
     public void DisableExtrude()
     {
-        Debug.Log("Disabling extrude tool");
-
         extrudeTool = false;
         extrudeScriptGrab.Disable();
         extrudeScriptRay.Disable();
@@ -74,8 +58,6 @@ public class ToolManager : MonoBehaviour
 
     public void EnableVertex()
     {
-        Debug.Log("Enabling vertices");
-
         grabVertex = true;
 
         foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
@@ -89,8 +71,6 @@ public class ToolManager : MonoBehaviour
 
     public void DisableVertex()
     {
-        Debug.Log("Disabling vertices");
-
         grabVertex = false;
 
         foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
@@ -104,7 +84,6 @@ public class ToolManager : MonoBehaviour
 
     public void EnableEdge()
     {
-        Debug.Log("Enabling edges");
 
         grabEdge = true;
 
@@ -119,8 +98,6 @@ public class ToolManager : MonoBehaviour
 
     public void DisableEdge()
     {
-        Debug.Log("Disabling edges");
-
         grabEdge = false;
 
         foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
@@ -134,8 +111,6 @@ public class ToolManager : MonoBehaviour
 
     public void EnableFace()
     {
-        Debug.Log("Enabling faces");
-
         grabFace = true;
 
         foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
@@ -149,8 +124,6 @@ public class ToolManager : MonoBehaviour
 
     public void DisableFace()
     {
-        Debug.Log("Disabling faces");
-
         grabFace = false;
 
         foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)

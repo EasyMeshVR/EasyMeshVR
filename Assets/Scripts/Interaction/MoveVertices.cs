@@ -135,10 +135,8 @@ public class MoveVertices : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
         {
-            grabInteractable.enabled = false;
             return;
         }
-        grabInteractable.enabled = true;
 
         if (grabHeld)
         {
