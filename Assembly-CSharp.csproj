@@ -139,9 +139,9 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\ThirdPersonController.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\TextToggleIsOnTransition.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\MobileControlRig.cs" />
+    <Compile Include="Assets\Scripts\UI\AbilitiesMenu.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
-    <Compile Include="Assets\Scripts\UI\AbilitiesMenu.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
