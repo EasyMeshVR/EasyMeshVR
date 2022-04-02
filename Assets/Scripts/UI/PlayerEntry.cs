@@ -95,6 +95,14 @@ namespace EasyMeshVR.UI
             SetKickButtonEnabled();
         }
 
+        private void Update()
+        {
+            if (playerName != PhotonNetwork.LocalPlayer.NickName)
+            {
+                playerName = PhotonNetwork.LocalPlayer.NickName;
+            }
+        }
+
         #endregion
 
         #region Public Methods

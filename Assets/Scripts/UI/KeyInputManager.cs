@@ -103,9 +103,16 @@ namespace EasyMeshVR.UI
         {
             keyboard.Enable();
             keyboard.DisplayImportModelPanel();
-            keyboard.AddEnterButtonOnReleaseEvent(callback);
+            keyboard.AddImportEnterButtonOnReleaseEvent(callback);
         }
 
+        public void EnableKeyboardForChangingDisplayName(Action<string> callback)
+        {
+            keyboard.Enable();
+            keyboard.DisplayNameChangePanel();
+            keyboard.AddChangeDisplayNameEnterButtonOnReleaseEvent(callback);
+        }
+         
         #endregion
 
         #region Private Method

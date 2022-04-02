@@ -72,6 +72,8 @@ namespace EasyMeshVR.Multiplayer
                 playerNameCanvas.enabled = false;
             }
 
+            PlayerPrefsInit();
+
             // Finally add this NetworkPlayer to the NetworkPlayerManager dictionary
             NetworkPlayerManager.instance.AddNetworkPlayer(this);
         }
@@ -79,6 +81,12 @@ namespace EasyMeshVR.Multiplayer
         // Update is called once per frame
         void Update()
         {
+            // Update the player's name in the case that it has changed
+            if (playerNameText.text != photonView.Owner.NickName)
+            {
+                playerNameText.text = photonView.Owner.NickName;
+            }
+
             if (photonView.IsMine)
             {
                 leftHandOrigin = SwitchControllers.instance.activeLeftController.transform;
@@ -103,9 +111,33 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
+        public void SetPlayerNameVisible(bool visible)
+        {
+            playerNameCanvas.enabled = visible;
+        }
+
+        public void SetMuteMic(bool muted)
+        {
+            micAudioSource.mute = muted;
+        }
+
         public void ToggleMuteMic()
         {
             micAudioSource.mute = !micAudioSource.mute;
+        }
+
+        public void PlayerPrefsInit()
+        {
+            // Disable playerNameCanvas if our player prefs for hiding player names is true
+            if (PlayerPrefs.GetInt(Constants.HIDE_PLAYER_NAMES_PREF_KEY) != 0)
+            {
+                playerNameCanvas.enabled = false;
+            }
+            // Disable microphone if this NetworkPlayer belongs to us and our pref is set to true
+            if (photonView.IsMine && PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0)
+            {
+                micAudioSource.mute = true;
+            }
         }
 
         #endregion

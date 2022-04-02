@@ -25,7 +25,7 @@ namespace EasyMeshVR.Core
         public const int HIDE_PLAYER_NAMES_PREF_DEFAULT = 0;
 
         public const string MUTE_MIC_ON_JOIN_PREF_KEY = "MUTE_MIC_ON_JOIN";
-        public const int MUTE_MIC_ON_JOIN_PREF_DEFAULT = 1;
+        public const int MUTE_MIC_ON_JOIN_PREF_DEFAULT = 0;
 
         // Photon Custom Event Codes
         public const byte IMPORT_MODEL_FROM_WEB_EVENT_CODE = 1;

@@ -99,7 +99,7 @@ namespace EasyMeshVR.Multiplayer
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             base.OnPlayerEnteredRoom(newPlayer);
-            CreatePlayerEntry(newPlayer);
+            CreatePlayerEntry(newPlayer, false);
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -153,6 +153,41 @@ namespace EasyMeshVR.Multiplayer
             return PhotonNetwork.Instantiate(networkPlayerPrefab.name, Vector3.zero, Quaternion.identity);
         }
 
+        public void SetPlayerNamesVisible(bool visible)
+        {
+            foreach (NetworkPlayer netPlayer in networkPlayers.Values)
+            {
+                // Don't do anything for my own player name
+                if (netPlayer.photonView.IsMine) continue;
+
+                netPlayer.SetPlayerNameVisible(visible);
+            }
+        }
+
+        public void SetMuteMic(bool muted)
+        {
+            Player localPlayer = PhotonNetwork.LocalPlayer;
+            NetworkPlayer netPlayer;
+
+            if (networkPlayers.TryGetValue(localPlayer.ActorNumber, out netPlayer) && netPlayer)
+            {
+                netPlayer.SetMuteMic(muted);
+                UpdateMuteIcon(muted);
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to SetMuteMic() for ActorNumber: {0} Name: {1}", localPlayer.ActorNumber, localPlayer.NickName);
+            }
+        }
+
+        public void UpdateMuteIcon(bool muted)
+        {
+            radiusGameMenuManager.gameMenu
+                   .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
+            raycastGameMenuManager.gameMenu
+                .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
+        }
+
         #endregion
 
         #region Private Methods
@@ -170,7 +205,6 @@ namespace EasyMeshVR.Multiplayer
 
             while (leftHandRadiusPresence.initializing || leftHandRayCastPresence.initializing) 
             {
-                Debug.Log("waiting on initialization of left hand presence");
                 yield return null;
             }
 
@@ -182,9 +216,18 @@ namespace EasyMeshVR.Multiplayer
 
         private void InitializePlayerList()
         {
+            NetworkPlayer localNetPlayer = spawnedPlayerPrefab.GetComponent<NetworkPlayer>();
+
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                CreatePlayerEntry(player);
+                if (localNetPlayer.photonView.IsMine)
+                {
+                    CreatePlayerEntry(player, PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0);
+                }
+                else
+                {
+                    CreatePlayerEntry(player, false);
+                }
             }
         }
 
@@ -233,13 +276,13 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
-        private void CreatePlayerEntry(Player player)
+        private void CreatePlayerEntry(Player player, bool muted)
         {
             UnityAction kickAction = delegate { OnKickAction(player); };
             UnityAction muteAction = delegate { OnMuteAction(player); };
 
-            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
-            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction, muted);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction, muted);
         }
 
         private void RemovePlayerEntry(Player player)
