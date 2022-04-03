@@ -100,11 +100,6 @@ namespace EasyMeshVR.Core
                 // Cloud upload
                 apiRequester.UploadModel(stlData, modelCodeType.ToString(), callback);
             }
-            else
-            {
-                // Export to file on disk
-                // TODO
-            }
         }
 
         public void CreateMeshObjects(Mesh[] meshes)

@@ -34,5 +34,6 @@ namespace EasyMeshVR.Core
         public const byte CLEAR_CANVAS_EVENT_CODE = 4;
         public const byte MESH_FACE_PULL_EVENT_CODE = 5;
         public const byte MESH_FACE_EXTRUDE_EVENT_CODE = 6;
+        public const byte MESH_VERTEX_LOCK_EVENT_CODE = 7;
     }
 }

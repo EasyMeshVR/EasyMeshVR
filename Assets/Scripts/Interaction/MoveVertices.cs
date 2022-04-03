@@ -29,7 +29,7 @@ public class MoveVertices : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
-    MeshRebuilder meshRebuilder;
+    public MeshRebuilder meshRebuilder;
     MeshRenderer materialSwap;
 
     // Vertex lookup
