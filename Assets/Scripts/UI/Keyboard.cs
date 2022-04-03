@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 using System;
 using TMPro;
+using Photon.Pun;
 
 namespace EasyMeshVR.UI
 {
@@ -26,6 +27,7 @@ namespace EasyMeshVR.UI
         [SerializeField] TMP_InputField activeInputField;
         [SerializeField] TMP_InputField defaultPanelInputField;
         [SerializeField] TMP_InputField importModelPanelInputField;
+        [SerializeField] TMP_InputField changeDisplayNamePanelInputField;
 
         [SerializeField] ButtonVR activeEnterButton;
         [SerializeField] ButtonVR enterButtonDefault;
@@ -33,10 +35,19 @@ namespace EasyMeshVR.UI
 
         [SerializeField] GameObject defaultPanel;
         [SerializeField] GameObject importModelPanel;
-        [SerializeField] TMP_Text errorText;
-        [SerializeField] TMP_Text successText;
+        [SerializeField] GameObject changeDisplayNamePanel;
+
+        [SerializeField] TMP_Text activeErrorText;
+        [SerializeField] TMP_Text importModelErrorText;
+        [SerializeField] TMP_Text changeDisplayNameErrorText;
+
+        [SerializeField] TMP_Text activeSuccesText;
+        [SerializeField] TMP_Text importModelSuccessText;
+        [SerializeField] TMP_Text changeDisplayNameSuccessText;
+
         [SerializeField] GameObject normalButtons;
         [SerializeField] GameObject capsButtons;
+
         [SerializeField] bool caps;
 
         [Serializable]
@@ -126,8 +137,11 @@ namespace EasyMeshVR.UI
             defaultBoard.SetActive(false);
             activeInputField = importModelPanelInputField;
             activeEnterButton = enterButtonNumpad;
+            activeErrorText = importModelErrorText;
+            activeSuccesText = importModelSuccessText;
             defaultPanel.SetActive(false);
             importModelPanel.SetActive(true);
+            changeDisplayNamePanel.SetActive(false);
             grabInteractable.attachTransform = numpadBoardAttachTransform;
         }
 
@@ -139,6 +153,22 @@ namespace EasyMeshVR.UI
             activeEnterButton = enterButtonDefault;
             defaultPanel.SetActive(true);
             importModelPanel.SetActive(false);
+            changeDisplayNamePanel.SetActive(false);
+            grabInteractable.attachTransform = defaultBoardAttachTransform;
+        }
+
+        public void DisplayNameChangePanel()
+        {
+            numpadBoard.SetActive(false);
+            defaultBoard.SetActive(true);
+            activeInputField = changeDisplayNamePanelInputField;
+            changeDisplayNamePanelInputField.text = PhotonNetwork.LocalPlayer.NickName;
+            activeEnterButton = enterButtonDefault;
+            activeErrorText = changeDisplayNameErrorText;
+            activeSuccesText = changeDisplayNameSuccessText;
+            defaultPanel.SetActive(false);
+            importModelPanel.SetActive(false);
+            changeDisplayNamePanel.SetActive(true);
             grabInteractable.attachTransform = defaultBoardAttachTransform;
         }
 
@@ -169,11 +199,19 @@ namespace EasyMeshVR.UI
             activeEnterButton.onRelease.AddListener(onReleaseAction);
         }
 
-        public void AddEnterButtonOnReleaseEvent(Action<string> onReleaseAction)
+        public void AddImportEnterButtonOnReleaseEvent(Action<string> onReleaseAction)
         {
             activeEnterButton.onRelease.AddListener(delegate
             {
                 HandleImportModel(onReleaseAction);
+            });
+        }
+        
+        public void AddChangeDisplayNameEnterButtonOnReleaseEvent(Action<string> onReleaseAction)
+        {
+            activeEnterButton.onRelease.AddListener(delegate
+            {
+                HandleChangeDisplayName(onReleaseAction);
             });
         }
 
@@ -191,28 +229,42 @@ namespace EasyMeshVR.UI
             onReleaseAction.Invoke(activeInputField.text);
         }
 
+        private void HandleChangeDisplayName(Action<string> onReleaseAction)
+        {
+            ClearErrorMessage();
+            ClearSuccessMessage();
+
+            if (string.IsNullOrWhiteSpace(activeInputField.text))
+            {
+                DisplayErrorMessage("Name must be non-empty");
+                return;
+            }
+
+            onReleaseAction.Invoke(activeInputField.text);
+        }
+
         public void DisplayErrorMessage(string errorMsg)
         {
-            errorText.text = errorMsg;
-            errorText.gameObject.SetActive(true);
+            activeErrorText.text = errorMsg;
+            activeErrorText.gameObject.SetActive(true);
         }
 
         public void DisplaySuccessMessage(string successMsg)
         {
-            successText.text = successMsg;
-            successText.gameObject.SetActive(true);
+            activeSuccesText.text = successMsg;
+            activeSuccesText.gameObject.SetActive(true);
         }
 
         public void ClearErrorMessage()
         {
-            errorText.text = string.Empty;
-            errorText.gameObject.SetActive(false);
+            activeErrorText.text = string.Empty;
+            activeErrorText.gameObject.SetActive(false);
         }
 
         public void ClearSuccessMessage()
         {
-            successText.text = string.Empty;
-            successText.gameObject.SetActive(false);
+            activeSuccesText.text = string.Empty;
+            activeSuccesText.gameObject.SetActive(false);
         }
 
         public void RemoveEnterButtonOnReleaseEvent()

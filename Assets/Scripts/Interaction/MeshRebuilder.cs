@@ -36,7 +36,7 @@ public class MeshRebuilder : MonoBehaviour
 
 
     // Setup
-    public void Start()
+    void Start()
     {
         Debug.Log("In MeshRebuilder:Start() - GameObject: " + name);
 
@@ -171,6 +171,11 @@ public class MeshRebuilder : MonoBehaviour
             vertexObj.id = i;
             vertexObjects.Add(vertexObj);
 
+            if (!ToolManager.instance.grabVertex)
+            {
+                newVertex.SetActive(false);
+            }
+
             // Save vertices adjacent to the one we're currently looking at (no duplicates)
             HashSet<int> adjacentVertices = new HashSet<int>();
 
@@ -222,6 +227,11 @@ public class MeshRebuilder : MonoBehaviour
                 edgeComponent.vert1 = i;
                 edgeComponent.vert2 = k;
                 edgeObjects.Add(edgeComponent);
+
+                if (!ToolManager.instance.grabEdge)
+                {
+                    newEdge.SetActive(false);
+                }
             }
         }
 
@@ -260,6 +270,10 @@ public class MeshRebuilder : MonoBehaviour
 
             faceObjects.Add(faceComponent);
 
+            if (!ToolManager.instance.grabFace)
+            {
+                newFace.SetActive(false);
+            }
         }
     }
 

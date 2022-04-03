@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.05688, y: 0.0008}
+  m_AnchoredPosition: {x: -0.05688, y: -0.0063}
   m_SizeDelta: {x: 0.15769, y: 0.025}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5612408998827289934
@@ -169,7 +169,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7673054144944348272
 CanvasRenderer:
@@ -199,7 +199,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 7847255124460810262}
   - component: {fileID: 2201565135282240627}
   m_Layer: 5
-  m_Name: Brush1Icon
+  m_Name: ExtrudeFaceImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -267,7 +267,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.27450982}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -319,7 +319,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0679, y: 0.05430166}
+  m_AnchoredPosition: {x: -0.0096, y: 0.0505}
   m_SizeDelta: {x: 135.67, y: 21.7746}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1953049063032166595
@@ -368,7 +368,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleGrabEdges
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &809061829733085652
 GameObject:
@@ -405,7 +417,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &173480086097272176
 CanvasRenderer:
@@ -435,7 +447,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -591,7 +603,7 @@ GameObject:
   - component: {fileID: 2543014599987165568}
   - component: {fileID: 7841894275033491961}
   m_Layer: 5
-  m_Name: Brush1Icon
+  m_Name: LockVertexImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -637,7 +649,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.27450982}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -666,6 +678,7 @@ GameObject:
   - component: {fileID: 2914859220252002626}
   - component: {fileID: 8285616788137212854}
   - component: {fileID: 2746536801227807056}
+  - component: {fileID: 3507553970441105920}
   m_Layer: 5
   m_Name: Settings
   m_TagString: Untagged
@@ -759,6 +772,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3507553970441105920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1175255606821270360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18f48832d4531ed4385e0f99f116e2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hidePlayerNamesToggle: {fileID: 1039701831113782251}
+  muteMicOnJoinToggle: {fileID: 4724274724261690109}
+  hideClosePlayersToggle: {fileID: 8185452747795106442}
 --- !u!1 &1297532810859213568
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,6 +799,7 @@ GameObject:
   - component: {fileID: 4021547987314554908}
   - component: {fileID: 7662111707469774703}
   - component: {fileID: 6151845633927135085}
+  - component: {fileID: 1503626849963543753}
   m_Layer: 5
   m_Name: AbilitiesPanel
   m_TagString: Untagged
@@ -786,16 +815,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1297532810859213568}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.0000000018626}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 3367553514360657192}
   m_Father: {fileID: 2621626967575812712}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.03137207, y: -0.0000038146973}
+  m_AnchoredPosition: {x: 0.03137207, y: -0}
   m_SizeDelta: {x: -0.06285, y: -0.0000050068}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4021547987314554908
@@ -862,6 +891,30 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1503626849963543753
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1297532810859213568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fac18b32eb16b44383765636b2b9ebf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabVerticesToggle: {fileID: 3668489027789449784}
+  grabEdgesToggle: {fileID: 1953049063032166595}
+  grabFacesToggle: {fileID: 6890402628391652506}
+  autoMergeVerticesToggle: {fileID: 5279035086225920804}
+  raycastGrabToggle: {fileID: 4829793611001947663}
+  extrudeToolButton: {fileID: 4065410263783088936}
+  lockToolButton: {fileID: 4073723600860563490}
+  resetDefaultsToggle: {fileID: 5941630717488830346}
+  untoggledButtonColor: {r: 1, g: 1, b: 1, a: 0.27450982}
+  toggledButtonColor: {r: 1, g: 1, b: 1, a: 1}
+  extrudeToolImage: {fileID: 2201565135282240627}
+  lockToolImage: {fileID: 7841894275033491961}
 --- !u!1 &1320839026934690025
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,8 +1297,8 @@ RectTransform:
   - {fileID: 4039324779480623113}
   - {fileID: 1356409112117719152}
   - {fileID: 366103132463800570}
-  - {fileID: 817276019949426190}
   - {fileID: 5570833797943308756}
+  - {fileID: 817276019949426190}
   - {fileID: 2808438675587986137}
   - {fileID: 1109492561939692251}
   m_Father: {fileID: 9000764316421131955}
@@ -1329,7 +1382,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3135998757422815007
 CanvasRenderer:
@@ -1359,7 +1412,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1403,8 +1456,8 @@ RectTransform:
   - {fileID: 2537442476292645613}
   - {fileID: 3477722755682389481}
   - {fileID: 1970874891337823987}
-  - {fileID: 5363577994617051067}
   - {fileID: 3411892111450959755}
+  - {fileID: 5363577994617051067}
   m_Father: {fileID: 5261056434882148539}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1532,7 +1585,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.0683, y: 0.02920166}
+  m_AnchoredPosition: {x: -0.010011427, y: 0.02541748}
   m_SizeDelta: {x: 135.67, y: 21.7746}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6890402628391652506
@@ -1581,7 +1634,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleGrabFaces
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &2064648579527617714
 GameObject:
@@ -2049,10 +2114,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   generalOptionsMenuPanel: {fileID: 6086802594943246960}
-  activeMenuPanel: {fileID: 5745084498275745268}
-  activeMainOption: {fileID: 841537452826059644}
-  toolsPanel: {fileID: 1297532810859213568}
-  settingsPanel: {fileID: 1175255606821270360}
+  abilitiesMenuPanel: {fileID: 1503626849963543753}
+  settingsMenuPanel: {fileID: 3507553970441105920}
+  activeMenuPanel: {fileID: 1297532810859213568}
+  activeMainOption: {fileID: 7382632697512472667}
   mainMenuOption: {fileID: 841537452826059644}
   toolsOption: {fileID: 7382632697512472667}
   settingsOption: {fileID: 6491405830023171393}
@@ -2089,8 +2154,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8676216955118485133}
-  - {fileID: 1654788789507520023}
   - {fileID: 9000764316421131955}
+  - {fileID: 1654788789507520023}
   - {fileID: 5261056434882148539}
   m_Father: {fileID: 2621626966823831502}
   m_RootOrder: 0
@@ -2166,7 +2231,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6665277464950986255
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2234,7 +2299,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleAutoMergeVertices
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &2977793070309834964
 GameObject:
@@ -2558,7 +2635,7 @@ RectTransform:
   - {fileID: 2151141359348879978}
   - {fileID: 4550119547275612181}
   m_Father: {fileID: 3367553514360657192}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2646,7 +2723,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1482426003171183055}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleLockTool
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3357358994273747054
 GameObject:
   m_ObjectHideFlags: 0
@@ -2678,11 +2767,11 @@ RectTransform:
   - {fileID: 166499384161405527}
   - {fileID: 4229934997079491301}
   m_Father: {fileID: 4836526648227387533}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00021, y: -0.0454}
+  m_AnchoredPosition: {x: 0.00021, y: -0.0138}
   m_SizeDelta: {x: 261.8803, y: 26.14174}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8185452747795106442
@@ -2731,8 +2820,20 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-  m_IsOn: 1
+      m_Calls:
+      - m_Target: {fileID: 3507553970441105920}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.GameSettingsMenu, Assembly-CSharp
+        m_MethodName: OnToggledHideClosePlayers
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
 --- !u!1 &3664785550140458509
 GameObject:
   m_ObjectHideFlags: 0
@@ -2898,11 +2999,11 @@ RectTransform:
   - {fileID: 1357321257408500299}
   - {fileID: 6025520160714974413}
   m_Father: {fileID: 4836526648227387533}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00021, y: -0.0138}
+  m_AnchoredPosition: {x: 0.00021, y: -0.0454}
   m_SizeDelta: {x: 261.8803, y: 26.14174}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4724274724261690109
@@ -2951,8 +3052,20 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
-  m_IsOn: 1
+      m_Calls:
+      - m_Target: {fileID: 3507553970441105920}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.GameSettingsMenu, Assembly-CSharp
+        m_MethodName: OnToggledMuteMicOnJoin
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
 --- !u!1 &3898889024705884875
 GameObject:
   m_ObjectHideFlags: 0
@@ -3122,7 +3235,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7435089404550321128
 CanvasRenderer:
@@ -3152,7 +3265,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3322,7 +3435,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3507553970441105920}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.GameSettingsMenu, Assembly-CSharp
+        m_MethodName: OnToggledHidePlayerNames
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &4267551153582633172
 GameObject:
@@ -3999,7 +4124,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4872098378830886749
 CanvasRenderer:
@@ -4029,7 +4154,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4185,12 +4310,12 @@ GameObject:
   - component: {fileID: 2949163643349773802}
   - component: {fileID: 193612521926532127}
   m_Layer: 5
-  m_Name: SaveQuitSubPanel
+  m_Name: QuitSubPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2083812074223818273
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4209,8 +4334,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.14356232, y: -0.15592575}
-  m_SizeDelta: {x: 0.2871266, y: 0.18759}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.156065}
+  m_SizeDelta: {x: 0.28715098, y: 0.18759}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2949163643349773802
 CanvasRenderer:
@@ -4371,7 +4496,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6180765604125649315}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleExtrudeTool
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5103658208496947584
 GameObject:
   m_ObjectHideFlags: 0
@@ -4492,7 +4629,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5868694586658226405}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleResetDefaults
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5548828247028365189
 GameObject:
   m_ObjectHideFlags: 0
@@ -4811,7 +4960,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4627471229896874879
 CanvasRenderer:
@@ -4841,7 +4990,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4888,7 +5037,7 @@ RectTransform:
   - {fileID: 2106662800498823035}
   - {fileID: 3310484370765828302}
   m_Father: {fileID: 2621626967575812712}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -5214,7 +5363,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7900742465087889871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5282,7 +5431,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleRaycastGrab
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 0
 --- !u!1 &6384821174847411533
 GameObject:
@@ -5319,7 +5480,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.06781307, y: 0.08}
+  m_AnchoredPosition: {x: -0.009524494, y: 0.07621582}
   m_SizeDelta: {x: 135.67, y: 21.7746}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3668489027789449784
@@ -5368,7 +5529,19 @@ MonoBehaviour:
   m_Group: {fileID: 0}
   onValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1503626849963543753}
+        m_TargetAssemblyTypeName: EasyMeshVR.UI.AbilitiesMenu, Assembly-CSharp
+        m_MethodName: HandleGrabVertices
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_IsOn: 1
 --- !u!1 &6574446538481158962
 GameObject:
@@ -5387,7 +5560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1962718077359436285
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5562,7 +5735,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.1435633, y: -0.152}
+  m_AnchoredPosition: {x: 0.1435633, y: -0.1372}
   m_SizeDelta: {x: 0.2871266, y: 0.058795}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6188531474390518294
@@ -5949,7 +6122,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 20, y: 20}
+  m_SizeDelta: {x: 12, y: 12}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &901153506727812126
 CanvasRenderer:
@@ -5979,7 +6152,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10901, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 21300000, guid: 39c5480b093dced4285e9e88f205a983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6478,7 +6651,7 @@ RectTransform:
   - {fileID: 7914711353646457760}
   - {fileID: 8678481884822861023}
   m_Father: {fileID: 3367553514360657192}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -7179,7 +7352,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0500286c30335754c88ddad315c9e70d,
+      objectReference: {fileID: 21300000, guid: 2a746ff56c59bb348bb174c373a2eb5a,
         type: 3}
     - target: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -7339,19 +7512,19 @@ PrefabInstance:
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: SaveQuitButton
+      value: QuitButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
---- !u!224 &1917393468742767879 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
-    type: 3}
-  m_PrefabInstance: {fileID: 215353405613616173}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8813601491628440064 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 215353405613616173}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1917393468742767879 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
     type: 3}
   m_PrefabInstance: {fileID: 215353405613616173}
   m_PrefabAsset: {fileID: 0}
@@ -7806,7 +7979,7 @@ PrefabInstance:
     - target: {fileID: 7728840075722524234, guid: 54918cc42aaba2c488979d441c8a6dc7,
         type: 3}
       propertyPath: m_Name
-      value: DownloadButton
+      value: ChangeDisplayNameButton
       objectReference: {fileID: 0}
     - target: {fileID: 8018312714806837619, guid: 54918cc42aaba2c488979d441c8a6dc7,
         type: 3}
@@ -7817,11 +7990,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 6086802594943246960}
+      objectReference: {fileID: 3507553970441105920}
     - target: {fileID: 8756931160341011872, guid: 54918cc42aaba2c488979d441c8a6dc7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: OnClickedImportButton
+      value: OnClickedChangeDisplayNameButton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8756931160341011872, guid: 54918cc42aaba2c488979d441c8a6dc7,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EasyMeshVR.UI.GameSettingsMenu, Assembly-CSharp
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54918cc42aaba2c488979d441c8a6dc7, type: 3}
@@ -8094,6 +8272,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.8117647
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.5058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.24705882
+      objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -8106,15 +8304,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
---- !u!1 &7382632697512472667 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
-    type: 3}
-  m_PrefabInstance: {fileID: 2222882962497775222}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &486285120335421276 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 2222882962497775222}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7382632697512472667 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
     type: 3}
   m_PrefabInstance: {fileID: 2222882962497775222}
   m_PrefabAsset: {fileID: 0}
@@ -8258,15 +8456,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
---- !u!1 &6491405830023171393 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
-    type: 3}
-  m_PrefabInstance: {fileID: 2502662332106595180}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4241788157095502406 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 2502662332106595180}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6491405830023171393 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
     type: 3}
   m_PrefabInstance: {fileID: 2502662332106595180}
   m_PrefabAsset: {fileID: 0}
@@ -9002,24 +9200,6 @@ PrefabInstance:
       objectReference: {fileID: 6086802594943246960}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 54918cc42aaba2c488979d441c8a6dc7, type: 3}
---- !u!224 &399274992392016777 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4050301737282526671, guid: 54918cc42aaba2c488979d441c8a6dc7,
-    type: 3}
-  m_PrefabInstance: {fileID: 4449289821795798598}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4916193545327121382 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8756931160341011872, guid: 54918cc42aaba2c488979d441c8a6dc7,
-    type: 3}
-  m_PrefabInstance: {fileID: 4449289821795798598}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4273944681815533129 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 499643983248402447, guid: 54918cc42aaba2c488979d441c8a6dc7,
@@ -9032,6 +9212,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4916193545327121382 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8756931160341011872, guid: 54918cc42aaba2c488979d441c8a6dc7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4449289821795798598}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &399274992392016777 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4050301737282526671, guid: 54918cc42aaba2c488979d441c8a6dc7,
+    type: 3}
+  m_PrefabInstance: {fileID: 4449289821795798598}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5719594012953568842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9985,15 +10183,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
---- !u!1 &2069494818528882789 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
-    type: 3}
-  m_PrefabInstance: {fileID: 7211801798337914440}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &8967672352378740578 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 7211801798337914440}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2069494818528882789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
     type: 3}
   m_PrefabInstance: {fileID: 7211801798337914440}
   m_PrefabAsset: {fileID: 0}
@@ -10469,15 +10667,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
---- !u!224 &7586297801014898914 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
-    type: 3}
-  m_PrefabInstance: {fileID: 8151819188168935880}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &687979031452016613 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
+    type: 3}
+  m_PrefabInstance: {fileID: 8151819188168935880}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &7586297801014898914 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
     type: 3}
   m_PrefabInstance: {fileID: 8151819188168935880}
   m_PrefabAsset: {fileID: 0}
@@ -10598,26 +10796,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
-        type: 3}
-      propertyPath: m_Color.a
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 0.8117647
-      objectReference: {fileID: 0}
-    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 0.5058824
-      objectReference: {fileID: 0}
-    - target: {fileID: 3667809951884310819, guid: 929ad1ba33f021f448210419a12c5653,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 0.24705882
       objectReference: {fileID: 0}
     - target: {fileID: 8670776557228237689, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -10768,9 +10946,7 @@ PrefabInstance:
     - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
         type: 3}
       propertyPath: m_text
-      value: 'Quit to main menu?
-
-        We will save any changes you made automatically.'
+      value: Quit to main menu?
       objectReference: {fileID: 0}
     - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
         type: 3}

@@ -53,6 +53,8 @@ namespace EasyMeshVR.UI
             }
         }
 
+        public Player player { get; set; }
+
         #endregion
 
         #region Private Fields
@@ -93,6 +95,14 @@ namespace EasyMeshVR.UI
         {
             SetHostCrownVisible();
             SetKickButtonEnabled();
+        }
+
+        private void Update()
+        {
+            if (playerName != player.NickName)
+            {
+                playerName = player.NickName;
+            }
         }
 
         #endregion
