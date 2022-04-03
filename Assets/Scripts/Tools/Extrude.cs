@@ -356,6 +356,10 @@ public class Extrude : ToolClass
             faceComponent.vert2 = triangles[i+1];
             faceComponent.vert3 = triangles[i+2];
 
+            faceComponent.vertObj1 = meshRebuilder.vertexObjects[faceComponent.vert1];
+            faceComponent.vertObj2 = meshRebuilder.vertexObjects[faceComponent.vert2];
+            faceComponent.vertObj3 = meshRebuilder.vertexObjects[faceComponent.vert3];
+
             // Store face normal
             Vector3 e1 = vertices[faceComponent.vert2] - vertices[faceComponent.vert1];
             Vector3 e2 = vertices[faceComponent.vert3] - vertices[faceComponent.vert2];
@@ -369,12 +373,22 @@ public class Extrude : ToolClass
             // Store edge
             foreach(Edge edge in meshRebuilder.edgeObjects)
             {
-                if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert2) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert2))
+                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert2) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert2))
+                {
                     faceComponent.edge1 = edge.id;
+                    faceComponent.edgeObj1 = meshRebuilder.edgeObjects[edge.id];
+                }
                 if((edge.vert1 == faceComponent.vert2 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert2 && edge.vert1 == faceComponent.vert3))
+                {
                     faceComponent.edge2 = edge.id;
+                    faceComponent.edgeObj2 = meshRebuilder.edgeObjects[edge.id];
+
+                }
                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert3))
+                {
                     faceComponent.edge3 = edge.id;
+                    faceComponent.edgeObj3 = meshRebuilder.edgeObjects[edge.id];
+                }
             }
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
 

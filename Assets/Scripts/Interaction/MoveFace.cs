@@ -70,7 +70,7 @@ public class MoveFace : MonoBehaviour
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
-        materialSwap = GetComponent<MeshRenderer>();
+       // materialSwap = GetComponent<MeshRenderer>();
 
         // Hover listeners to change edge color
         grabInteractable.hoverEntered.AddListener(HoverOver);
@@ -98,7 +98,7 @@ public class MoveFace : MonoBehaviour
             return;
 
         //if(switchControllers.rayActive)
-        materialSwap.material = hovered;
+        //materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
@@ -116,7 +116,7 @@ public class MoveFace : MonoBehaviour
         if (thisFace.locked)
             return;
 
-        materialSwap.material = unselected;
+       // materialSwap.material = unselected;
     }
 
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
@@ -177,7 +177,7 @@ public class MoveFace : MonoBehaviour
         SetActiveFaces(thisFace, true);
 
 
-        materialSwap.material = unselected;
+        //materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
         vertex1.transform.parent = model.transform;
@@ -245,6 +245,15 @@ public class MoveFace : MonoBehaviour
 
         if (grabHeld)
         {
+           // materialSwap.material = selected;
+           
+            materialSwap = thisFace.edgeObj1.GetComponent<MeshRenderer>();
+            materialSwap.material = selected;
+            
+            materialSwap = thisFace.edgeObj2.GetComponent<MeshRenderer>();
+            materialSwap.material = selected;
+
+            materialSwap = thisFace.edgeObj3.GetComponent<MeshRenderer>();
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
@@ -325,7 +334,6 @@ public class MoveFace : MonoBehaviour
             if (currFace.id == face.id) continue;
 
             currFace.locked = !active;
-            currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
             currFace.GetComponent<XRGrabInteractable>().enabled = active;
         }
     }

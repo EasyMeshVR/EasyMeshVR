@@ -64,12 +64,51 @@ public class ChangeMatClosest : MonoBehaviour
                 if(otherHand.nearObject.CompareTag("Edge") && nearObject.CompareTag("Edge") && otherHand.nearObject.GetComponent<MoveEdge>().grabHeld)
                     return;
 
+
+            
+
             materialSwap = nearObject.GetComponent<MeshRenderer>();
+
+
+            if(nearObject.CompareTag("Face"))
+            {
+                Face faceComp = nearObject.GetComponent<Face>();
+                // don't change material of locked vertices
+                if(!faceComp.vertObj1.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
+                    materialSwap.material = hoveredO;
+                }
+                if(!faceComp.vertObj2.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
+                    materialSwap.material = hoveredO;
+                }
+                if(!faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
+                    materialSwap.material = hoveredO;
+                }
+
+                // change material of edges
+
+                materialSwap = faceComp.edgeObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+                
+                materialSwap = faceComp.edgeObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+
+                materialSwap = faceComp.edgeObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+            }
 
             if (materialSwap == null)
                 return;
 
+
             materialSwap.material = hoveredO;
+
+
         }
      }
 
@@ -87,6 +126,39 @@ public class ChangeMatClosest : MonoBehaviour
 
         if(nearObject.CompareTag("Vertex") && nearObject.GetComponent<MoveVertices>().isLocked)
             return;
+
+        if(nearObject.CompareTag("Face"))
+        {
+                Face faceComp = nearObject.GetComponent<Face>();
+                // don't change material of locked vertices
+                if(!faceComp.vertObj1.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                }
+                if(!faceComp.vertObj2.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                }
+                if(!faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
+                {
+                    materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                }
+
+                // change material of edges
+
+                materialSwap = faceComp.edgeObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+                
+                materialSwap = faceComp.edgeObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+
+                materialSwap = faceComp.edgeObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+        }
+        
 
 
        // materialSwap = other.gameObject.GetComponent<MeshRenderer>();
