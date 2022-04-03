@@ -685,7 +685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5261056434882148539
 RectTransform:
   m_ObjectHideFlags: 0
@@ -806,7 +806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &9000764316421131955
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1304,10 +1304,10 @@ RectTransform:
   m_Father: {fileID: 9000764316421131955}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.143575, y: -0.124995}
-  m_SizeDelta: {x: 0.28715, y: 0.24999}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0.24999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7889123234164467076
 CanvasRenderer:
@@ -1461,10 +1461,10 @@ RectTransform:
   m_Father: {fileID: 5261056434882148539}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0.25}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.125}
+  m_SizeDelta: {x: 0.28715098, y: 0.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8581736511481193286
 CanvasRenderer:
@@ -2064,7 +2064,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2621626966823831501
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4310,12 +4310,12 @@ GameObject:
   - component: {fileID: 2949163643349773802}
   - component: {fileID: 193612521926532127}
   m_Layer: 5
-  m_Name: SaveQuitSubPanel
+  m_Name: QuitSubPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2083812074223818273
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4334,8 +4334,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.14356232, y: -0.15592575}
-  m_SizeDelta: {x: 0.2871266, y: 0.18759}
+  m_AnchoredPosition: {x: 0.14357549, y: -0.156065}
+  m_SizeDelta: {x: 0.28715098, y: 0.18759}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2949163643349773802
 CanvasRenderer:
@@ -5560,7 +5560,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1962718077359436285
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5735,7 +5735,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0.1435633, y: -0.152}
+  m_AnchoredPosition: {x: 0.1435633, y: -0.1372}
   m_SizeDelta: {x: 0.2871266, y: 0.058795}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6188531474390518294
@@ -7352,7 +7352,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 0500286c30335754c88ddad315c9e70d,
+      objectReference: {fileID: 21300000, guid: 2a746ff56c59bb348bb174c373a2eb5a,
         type: 3}
     - target: {fileID: 1758345572845369642, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
@@ -7512,7 +7512,7 @@ PrefabInstance:
     - target: {fileID: 8695647224402056749, guid: 929ad1ba33f021f448210419a12c5653,
         type: 3}
       propertyPath: m_Name
-      value: SaveQuitButton
+      value: QuitButton
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 929ad1ba33f021f448210419a12c5653, type: 3}
@@ -10946,9 +10946,7 @@ PrefabInstance:
     - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
         type: 3}
       propertyPath: m_text
-      value: 'Quit to main menu?
-
-        We will save any changes you made automatically.'
+      value: Quit to main menu?
       objectReference: {fileID: 0}
     - target: {fileID: 3510289075929996401, guid: db93e9054fc91204790133b5db7f90f7,
         type: 3}
