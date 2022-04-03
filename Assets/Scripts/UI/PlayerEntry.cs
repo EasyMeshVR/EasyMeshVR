@@ -53,6 +53,8 @@ namespace EasyMeshVR.UI
             }
         }
 
+        public Player player { get; set; }
+
         #endregion
 
         #region Private Fields
@@ -97,9 +99,9 @@ namespace EasyMeshVR.UI
 
         private void Update()
         {
-            if (playerName != PhotonNetwork.LocalPlayer.NickName)
+            if (playerName != player.NickName)
             {
-                playerName = PhotonNetwork.LocalPlayer.NickName;
+                playerName = player.NickName;
             }
         }
 

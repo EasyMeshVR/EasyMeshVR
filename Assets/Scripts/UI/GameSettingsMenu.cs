@@ -62,7 +62,12 @@ namespace EasyMeshVR.UI
         {
             PlayerPrefs.SetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY, toggled ? 1 : 0);
 
-            // TODO: enable sphere collider on local player
+            // Handling the case where a player is already colliding with another player and
+            // the toggle gets turned off
+            if (!toggled)
+            {
+                NetworkPlayerManager.instance.HideClosePlayers(toggled);
+            }
         }
 
         #endregion

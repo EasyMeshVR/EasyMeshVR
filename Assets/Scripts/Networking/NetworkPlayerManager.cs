@@ -164,20 +164,9 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
-        public void SetMuteMic(bool muted)
+        public void MuteMicLocal()
         {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
-            NetworkPlayer netPlayer;
-
-            if (networkPlayers.TryGetValue(localPlayer.ActorNumber, out netPlayer) && netPlayer)
-            {
-                netPlayer.SetMuteMic(muted);
-                UpdateMuteIcon(muted);
-            }
-            else
-            {
-                Debug.LogWarningFormat("Failed to SetMuteMic() for ActorNumber: {0} Name: {1}", localPlayer.ActorNumber, localPlayer.NickName);
-            }
+            micRecorder.TransmitEnabled = false;
         }
 
         public void UpdateMuteIcon(bool muted)
@@ -186,6 +175,17 @@ namespace EasyMeshVR.Multiplayer
                    .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
             raycastGameMenuManager.gameMenu
                 .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
+        }
+
+        public void HideClosePlayers(bool hide)
+        {
+            foreach (NetworkPlayer netPlayer in networkPlayers.Values)
+            {
+                if (!netPlayer.photonView.IsMine)
+                {
+                    netPlayer.HidePlayerAvatar(hide);
+                }
+            }
         }
 
         #endregion
@@ -220,9 +220,16 @@ namespace EasyMeshVR.Multiplayer
 
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if (localNetPlayer.photonView.IsMine)
+                if (player == PhotonNetwork.LocalPlayer && localNetPlayer.photonView.IsMine)
                 {
-                    CreatePlayerEntry(player, PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0);
+                    bool muteMic = PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0;
+
+                    CreatePlayerEntry(player, muteMic);
+
+                    if (muteMic)
+                    {
+                        MuteMicLocal();
+                    }
                 }
                 else
                 {
@@ -246,19 +253,10 @@ namespace EasyMeshVR.Multiplayer
 
         private void OnMuteAction(Player player)
         {
-            Debug.LogFormat("NetworkPlayerManager:OnMuteAction(): Muting player Name {0} ActorNumber {1}", player.NickName, player.ActorNumber);
-
             // Mute our own mic from transmitting our voice
             if (player == PhotonNetwork.LocalPlayer)
             {
-                if (micRecorder.IsRecording)
-                {
-                    micRecorder.StopRecording();
-                }
-                else
-                {
-                    micRecorder.StartRecording();
-                }
+                micRecorder.TransmitEnabled = !micRecorder.TransmitEnabled;
             }
             // Mute the audio (locally) coming from other players
             else

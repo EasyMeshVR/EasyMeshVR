@@ -19,7 +19,7 @@ namespace EasyMeshVR.Core
         public const string PLAYER_NAME_PREF_DEFAULT = "Player";
 
         public const string HIDE_CLOSE_PLAYERS_PREF_KEY = "HIDE_CLOSE_PLAYERS";
-        public const int HIDE_CLOSE_PLAYERS_PREF_DEFAULT = 1;
+        public const int HIDE_CLOSE_PLAYERS_PREF_DEFAULT = 0;
 
         public const string HIDE_PLAYER_NAMES_PREF_KEY = "HIDE_PLAYER_NAMES";
         public const int HIDE_PLAYER_NAMES_PREF_DEFAULT = 0;

@@ -1546,7 +1546,7 @@ MonoBehaviour:
     AcousticEchoCancellation: 0
     AutomaticGainControl: 0
     NoiseSuppression: 0
-  recordOnlyWhenEnabled: 0
+  recordOnlyWhenEnabled: 1
   skipDeviceChangeChecks: 0
   stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
@@ -2695,6 +2695,11 @@ PrefabInstance:
       propertyPath: onRelease.m_PersistentCalls.m_Calls.Array.size
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3317819481649686981, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 3461981166425409321, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2879,6 +2884,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885944693598627271, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694062799482, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}

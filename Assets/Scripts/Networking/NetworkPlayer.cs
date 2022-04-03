@@ -29,6 +29,7 @@ namespace EasyMeshVR.Multiplayer
         private Transform rightHandOrigin;
         private Transform mainCameraTransform;
         private GameObject editingSpace;
+        private SphereCollider sphereCollider;
         public PhotonView photonView { get; private set; }
 
         #endregion
@@ -39,6 +40,7 @@ namespace EasyMeshVR.Multiplayer
         void Start()
         {
             photonView = GetComponent<PhotonView>();
+            sphereCollider = head.GetComponent<SphereCollider>();
             mainCameraTransform = Camera.main.transform;
 
             headOrigin = mainCameraTransform;
@@ -60,16 +62,10 @@ namespace EasyMeshVR.Multiplayer
             // Set player's name text
             playerNameText.text = photonView.Owner.NickName;
 
+            // Hide our avatar locally
             if (photonView.IsMine)
             {
-                // Disabling Renderers for the local player's avatar
-                foreach (var renderer in GetComponentsInChildren<Renderer>())
-                {
-                    renderer.enabled = false;
-                }
-
-                // Disable Canvas of the player's name above the head of the local player
-                playerNameCanvas.enabled = false;
+                HidePlayerAvatar(true);
             }
 
             PlayerPrefsInit();
@@ -111,6 +107,18 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
+        public void HidePlayerAvatar(bool hide)
+        {
+            // Disabling Renderers for the player's avatar
+            foreach (var renderer in GetComponentsInChildren<Renderer>())
+            {
+                renderer.enabled = !hide;
+            }
+
+            // Disable Canvas of the player's name above the head of the local player
+            playerNameCanvas.enabled = !hide;
+        }
+
         public void SetPlayerNameVisible(bool visible)
         {
             playerNameCanvas.enabled = visible;
@@ -132,11 +140,6 @@ namespace EasyMeshVR.Multiplayer
             if (PlayerPrefs.GetInt(Constants.HIDE_PLAYER_NAMES_PREF_KEY) != 0)
             {
                 playerNameCanvas.enabled = false;
-            }
-            // Disable microphone if this NetworkPlayer belongs to us and our pref is set to true
-            if (photonView.IsMine && PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0)
-            {
-                micAudioSource.mute = true;
             }
         }
 

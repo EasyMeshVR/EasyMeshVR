@@ -252,6 +252,7 @@ namespace EasyMeshVR.UI
             playerEntry.playerName = player.NickName;
             playerEntry.isHost = player.IsMasterClient;
             playerEntry.isMuted = muted;
+            playerEntry.player = player;
             playerEntry.AddKickButtonOnClickAction(onKickAction);
             playerEntry.AddMuteButtonOnClickAction(onMuteAction);
 
