@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1143,7 +1143,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1282352288
 MonoBehaviour:
@@ -1662,7 +1662,7 @@ Transform:
   m_GameObject: {fileID: 1645407432}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children: []
   m_Father: {fileID: 1282352284}
   m_RootOrder: 1
@@ -1772,11 +1772,13 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 0}
   rightSphere: {fileID: 0}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
 --- !u!114 &1647071329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1801,7 +1803,6 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
@@ -1835,7 +1836,7 @@ Transform:
   m_GameObject: {fileID: 1858885729}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children: []
   m_Father: {fileID: 2059701653}
   m_RootOrder: 1
@@ -2195,7 +2196,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2059701657
 MonoBehaviour:
@@ -2419,7 +2420,6 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
@@ -2446,11 +2446,13 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 1282352287}
   rightSphere: {fileID: 2059701656}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
 --- !u!1 &2063562609
 GameObject:
   m_ObjectHideFlags: 0

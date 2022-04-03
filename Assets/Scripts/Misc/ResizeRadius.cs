@@ -40,8 +40,8 @@ public class ResizeRadius : MonoBehaviour
               sphereVisual.GetComponent<MeshRenderer>().enabled = true;
               matEnabled = true;
             }
-            sphereCollider.radius += value/100;
-            sphereVisual.transform.localScale += new Vector3(value/50, value/50, value/50);
+            sphereCollider.radius += value/200;
+            sphereVisual.transform.localScale += new Vector3(value/100, value/100, value/100);
         }
         // min values , can change
         if(sphereCollider.radius < 0.005f)
