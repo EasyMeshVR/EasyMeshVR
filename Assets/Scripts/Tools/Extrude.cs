@@ -303,11 +303,6 @@ public class Extrude : ToolClass
 
                 // Same as vertex, create a new edge object and set its parent
                 GameObject newEdge = Instantiate(edge, meshRebuilder.model.transform);
-                Component[] components = newEdge.GetComponents(typeof(Component));
-                foreach(Component component in components) 
-                {
-                    Debug.Log(component.ToString());
-                }
 
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
