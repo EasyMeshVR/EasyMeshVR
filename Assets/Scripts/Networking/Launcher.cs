@@ -93,20 +93,6 @@ namespace EasyMeshVR.Multiplayer
             {
                 PhotonNetwork.LocalPlayer.NickName = playerName;
             }
-
-            // Initialize the other settings PlayerPrefs if they weren't defined before
-            if (!PlayerPrefs.HasKey(Constants.MUTE_MIC_ON_JOIN_PREF_KEY))
-            {
-                PlayerPrefs.SetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY, Constants.MUTE_MIC_ON_JOIN_PREF_DEFAULT);
-            }
-            if (!PlayerPrefs.HasKey(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY))
-            {
-                PlayerPrefs.SetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY, Constants.HIDE_CLOSE_PLAYERS_PREF_DEFAULT);
-            }
-            if (!PlayerPrefs.HasKey(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY))
-            {
-                PlayerPrefs.SetInt(Constants.HIDE_PLAYER_NAMES_PREF_KEY, Constants.HIDE_PLAYER_NAMES_PREF_DEFAULT);
-            }
         }
 
         void Start()

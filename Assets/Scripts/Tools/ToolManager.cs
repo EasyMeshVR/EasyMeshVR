@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
-using EasyMeshVR.Multiplayer;
 
 // All tools should be disabled by default, use this class to enable them
 
@@ -19,119 +18,151 @@ public class ToolManager : MonoBehaviour
     [SerializeField] public Extrude extrudeScriptRay;
     [SerializeField] public Extrude extrudeScriptGrab;
 
+
+
+    [SerializeField] public bool MergeTool;
+    List<Merge> mergeScripts = new List<Merge>();
+
+
+    List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
+    List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
+
+
     public bool grabVertex = true;
-    public bool grabEdge = true;
-    public bool grabFace = true;
+    public bool grabEdge = false;
 
     private void Awake()
     {
         instance = this;
     }
 
-    public void EnableLock()
+
+    void Start()
     {
-        LockTool = true;
-        lockScriptRay.Enable();
-        lockScriptGrab.Enable();
+        checkImport();
+
+        DisableLock();
     }
 
-    public void DisableLock()
+    void checkImport()
     {
-        LockTool = false;
-        lockScriptRay.Disable();
-        lockScriptGrab.Disable();
-    }
+        vertexGrab.Clear();
+        edgeGrab.Clear();
+        GameObject [] vertices = GameObject.FindGameObjectsWithTag("Vertex");
+        GameObject [] edges = GameObject.FindGameObjectsWithTag("Edge");
 
-    public void EnableExtrude()
-    {
-        extrudeTool = true;
-        extrudeScriptGrab.Enable();
-        extrudeScriptRay.Enable();
-    }
-
-    public void DisableExtrude()
-    {
-        extrudeTool = false;
-        extrudeScriptGrab.Disable();
-        extrudeScriptRay.Disable();
-    }
-
-    public void EnableVertex()
-    {
-        grabVertex = true;
-
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        foreach(GameObject vertex in vertices)
         {
-            foreach (Vertex v in meshRebuilder.vertexObjects)
-            {
-                v.gameObject.SetActive(true);
-            }
+            vertexGrab.Add(vertex.GetComponent<XRGrabInteractable>());
         }
+
+       // print("num lock scripts " + lockScripts.Count);
+        //DisableLock();
+
+
+        //foreach (GameObject vertex in vertices)
+
+       // print("num merge scripts " + mergeScripts.Count);
+        //DisableMerge();
+        foreach(GameObject e in edges)
+            edgeGrab.Add(e.GetComponent<XRGrabInteractable>());
     }
 
-    public void DisableVertex()
+    // For now use update to check but when this gets hooked up to the UI another script will call the functions
+    void Update()
     {
-        grabVertex = false;
+        if(LockTool)
+            EnableLock();
+            
+        if(!LockTool)
+            DisableLock();
 
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
-        {
-            foreach (Vertex v in meshRebuilder.vertexObjects)
-            {
-                v.gameObject.SetActive(false);
-            }
-        }
+        if (MergeTool)
+            EnableMerge();
+
+        if (!MergeTool)
+            DisableMerge();
+
+        if(extrudeTool)
+            EnableExtrude();
+            
+        if(!extrudeTool)
+            DisableExtrude();
+
+        if(grabVertex)
+            EnableVertex();
+
+        if(grabEdge)
+            EnableEdge();
+
+        if(!grabEdge)
+            DisableEdge();
+
+        if(!grabVertex)
+            DisableVertex();
     }
 
-    public void EnableEdge()
+    void EnableLock()
     {
-
-        grabEdge = true;
-
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
-        {
-            foreach (Edge e in meshRebuilder.edgeObjects)
-            {
-                e.gameObject.SetActive(true);
-            }
-        }
+       lockScriptRay.Enable();
+       lockScriptGrab.Enable();
     }
 
-    public void DisableEdge()
+    void DisableLock()
     {
-        grabEdge = false;
-
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
-        {
-            foreach (Edge e in meshRebuilder.edgeObjects)
-            {
-                e.gameObject.SetActive(false);
-            }
-        }
+       lockScriptRay.Disable();
+       lockScriptGrab.Disable();
     }
 
-    public void EnableFace()
+    void EnableMerge()
     {
-        grabFace = true;
-
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
-        {
-            foreach (Face f in meshRebuilder.faceObjects)
-            {
-                f.gameObject.SetActive(true);
-            }
-        }
+        foreach (Merge script in mergeScripts)
+            script.isEnabled = true;
     }
 
-    public void DisableFace()
+    void DisableMerge()
     {
-        grabFace = false;
+        foreach (Merge script in mergeScripts)
+            script.isEnabled = false;
+    }
 
-        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
-        {
-            foreach (Face f in meshRebuilder.faceObjects)
-            {
-                f.gameObject.SetActive(false);
-            }
-        }
+    void EnableExtrude()
+    {
+       extrudeScriptGrab.Enable();
+       extrudeScriptRay.Enable();
+    }
+
+    void DisableExtrude()
+    {
+       extrudeScriptGrab.Disable();
+       extrudeScriptRay.Disable();
+    }
+
+    void EnableVertex()
+    {
+        checkImport();
+        foreach(XRGrabInteractable v in vertexGrab)
+            v.enabled = true;
+    }
+
+    void DisableVertex()
+    {
+        checkImport();
+        foreach(XRGrabInteractable v in vertexGrab)
+            v.enabled = false;
+    }
+
+    void DisableEdge()
+    {   
+        checkImport();
+        foreach(XRGrabInteractable e in edgeGrab)
+            e.enabled = false;
+    }
+
+    void EnableEdge()
+    {
+        checkImport();
+        foreach(XRGrabInteractable e in edgeGrab)
+            e.enabled = true;
     }
 }

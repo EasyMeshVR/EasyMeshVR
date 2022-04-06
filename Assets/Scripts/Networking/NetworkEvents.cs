@@ -178,33 +178,4 @@ namespace EasyMeshVR.Multiplayer
             };
         }
     }
-
-    public class VertexLockEvent : NetworkEvent
-    {
-        public int id { get; set; }
-        public int meshId { get; set; }
-        public bool locked { get; set; }
-
-        public static object[] SerializeEvent(VertexLockEvent vertexLockEvent)
-        {
-            return new object[]
-            {
-                vertexLockEvent.id,
-                vertexLockEvent.meshId,
-                vertexLockEvent.actorNumber,
-                vertexLockEvent.locked
-            };
-        }
-
-        public static VertexLockEvent DeserializeEvent(object[] data)
-        {
-            return new VertexLockEvent
-            {
-                id = (int)data[0],
-                meshId = (int)data[1],
-                actorNumber = (int)data[2],
-                locked = (bool)data[3]
-            };
-        }
-    }
 }

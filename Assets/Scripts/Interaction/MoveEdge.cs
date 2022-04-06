@@ -134,11 +134,8 @@ public class MoveEdge : MonoBehaviour
         vertex1.transform.parent = model.transform;
         vertex2.transform.parent = model.transform;
 
-        if (ToolManager.instance.grabVertex)
-        {
-            vertex1.gameObject.SetActive(true);
-            vertex2.gameObject.SetActive(true);
-        }
+        vertex1.gameObject.SetActive(true);
+        vertex2.gameObject.SetActive(true);
 
         grabHeld = false;
 
@@ -169,8 +166,10 @@ public class MoveEdge : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace || thisedge.isHeldByOther || thisedge.locked)
         {
+            grabInteractable.enabled = false;
             return;
         }
+        grabInteractable.enabled = true;
 
         if (grabHeld)
         {

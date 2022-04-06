@@ -29,7 +29,6 @@ namespace EasyMeshVR.Multiplayer
         private Transform rightHandOrigin;
         private Transform mainCameraTransform;
         private GameObject editingSpace;
-        private SphereCollider sphereCollider;
         public PhotonView photonView { get; private set; }
 
         #endregion
@@ -40,7 +39,6 @@ namespace EasyMeshVR.Multiplayer
         void Start()
         {
             photonView = GetComponent<PhotonView>();
-            sphereCollider = head.GetComponent<SphereCollider>();
             mainCameraTransform = Camera.main.transform;
 
             headOrigin = mainCameraTransform;
@@ -62,13 +60,17 @@ namespace EasyMeshVR.Multiplayer
             // Set player's name text
             playerNameText.text = photonView.Owner.NickName;
 
-            // Hide our avatar locally
             if (photonView.IsMine)
             {
-                HidePlayerAvatar(true);
-            }
+                // Disabling Renderers for the local player's avatar
+                foreach (var renderer in GetComponentsInChildren<Renderer>())
+                {
+                    renderer.enabled = false;
+                }
 
-            PlayerPrefsInit();
+                // Disable Canvas of the player's name above the head of the local player
+                playerNameCanvas.enabled = false;
+            }
 
             // Finally add this NetworkPlayer to the NetworkPlayerManager dictionary
             NetworkPlayerManager.instance.AddNetworkPlayer(this);
@@ -77,12 +79,6 @@ namespace EasyMeshVR.Multiplayer
         // Update is called once per frame
         void Update()
         {
-            // Update the player's name in the case that it has changed
-            if (playerNameText.text != photonView.Owner.NickName)
-            {
-                playerNameText.text = photonView.Owner.NickName;
-            }
-
             if (photonView.IsMine)
             {
                 leftHandOrigin = SwitchControllers.instance.activeLeftController.transform;
@@ -107,40 +103,9 @@ namespace EasyMeshVR.Multiplayer
 
         #region Public Methods
 
-        public void HidePlayerAvatar(bool hide)
-        {
-            // Disabling Renderers for the player's avatar
-            foreach (var renderer in GetComponentsInChildren<Renderer>())
-            {
-                renderer.enabled = !hide;
-            }
-
-            // Disable Canvas of the player's name above the head of the local player
-            playerNameCanvas.enabled = !hide;
-        }
-
-        public void SetPlayerNameVisible(bool visible)
-        {
-            playerNameCanvas.enabled = visible;
-        }
-
-        public void SetMuteMic(bool muted)
-        {
-            micAudioSource.mute = muted;
-        }
-
         public void ToggleMuteMic()
         {
             micAudioSource.mute = !micAudioSource.mute;
-        }
-
-        public void PlayerPrefsInit()
-        {
-            // Disable playerNameCanvas if our player prefs for hiding player names is true
-            if (PlayerPrefs.GetInt(Constants.HIDE_PLAYER_NAMES_PREF_KEY) != 0)
-            {
-                playerNameCanvas.enabled = false;
-            }
         }
 
         #endregion

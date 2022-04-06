@@ -188,12 +188,11 @@ public class MoveFace : MonoBehaviour
         edge2.transform.parent = model.transform;
         edge3.transform.parent = model.transform;
 
-        if (ToolManager.instance.grabVertex)
-        {
-            vertex1.gameObject.SetActive(true);
-            vertex2.gameObject.SetActive(true);
-            vertex3.gameObject.SetActive(true);
-        }
+
+        vertex1.gameObject.SetActive(true);
+        vertex2.gameObject.SetActive(true);
+        vertex3.gameObject.SetActive(true);
+
 
         grabHeld = false;
 
@@ -240,8 +239,10 @@ public class MoveFace : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace || thisFace.isHeldByOther || thisFace.locked)
         {
+            grabInteractable.enabled = false;
             return;
         }
+        grabInteractable.enabled = true;
 
         if (grabHeld)
         {

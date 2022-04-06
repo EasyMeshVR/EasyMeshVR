@@ -100,6 +100,11 @@ namespace EasyMeshVR.Core
                 // Cloud upload
                 apiRequester.UploadModel(stlData, modelCodeType.ToString(), callback);
             }
+            else
+            {
+                // Export to file on disk
+                // TODO
+            }
         }
 
         public void CreateMeshObjects(Mesh[] meshes)
@@ -148,9 +153,7 @@ namespace EasyMeshVR.Core
         {
             GameObject go = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity);
             go.transform.SetParent(modelObject.transform, false);
-
-            MeshRebuilder meshRebuilder = go.GetComponent<MeshRebuilder>();
-            NetworkMeshManager.instance.meshRebuilders.Add(meshRebuilder);
+            NetworkMeshManager.instance.meshRebuilders.Add(go.GetComponent<MeshRebuilder>());
         }
 
         public void ClearCanvas()
