@@ -103,6 +103,8 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
+
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = true;
     }
 
     // Stop updating the mesh data
@@ -125,6 +127,15 @@ public class MoveVertices : MonoBehaviour
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
+
+        StartCoroutine(DisableTrigger());
+        StopCoroutine(DisableTrigger());
+    }
+
+    IEnumerator DisableTrigger()
+    {
+        yield return new WaitForSeconds(0.1f);
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released

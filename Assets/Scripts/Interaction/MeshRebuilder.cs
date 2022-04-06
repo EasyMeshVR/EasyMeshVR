@@ -72,7 +72,7 @@ public class MeshRebuilder : MonoBehaviour
 
         // Start visualizing the mesh
         RemoveDuplicates();
-        CreateVisuals(vertices, triangles);
+        CreateVisuals();
     }
 
     // Deletes the duplicate vertices Unity and STL files create
@@ -156,7 +156,7 @@ public class MeshRebuilder : MonoBehaviour
     }
 
     // Actually create the vertex and edge GameObject interactables
-    public void CreateVisuals(Vector3[] vertices, int[] triangles)
+    public void CreateVisuals()
     {
         int edgeCount = 0;
 

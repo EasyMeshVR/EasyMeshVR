@@ -192,7 +192,7 @@ public class Extrude : ToolClass
         // Update mesh visuals
        // meshRebuilder.RemoveDuplicates();
         meshRebuilder.removeVisuals();
-        meshRebuilder.CreateVisuals(vertices, tris);
+        meshRebuilder.CreateVisuals();
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)

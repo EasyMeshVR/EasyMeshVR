@@ -39,6 +39,7 @@ public class MergeVertex : MonoBehaviour
 
     MeshRenderer materialSwap;
     static int triggerCheck = 1;
+    static int triggerCount = 0;
 
     // Get all references we need and add control listeners
     void OnEnable()
@@ -170,7 +171,7 @@ public class MergeVertex : MonoBehaviour
             }
         }
 
-        Debug.Log("in mergeWithTakeover(), deleterVertex.id = " + deleterVertex.id);
+        // Debug.Log("in mergeWithTakeover(), deleterVertex.id = " + deleterVertex.id);
 
         // Delete the merged vertex
         Destroy(deleterVertex.thisVertex);
@@ -218,18 +219,25 @@ public class MergeVertex : MonoBehaviour
         // Not sure why this is needed, but without it, the mesh doesn't get updated properly after a merge
         Vector3[] vertices = meshRebuilder.vertices;
 
+        for (int i = 0; i < vertices.Length; i++)
+            Debug.Log("vertices[" + i + "] = " + vertices[i]);
+
+        for (int i = 0; i < triangles.Length; i += 3)
+            Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+
         // Update actual mesh data
         mesh.triangles = triangles;
+        meshRebuilder.triangles = triangles;
         mesh.vertices = vertices;
+        meshRebuilder.vertices = vertices;
         mesh.RecalculateNormals();
 
         for (int i = 0; i < mesh.vertices.Length; i++)
-            Debug.Log("vertices = " + mesh.vertices[i]);
+            Debug.Log("mesh.vertices[" + i + "] = " + mesh.vertices[i]);
 
         for (int i = 0; i < mesh.triangles.Length; i+=3)
-            Debug.Log("triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i+1] + ", " + mesh.triangles[i+2]);
+            Debug.Log("mesh.triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i+1] + ", " + mesh.triangles[i+2]);
 
-        /*
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
@@ -246,15 +254,14 @@ public class MergeVertex : MonoBehaviour
             edgeObject.transform.LookAt(transform, Vector3.up);
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
-        */
 
-        meshRebuilder.removeVisuals();
-        meshRebuilder.CreateVisuals(vertices, triangles);
+        // meshRebuilder.removeVisuals();
+        // meshRebuilder.CreateVisuals(mesh.vertices, mesh.triangles);
     }
 
     void checkImport()
     {
-        //editingSpace = GameObject.Find("EditingSpace");
+        // editingSpace = GameObject.Find("EditingSpace");
         meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
         model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
@@ -263,11 +270,23 @@ public class MergeVertex : MonoBehaviour
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerEnter(Collider takeover)
     {
-        checkImport();
-
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
+        {
+            Debug.Log("Tag != Vertex");
             return;
+        }
+
+        materialSwap.material = merge;
+
+        if (pulleyLocomotion.isMovingVertex == true)
+        {
+            Debug.Log("You need to let go of the vertex first.");
+            return;
+        }
+
+        triggerCount++;
+        Debug.Log("triggerCount = " + triggerCount);
 
         // Since the trigger is on all vertices, two colliding calls this twice and screws the merge up
         // We also want only the second activation, not the first (it picks the vertex IDs in the wrong order)
@@ -279,11 +298,14 @@ public class MergeVertex : MonoBehaviour
         }
         triggerCheck = 1;
 
+        Debug.Log("triggerCount when through = " + triggerCount);
+
+        // checkImport();
+
         meshRebuilder.vertices = mesh.vertices;
         meshRebuilder.triangles = mesh.triangles;
 
-        // Get Vertex references (and turn them yellow)
-        materialSwap.material = merge;
+        // Get Vertex references
         deleterVertex = mergeVertex;
         takeoverVertex = takeover.gameObject.GetComponent<Vertex>();
 
@@ -307,13 +329,8 @@ public class MergeVertex : MonoBehaviour
         Debug.Log("vertex1 = " + deleterVertex.id);
         Debug.Log("vertex2 = " + takeoverVertex.id);
 
-        // If we manage to get this far, start the merging process
-        // Don't merge if you're still holding the vertex, tho
-        if (pulleyLocomotion.isMovingVertex != true)
-        {
-            getDeleterData();
-            mergeWithTakeover();
-            UpdateMesh(vertex2);
-        }
+        getDeleterData();
+        mergeWithTakeover();
+        UpdateMesh(vertex2);
     }
 }
