@@ -1772,6 +1772,9 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
+  directInteractor: {fileID: 0}
+  unselected: {fileID: 0}
+  triggerRef: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 0}
@@ -1779,6 +1782,9 @@ MonoBehaviour:
   vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
   edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
   face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  movingNewFace: 0
+  triggerPressed: 0
+  materialSwap: {fileID: 0}
 --- !u!114 &1647071329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2446,6 +2452,10 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
+  directInteractor: {fileID: 2059701655}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  triggerRef: {fileID: 5178055964656491667, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 1282352287}
@@ -2453,6 +2463,9 @@ MonoBehaviour:
   vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
   edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
   face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  movingNewFace: 0
+  triggerPressed: 0
+  materialSwap: {fileID: 0}
 --- !u!1 &2063562609
 GameObject:
   m_ObjectHideFlags: 0

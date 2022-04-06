@@ -13,41 +13,29 @@ using System.Linq;
 
 public class Extrude : ToolClass
 {
-    // [SerializeField] Material locked;     // red
-    // [SerializeField] Material unselected;   // gray
-    // [SerializeField] Material hovered;      // orange
-
     [SerializeField] SwitchControllers switchControllers;
-
     [SerializeField] ToolRaycast ray;
+    [SerializeField] XRDirectInteractor directInteractor;
+    [SerializeField] Material unselected;
 
-   // public PulleyLocomotion pulleyLocomotion;
-    //public GameObject editingSpace;
     public GameObject currentFace;
-
     public bool inRadius = false;
     
-
     public SphereCollider leftSphere;
     public SphereCollider rightSphere;
-
-    //GameObject model;
-
-   // MeshRenderer materialSwap;
     private bool hover = false;
 
     public GameObject vertex;
     public GameObject edge;
-
     public GameObject face;
-
+    GameObject newFace;
+    XRGrabInteractable newGrab;
+    public bool movingNewFace = false;
+    public MeshRenderer materialSwap;
+    float distance;
 
    void OnEnable()
     {
-       // editingSpace = GameObject.Find("EditingSpace");
-       // pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
-
-
         leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
         rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
     }
@@ -55,12 +43,12 @@ public class Extrude : ToolClass
     public override void secondaryButtonEnd(InputAction.CallbackContext context)
     {
         secondaryButtonPressed = false;
-       // holdTime = 0f;
     }
 
+    // Extrude along normal
     public override void PrimaryAction()
     {
-        if(!inRadius)
+        if(!inRadius || movingNewFace)
             return;
 
         if(currentFace == null)
@@ -70,10 +58,42 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
+        distance = 1f;
         extrudeFace(faceObj.id, meshRebuilder, mesh);
     }
 
-    // Change material, disable vertex grab interactable, set boolean
+
+    // Extrude and move on first press, stop moving on second press
+    public override void SecondaryAction()
+    {
+        if(movingNewFace)
+        {
+            print("test stop interaction");
+            directInteractor.EndManualInteraction();
+            movingNewFace = false;
+            return;
+        }
+       
+        if(currentFace == null)
+            return;
+
+        Face faceObj = currentFace.GetComponent<Face>();
+        MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
+        MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
+        Mesh mesh = moveFace.mesh;
+
+        
+
+        if(inRadius && !movingNewFace)
+        {
+            distance = 5f;
+            extrudeFace(faceObj.id, meshRebuilder, mesh);
+            moveNewFace(meshRebuilder);
+            return;
+        }        
+    }
+
+    // Extrude face along normal by distance value set by either button
     public void extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, bool sendFaceExtrudeEvent = true)
     {
         Face faceObj = meshRebuilder.faceObjects[faceId];
@@ -81,26 +101,16 @@ public class Extrude : ToolClass
         Vertex vertex2 = meshRebuilder.vertexObjects[faceObj.vert2];
         Vertex vertex3 = meshRebuilder.vertexObjects[faceObj.vert3];
 
-        // Don't extrude if one of the vertices is locked
-        // if (vertex1.GetComponent<MoveVertices>().isLocked ||
-        //     vertex2.GetComponent<MoveVertices>().isLocked ||
-        //     vertex3.GetComponent<MoveVertices>().isLocked)
-        // {
-        //     print("Unlock face vertices before extruding.");
-        //     return;
-        // }
-
         // calculating normals is done in mesh rebuilder
 
         // align new vertices w/ face normal
-        Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized );
-        Vector3 new2 = vertex2.transform.localPosition + ((faceObj.normal  + vertex2.transform.localPosition *.005f).normalized );
-        Vector3 new3 = vertex3.transform.localPosition + ((faceObj.normal  + vertex3.transform.localPosition *.005f).normalized );
+        Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized ) / distance;
+        Vector3 new2 = vertex2.transform.localPosition + ((faceObj.normal  + vertex2.transform.localPosition *.005f).normalized ) / distance;
+        Vector3 new3 = vertex3.transform.localPosition + ((faceObj.normal  + vertex3.transform.localPosition *.005f).normalized ) / distance;
 
         List<Vector3> newVertices = new List<Vector3>();
-
-       
         List<Vector3> vertList = new List<Vector3>(meshRebuilder.vertices);
+
         int oldLength = vertList.Count;
         Vector3[] vertices = vertList.ToArray();
         vertList.Add(new1);
@@ -160,7 +170,6 @@ public class Extrude : ToolClass
         int oldLengthTri = triList.Count;
         List<int> newTriangles = new List<int>();
 
-
         // new1, old1, new2
         newTriangles.Add(newVert1);
         newTriangles.Add(faceObj.vert1);
@@ -208,13 +217,7 @@ public class Extrude : ToolClass
         meshRebuilder.triangles = tris;
         mesh.RecalculateNormals();
 
-        // Update mesh visuals
-       // meshRebuilder.RemoveDuplicates();
-      //  meshRebuilder.removeVisuals();
-        //meshRebuilder.CreateVisuals();
-
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
-
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)
         {
@@ -231,6 +234,35 @@ public class Extrude : ToolClass
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
         return;
+    }
+
+    // Move the new face when extruding with the secondary button
+    public void moveNewFace(MeshRebuilder meshRebuilder)
+    {
+        movingNewFace = true;
+         // Move the new Face on extrusion
+        newFace = meshRebuilder.faceObjects[meshRebuilder.faceObjects.Count-1].gameObject;
+        newGrab = newFace.GetComponent<MoveFace>().grabInteractable;
+
+        // change material of current face's vertices
+        Face current = currentFace.GetComponent<Face>();
+        if(!current.vertObj1.GetComponent<MoveVertices>().isLocked)
+        {
+            materialSwap = current.vertObj1.GetComponent<MeshRenderer>();
+            materialSwap.material = unselected;
+        }
+        if(!current.vertObj2.GetComponent<MoveVertices>().isLocked)
+        {
+            materialSwap = current.vertObj2.GetComponent<MeshRenderer>();
+            materialSwap.material = unselected;
+        }
+        if(!current.vertObj3.GetComponent<MoveVertices>().isLocked)
+        {
+            materialSwap = current.vertObj3.GetComponent<MeshRenderer>();
+            materialSwap.material = unselected;
+        }
+
+        directInteractor.StartManualInteraction(newGrab);
     }
 
     // Get face info and 3 vertices
@@ -303,12 +335,7 @@ public class Extrude : ToolClass
 
                 // Same as vertex, create a new edge object and set its parent
                 GameObject newEdge = Instantiate(edge, meshRebuilder.model.transform);
-                Component[] components = newEdge.GetComponents(typeof(Component));
-                foreach(Component component in components) 
-                {
-                    Debug.Log(component.ToString());
-                }
-
+            
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
                 newEdge.transform.localPosition = (vertices[i] + vertices[k]) / 2;
@@ -350,49 +377,49 @@ public class Extrude : ToolClass
         {
             GameObject newFace = Instantiate(face, meshRebuilder.model.transform);
             // Add face to list and get vertices
-            Face faceComponent = newFace.GetComponent<Face>();
-            faceComponent.id = meshRebuilder.faceObjects.Count();
-            faceComponent.vert1 = triangles[i];
-            faceComponent.vert2 = triangles[i+1];
-            faceComponent.vert3 = triangles[i+2];
+            Face currentonent = newFace.GetComponent<Face>();
+            currentonent.id = meshRebuilder.faceObjects.Count();
+            currentonent.vert1 = triangles[i];
+            currentonent.vert2 = triangles[i+1];
+            currentonent.vert3 = triangles[i+2];
 
-            faceComponent.vertObj1 = meshRebuilder.vertexObjects[faceComponent.vert1];
-            faceComponent.vertObj2 = meshRebuilder.vertexObjects[faceComponent.vert2];
-            faceComponent.vertObj3 = meshRebuilder.vertexObjects[faceComponent.vert3];
+            currentonent.vertObj1 = meshRebuilder.vertexObjects[currentonent.vert1];
+            currentonent.vertObj2 = meshRebuilder.vertexObjects[currentonent.vert2];
+            currentonent.vertObj3 = meshRebuilder.vertexObjects[currentonent.vert3];
 
             // Store face normal
-            Vector3 e1 = vertices[faceComponent.vert2] - vertices[faceComponent.vert1];
-            Vector3 e2 = vertices[faceComponent.vert3] - vertices[faceComponent.vert2];
-            faceComponent.normal = Vector3.Normalize(Vector3.Cross(e1,e2));
+            Vector3 e1 = vertices[currentonent.vert2] - vertices[currentonent.vert1];
+            Vector3 e2 = vertices[currentonent.vert3] - vertices[currentonent.vert2];
+            currentonent.normal = Vector3.Normalize(Vector3.Cross(e1,e2));
 
             // Place face object in center of triangle
-            float totalX = vertices[faceComponent.vert1].x + vertices[faceComponent.vert2].x + vertices[faceComponent.vert3].x;
-            float totalY = vertices[faceComponent.vert1].y + vertices[faceComponent.vert2].y + vertices[faceComponent.vert3].y;
-            float totalZ = vertices[faceComponent.vert1].z + vertices[faceComponent.vert2].z + vertices[faceComponent.vert3].z;
+            float totalX = vertices[currentonent.vert1].x + vertices[currentonent.vert2].x + vertices[currentonent.vert3].x;
+            float totalY = vertices[currentonent.vert1].y + vertices[currentonent.vert2].y + vertices[currentonent.vert3].y;
+            float totalZ = vertices[currentonent.vert1].z + vertices[currentonent.vert2].z + vertices[currentonent.vert3].z;
 
             // Store edge
             foreach(Edge edge in meshRebuilder.edgeObjects)
             {
-                 if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert2) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert2))
+                 if((edge.vert1 == currentonent.vert1 && edge.vert2 == currentonent.vert2) || (edge.vert2 == currentonent.vert1 && edge.vert1 == currentonent.vert2))
                 {
-                    faceComponent.edge1 = edge.id;
-                    faceComponent.edgeObj1 = meshRebuilder.edgeObjects[edge.id];
+                    currentonent.edge1 = edge.id;
+                    currentonent.edgeObj1 = meshRebuilder.edgeObjects[edge.id];
                 }
-                if((edge.vert1 == faceComponent.vert2 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert2 && edge.vert1 == faceComponent.vert3))
+                if((edge.vert1 == currentonent.vert2 && edge.vert2 == currentonent.vert3) || (edge.vert2 == currentonent.vert2 && edge.vert1 == currentonent.vert3))
                 {
-                    faceComponent.edge2 = edge.id;
-                    faceComponent.edgeObj2 = meshRebuilder.edgeObjects[edge.id];
+                    currentonent.edge2 = edge.id;
+                    currentonent.edgeObj2 = meshRebuilder.edgeObjects[edge.id];
 
                 }
-                if((edge.vert1 == faceComponent.vert1 && edge.vert2 == faceComponent.vert3) || (edge.vert2 == faceComponent.vert1 && edge.vert1 == faceComponent.vert3))
+                if((edge.vert1 == currentonent.vert1 && edge.vert2 == currentonent.vert3) || (edge.vert2 == currentonent.vert1 && edge.vert1 == currentonent.vert3))
                 {
-                    faceComponent.edge3 = edge.id;
-                    faceComponent.edgeObj3 = meshRebuilder.edgeObjects[edge.id];
+                    currentonent.edge3 = edge.id;
+                    currentonent.edgeObj3 = meshRebuilder.edgeObjects[edge.id];
                 }
             }
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
 
-            meshRebuilder.faceObjects.Add(faceComponent);
+            meshRebuilder.faceObjects.Add(currentonent);
 
             if (!ToolManager.instance.grabFace)
             {

@@ -9,7 +9,7 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveFace : MonoBehaviour
 {
-    [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] public XRGrabInteractable grabInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
@@ -52,7 +52,6 @@ public class MoveFace : MonoBehaviour
     Edge edge3;
     
     public bool grabHeld = false;
-
 
     // Get all references we need and add control listeners
     void OnEnable()
@@ -136,11 +135,9 @@ public class MoveFace : MonoBehaviour
 
         SetActiveFaces(thisFace, false);
 
-
         vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
         vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
         vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
-
 
         thisFace.transform.parent = model.transform;
 
@@ -152,8 +149,6 @@ public class MoveFace : MonoBehaviour
         edge1.transform.parent = thisFace.transform;
         edge2.transform.parent = thisFace.transform;
         edge3.transform.parent = thisFace.transform;
-
-        
 
         vertex1.gameObject.SetActive(false);
         vertex2.gameObject.SetActive(false);
@@ -175,9 +170,6 @@ public class MoveFace : MonoBehaviour
         SetActiveEdges(edge3, true);
 
         SetActiveFaces(thisFace, true);
-
-
-        //materialSwap.material = unselected;
 
         // Unparent the vertices from the edge
         vertex1.transform.parent = model.transform;
@@ -229,10 +221,7 @@ public class MoveFace : MonoBehaviour
         float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
 
         thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
-
-
         pulleyLocomotion.isMovingVertex = false;
-
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -244,9 +233,7 @@ public class MoveFace : MonoBehaviour
         }
 
         if (grabHeld)
-        {
-           // materialSwap.material = selected;
-           
+        {           
             materialSwap = thisFace.edgeObj1.GetComponent<MeshRenderer>();
             materialSwap.material = selected;
             
