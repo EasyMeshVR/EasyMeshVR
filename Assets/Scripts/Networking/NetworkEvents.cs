@@ -155,6 +155,7 @@ namespace EasyMeshVR.Multiplayer
     {
         public int id { get; set; }
         public int meshId { get; set; }
+        public float extrudeDistance { get; set; }
 
         public static object[] SerializeEvent(FaceExtrudeEvent faceExtrudeEvent)
         {
@@ -164,6 +165,7 @@ namespace EasyMeshVR.Multiplayer
                 faceExtrudeEvent.released,
                 faceExtrudeEvent.actorNumber,
                 faceExtrudeEvent.meshId,
+                faceExtrudeEvent.extrudeDistance
             };
         }
 
@@ -174,7 +176,8 @@ namespace EasyMeshVR.Multiplayer
                 id = (int)data[0],
                 released = (bool)data[1],
                 actorNumber = (int)data[2],
-                meshId = (int)data[3]
+                meshId = (int)data[3],
+                extrudeDistance = (float)data[4]
             };
         }
     }

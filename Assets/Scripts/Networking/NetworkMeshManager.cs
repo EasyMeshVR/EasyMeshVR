@@ -539,7 +539,7 @@ namespace EasyMeshVR.Multiplayer
             Mesh mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
             
             Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
-            extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, false);
+            extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, faceExtrudeEvent.extrudeDistance, false);
         }
 
         private void HandleMeshVertexLockEvent(object[] data)
