@@ -90,7 +90,8 @@ namespace EasyMeshVR.UI
                     playerEntries = new Dictionary<int, PlayerEntry>();
                 }
 
-                roomName.text = (string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
+                roomName.text = (PhotonNetwork.CurrentRoom == null || string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) 
+                    ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
 
                 // Set colors of sub-option buttons
                 SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
@@ -233,7 +234,7 @@ namespace EasyMeshVR.UI
 
         #region Multiplayer Menu Methods
 
-        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction)
+        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction, bool muted)
         {
             if (player == null)
             {
@@ -250,6 +251,8 @@ namespace EasyMeshVR.UI
 
             playerEntry.playerName = player.NickName;
             playerEntry.isHost = player.IsMasterClient;
+            playerEntry.isMuted = muted;
+            playerEntry.player = player;
             playerEntry.AddKickButtonOnClickAction(onKickAction);
             playerEntry.AddMuteButtonOnClickAction(onMuteAction);
 
@@ -285,6 +288,34 @@ namespace EasyMeshVR.UI
             else
             {
                 Debug.LogWarningFormat("Failed to update host entry - Name: {0} ActorNumber {1}", host.NickName, host.ActorNumber);
+            }
+        }
+
+        public void UpdateMuteIcon(Player player, bool muted)
+        {
+            PlayerEntry playerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out playerEntry) && playerEntry)
+            {
+                playerEntry.isMuted = muted;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update player entry's mute icon - Name: {0} ActorNumber {1}", player.NickName, player.ActorNumber);
+            }
+        }
+
+        public void UpdatePlayerName(Player player)
+        {
+            PlayerEntry playerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out playerEntry) && playerEntry)
+            {
+                playerEntry.playerName = player.NickName;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update player entry's name - Name: {0} ActorNumber {1}", player.NickName, player.ActorNumber);
             }
         }
 

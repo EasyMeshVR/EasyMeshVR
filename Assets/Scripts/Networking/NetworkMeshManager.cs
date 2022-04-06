@@ -31,7 +31,6 @@ namespace EasyMeshVR.Multiplayer
         private Action<bool, string, string> importCallback = null;
         private Queue<NetworkEvent> networkEventQueue;
 
-
         #endregion
 
         #region MonoBehaviour Callbacks
@@ -113,6 +112,7 @@ namespace EasyMeshVR.Multiplayer
             }
 
             ProcessNetworkEventQueue();
+            NetworkPlayerManager.instance.radiusGameMenuManager.gameMenu.abilitiesMenuPanel.HandleAbilities();
         }
 
         #endregion
@@ -224,6 +224,20 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, content, meshFaceExtrudeEventOptions, SendOptions.SendReliable);
         }
 
+        public void SynchronizeMeshVertexLock(VertexLockEvent vertexLockEvent)
+        {
+            EventCaching cachingOption = (vertexLockEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
+            RaiseEventOptions meshVertexLockEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = cachingOption
+            };
+
+            object[] content = VertexLockEvent.SerializeEvent(vertexLockEvent);
+            PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, content, meshVertexLockEventOptions, SendOptions.SendReliable);
+        }
+
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
@@ -242,6 +256,7 @@ namespace EasyMeshVR.Multiplayer
             RemoveCachedEvent(Constants.MESH_EDGE_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_FACE_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, ReceiverGroup.Others);
         }
 
         public void RemoveAllCachedEvents()
@@ -314,6 +329,15 @@ namespace EasyMeshVR.Multiplayer
                         }
                         break;
                     }
+                case Constants.MESH_VERTEX_LOCK_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshVertexLockEvent(data);
+                        }
+                        break;
+                    }
                 default:
                     break;
             }
@@ -343,6 +367,10 @@ namespace EasyMeshVR.Multiplayer
                 else if (eventType == typeof(FaceExtrudeEvent))
                 {
                     HandleMeshFaceExtrudeEvent((FaceExtrudeEvent)networkEvent);
+                }
+                else if (eventType == typeof(VertexLockEvent))
+                {
+                    HandleMeshVertexLockEvent((VertexLockEvent)networkEvent);
                 }
             }
         }
@@ -512,6 +540,45 @@ namespace EasyMeshVR.Multiplayer
             
             Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
             extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, false);
+        }
+
+        private void HandleMeshVertexLockEvent(object[] data)
+        {
+            VertexLockEvent vertexLockEvent = VertexLockEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(vertexLockEvent);
+            }
+            else
+            {
+                HandleMeshVertexLockEvent(vertexLockEvent);
+            }
+        }
+
+        private void HandleMeshVertexLockEvent(VertexLockEvent vertexLockEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[vertexLockEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshVertexLockEvent() - meshRebuilder is null for meshId {0}", vertexLockEvent.meshId);
+                return;
+            }
+
+            Vertex vertex = meshRebuilder.vertexObjects[vertexLockEvent.id];
+            bool locked = vertexLockEvent.locked;
+
+            LockVertex lockVertexTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.lockScriptRay : ToolManager.instance.lockScriptGrab;
+            if (locked)
+            {
+                lockVertexTool.Lock(vertex, false);
+            }
+            else
+            {
+                lockVertexTool.Unlock(vertex, false);
+            }
         }
 
         #endregion

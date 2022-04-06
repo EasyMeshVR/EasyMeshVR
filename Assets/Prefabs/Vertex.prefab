@@ -16,9 +16,7 @@ GameObject:
   - component: {fileID: 9077015157397384143}
   - component: {fileID: -8109944905895446732}
   - component: {fileID: -5656790495856781621}
-  - component: {fileID: 502973961573988433}
-  - component: {fileID: -5827613723937013234}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Vertex
   m_TagString: Vertex
   m_Icon: {fileID: 0}
@@ -35,8 +33,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.07, y: 0.07, z: 0.07}
-  m_Children:
-  - {fileID: 2894397423611400284}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -265,86 +262,3 @@ MonoBehaviour:
   id: 0
   isHeldByOther: 0
   heldByActorNumber: -1
-  thisVertex: {fileID: 0}
-  connectedEdges: []
---- !u!114 &502973961573988433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8e5cb7db9aa61b4593914acd9ae65ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 9077015157397384143}
-  primaryButtonRef: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
-  isEnabled: 0
-  merge: {fileID: 2100000, guid: aba1d672e8ef9df418e8bde84502f25e, type: 2}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  model: {fileID: 0}
---- !u!114 &-5827613723937013234
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb2936d33d1383a4bae4d284c6ee8458, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 9077015157397384143}
-  merge: {fileID: 2100000, guid: aba1d672e8ef9df418e8bde84502f25e, type: 2}
-  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  model: {fileID: 0}
---- !u!1 &9166179782120251241
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2894397423611400284}
-  - component: {fileID: 2443746452989880466}
-  m_Layer: 0
-  m_Name: Vertex Center
-  m_TagString: Center
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2894397423611400284
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9166179782120251241}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 6484193446316408465}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &2443746452989880466
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9166179782120251241}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
