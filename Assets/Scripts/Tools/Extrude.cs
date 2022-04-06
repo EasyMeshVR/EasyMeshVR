@@ -32,7 +32,6 @@ public class Extrude : ToolClass
     XRGrabInteractable newGrab;
     public bool movingNewFace = false;
     public MeshRenderer materialSwap;
-    float distance;
 
    void OnEnable()
     {
@@ -58,8 +57,7 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
-        distance = 1f;
-        extrudeFace(faceObj.id, meshRebuilder, mesh);
+        extrudeFace(faceObj.id, meshRebuilder, mesh, 1f);
     }
 
 
@@ -86,15 +84,14 @@ public class Extrude : ToolClass
 
         if(inRadius && !movingNewFace)
         {
-            distance = 5f;
-            extrudeFace(faceObj.id, meshRebuilder, mesh);
+            extrudeFace(faceObj.id, meshRebuilder, mesh, 5f);
             moveNewFace(meshRebuilder);
             return;
         }        
     }
 
     // Extrude face along normal by distance value set by either button
-    public void extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, bool sendFaceExtrudeEvent = true)
+    public void extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, float extrudeDistance, bool sendFaceExtrudeEvent = true)
     {
         Face faceObj = meshRebuilder.faceObjects[faceId];
         Vertex vertex1 = meshRebuilder.vertexObjects[faceObj.vert1];
@@ -104,9 +101,9 @@ public class Extrude : ToolClass
         // calculating normals is done in mesh rebuilder
 
         // align new vertices w/ face normal
-        Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized ) / distance;
-        Vector3 new2 = vertex2.transform.localPosition + ((faceObj.normal  + vertex2.transform.localPosition *.005f).normalized ) / distance;
-        Vector3 new3 = vertex3.transform.localPosition + ((faceObj.normal  + vertex3.transform.localPosition *.005f).normalized ) / distance;
+        Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized ) / extrudeDistance;
+        Vector3 new2 = vertex2.transform.localPosition + ((faceObj.normal  + vertex2.transform.localPosition *.005f).normalized ) / extrudeDistance;
+        Vector3 new3 = vertex3.transform.localPosition + ((faceObj.normal  + vertex3.transform.localPosition *.005f).normalized ) / extrudeDistance;
 
         List<Vector3> newVertices = new List<Vector3>();
         List<Vector3> vertList = new List<Vector3>(meshRebuilder.vertices);
@@ -228,7 +225,8 @@ public class Extrude : ToolClass
                 meshId = meshRebuilder.id,
                 isCached = true,
                 released = true,
-                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+                extrudeDistance = extrudeDistance
             };
 
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
@@ -468,7 +466,7 @@ public class Extrude : ToolClass
                 inRadius = true;
                 
                 if(primaryButtonPressed)
-                    extrudeFace(faceObj.id, meshRebuilder, mesh);
+                    extrudeFace(faceObj.id, meshRebuilder, mesh, 1f);
             }
             else
             {

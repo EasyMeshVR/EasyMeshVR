@@ -15,6 +15,12 @@ namespace EasyMeshVR.Multiplayer
             if (networkPlayer.photonView.IsMine && PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY) != 0)
             {
                 NetworkPlayerHeadCollider headCollider = other.GetComponent<NetworkPlayerHeadCollider>();
+
+                if (headCollider == null)
+                {
+                    return;
+                }
+
                 headCollider.networkPlayer.HidePlayerAvatar(true);
             }
         }
@@ -24,6 +30,12 @@ namespace EasyMeshVR.Multiplayer
             if (networkPlayer.photonView.IsMine && PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY) != 0)
             {
                 NetworkPlayerHeadCollider headCollider = other.GetComponent<NetworkPlayerHeadCollider>();
+
+                if (headCollider == null)
+                {
+                    return;
+                }
+
                 headCollider.networkPlayer.HidePlayerAvatar(false);
             }
         }
