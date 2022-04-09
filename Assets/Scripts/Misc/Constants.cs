@@ -35,5 +35,10 @@ namespace EasyMeshVR.Core
         public const byte MESH_FACE_PULL_EVENT_CODE = 5;
         public const byte MESH_FACE_EXTRUDE_EVENT_CODE = 6;
         public const byte MESH_VERTEX_LOCK_EVENT_CODE = 7;
+        public const byte UNDO_TIMELINE_EVENT_CODE = 8;
+        public const byte REDO_TIMELINE_EVENT_CODE = 9;
+
+        // For debugging undo/redo events
+        public const byte LIGHT_COLOR_OP = 10;
     }
 }
