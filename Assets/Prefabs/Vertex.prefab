@@ -266,6 +266,7 @@ MonoBehaviour:
   heldByActorNumber: -1
   thisVertex: {fileID: 0}
   connectedEdges: []
+  connectedFaces: []
 --- !u!114 &-7190904109031180921
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -273,7 +274,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4962365024205514009}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3893b740d34131e45b179ae579049e3e, type: 3}
   m_Name: 
