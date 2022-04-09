@@ -87,3 +87,5 @@ Assembly-CSharp.csproj
 Packages/packages-lock.json
 Assembly-CSharp.csproj
 UserSettings/EditorUserSettings.asset
+Assets/ExternalAssets/XR/Settings/Open XR Package Settings.asset
+Packages/packages-lock.json

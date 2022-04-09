@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1138,7 +1138,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1282352288
 MonoBehaviour:
@@ -1557,7 +1557,7 @@ MonoBehaviour:
     AcousticEchoCancellation: 0
     AutomaticGainControl: 0
     NoiseSuppression: 0
-  recordOnlyWhenEnabled: 0
+  recordOnlyWhenEnabled: 1
   skipDeviceChangeChecks: 0
   stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
@@ -1673,7 +1673,7 @@ Transform:
   m_GameObject: {fileID: 1645407432}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children: []
   m_Father: {fileID: 1282352284}
   m_RootOrder: 1
@@ -1783,11 +1783,17 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
+  directInteractor: {fileID: 0}
+  unselected: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 0}
   rightSphere: {fileID: 0}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  movingNewFace: 0
+  materialSwap: {fileID: 0}
 --- !u!114 &1647071329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1812,7 +1818,6 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
@@ -1846,7 +1851,7 @@ Transform:
   m_GameObject: {fileID: 1858885729}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
+  m_LocalScale: {x: 0.02, y: 0.02, z: 0.02}
   m_Children: []
   m_Father: {fileID: 2059701653}
   m_RootOrder: 1
@@ -2207,7 +2212,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &2059701657
 MonoBehaviour:
@@ -2431,7 +2436,6 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
@@ -2458,11 +2462,17 @@ MonoBehaviour:
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
-  vertexGrabInteractable: {fileID: 0}
+  directInteractor: {fileID: 2059701655}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 1282352287}
   rightSphere: {fileID: 2059701656}
+  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
+  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
+  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  movingNewFace: 0
+  materialSwap: {fileID: 0}
 --- !u!54 &2059701661
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2647,6 +2657,10 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1575991932, guid: 1fb0d2009b2d5964fa98151ca280dcfc, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 908162576112810285, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2732,6 +2746,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2468071788040790768, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: onRelease.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3317819481649686981, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 3461981166425409321, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -2760,6 +2784,11 @@ PrefabInstance:
     - target: {fileID: 3461981166425409321, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3621981466140364600, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4269663961548902521, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
@@ -2911,6 +2940,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6885944693598627271, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694062799482, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
@@ -2992,11 +3026,6 @@ PrefabInstance:
       propertyPath: m_InteractionManager
       value: 
       objectReference: {fileID: 97838035}
-    - target: {fileID: 6885944694105057828, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
-        type: 3}
-      propertyPath: m_InteractionLayers.m_Bits
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 6885944694105057831, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_SelectAction.m_Reference
@@ -3009,6 +3038,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -4289430672226363583, guid: c348712bda248c246b8c49b3db54643f,
         type: 3}
+    - target: {fileID: 6885944694309307564, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6885944694309307564, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_IsActive

@@ -10,8 +10,9 @@ using EasyMeshVR.Core;
 
 public class MoveFace : MonoBehaviour
 {
-    [SerializeField] XRGrabInteractable grabInteractable;
-    [SerializeField] XRSimpleInteractable simpleInteractable;
+    // TODO: remove grabInteractable
+    [SerializeField] public XRGrabInteractable grabInteractable;
+    [SerializeField] public XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
@@ -63,7 +64,6 @@ public class MoveFace : MonoBehaviour
 
     public bool grabHeld = false;
 
-
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -80,7 +80,7 @@ public class MoveFace : MonoBehaviour
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
-        materialSwap = GetComponent<MeshRenderer>();
+       // materialSwap = GetComponent<MeshRenderer>();
 
         // Hover listeners to change edge color
         simpleInteractable.hoverEntered.AddListener(HoverOver);
@@ -108,7 +108,7 @@ public class MoveFace : MonoBehaviour
             return;
 
         //if(switchControllers.rayActive)
-        materialSwap.material = hovered;
+        //materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
@@ -126,7 +126,7 @@ public class MoveFace : MonoBehaviour
         if (thisFace.locked)
             return;
 
-        materialSwap.material = unselected;
+       // materialSwap.material = unselected;
     }
 
     // Pull vertex to hand and update position on GameObject and in Mesh and change material
@@ -165,6 +165,9 @@ public class MoveFace : MonoBehaviour
         originalVert1Rot = vertex1.transform.rotation;
         originalVert2Rot = vertex2.transform.rotation;
         originalVert3Rot = vertex3.transform.rotation;
+
+        // TODO: uncomment?
+        // thisFace.transform.parent = model.transform;
 
         // Parent vertices and edges to face
         vertex1.transform.parent = thisFace.transform;
@@ -219,13 +222,16 @@ public class MoveFace : MonoBehaviour
         edge2.transform.parent = model.transform;
         edge3.transform.parent = model.transform;
 
-        vertex1.gameObject.SetActive(true);
-        vertex2.gameObject.SetActive(true);
-        vertex3.gameObject.SetActive(true);
-
         vertex1.GetComponent<MoveVertices>().UpdateMesh(vertex1.id);
         vertex2.GetComponent<MoveVertices>().UpdateMesh(vertex2.id);
         vertex3.GetComponent<MoveVertices>().UpdateMesh(vertex3.id);
+
+        if (ToolManager.instance.grabVertex)
+        {
+            vertex1.gameObject.SetActive(true);
+            vertex2.gameObject.SetActive(true);
+            vertex3.gameObject.SetActive(true);
+        }
 
         grabHeld = false;
 
@@ -251,18 +257,29 @@ public class MoveFace : MonoBehaviour
 
         NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
 
-        pulleyLocomotion.isMovingVertex = false;
+        // TODO: comment?
+        // ---------------
+        // Update face position
+        float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
+        float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
+        float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
 
+        thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
+        // ---------------
+
+        pulleyLocomotion.isMovingVertex = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
         if (pulleyLocomotion.isMovingEditingSpace || thisFace.isHeldByOther || thisFace.locked)
+        {
             return;
+        }
 
         if (grabHeld)
-        {
+        {           
             if (ToolManager.instance.lockFaceRotation)
             {
                 transform.rotation = originalFaceRot;
@@ -274,6 +291,13 @@ public class MoveFace : MonoBehaviour
                 edge3.transform.rotation = originalEdge3Rot;*/
             }
 
+            materialSwap = thisFace.edgeObj1.GetComponent<MeshRenderer>();
+            materialSwap.material = selected;
+            
+            materialSwap = thisFace.edgeObj2.GetComponent<MeshRenderer>();
+            materialSwap.material = selected;
+
+            materialSwap = thisFace.edgeObj3.GetComponent<MeshRenderer>();
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertices' GameObjects' positions
@@ -356,6 +380,7 @@ public class MoveFace : MonoBehaviour
             currFace.locked = !active;
             currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
             currFace.GetComponent<XRSimpleInteractable>().enabled = active;
+            currFace.GetComponent<XRGrabInteractable>().enabled = active;
         }
     }
 

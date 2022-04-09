@@ -119,6 +119,10 @@ namespace EasyMeshVR.UI
                 extrudeToolImage.color = toggledButtonColor;
                 extrudeToolToggled = true;
             }
+            else
+            {
+                DisableExtrudeTool();
+            }
         }
 
         public void HandleLockTool()
@@ -129,6 +133,10 @@ namespace EasyMeshVR.UI
                 ToolManager.instance.EnableLock();
                 lockToolImage.color = toggledButtonColor;
                 lockToolToggled = true;
+            }
+            else
+            {
+                DisableLockTool();
             }
         }
 
@@ -156,7 +164,7 @@ namespace EasyMeshVR.UI
             grabEdgesToggle.isOn = true;
             grabFacesToggle.isOn = true;
             autoMergeVerticesToggle.isOn = true;
-            //raycastGrabToggle.isOn = false;
+            raycastGrabToggle.isOn = false;
 
             HandleAbilities();
         }

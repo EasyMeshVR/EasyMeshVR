@@ -33,7 +33,7 @@ namespace EasyMeshVR.UI
             playerNameInputField.text = PlayerPrefs.GetString(Constants.PLAYER_NAME_PREF_KEY, Constants.PLAYER_NAME_PREF_DEFAULT);
             hideClosePlayersToggle.isOn = IntToBool(PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY, Constants.HIDE_CLOSE_PLAYERS_PREF_DEFAULT));
             hidePlayerNamesToggle.isOn = IntToBool(PlayerPrefs.GetInt(Constants.HIDE_PLAYER_NAMES_PREF_KEY, Constants.HIDE_PLAYER_NAMES_PREF_DEFAULT));
-            muteMicOnJoinToggle.isOn = IntToBool(PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY, Constants.HIDE_PLAYER_NAMES_PREF_DEFAULT));
+            muteMicOnJoinToggle.isOn = IntToBool(PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY, Constants.MUTE_MIC_ON_JOIN_PREF_DEFAULT));
         }
 
         #endregion

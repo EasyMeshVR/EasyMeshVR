@@ -7,7 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 using UnityEngine.InputSystem;
 using EasyMeshVR.Core;
-
+using EasyMeshVR.Multiplayer;
+using Photon.Pun;
 
 public class LockVertex : ToolClass
 {
@@ -18,9 +19,6 @@ public class LockVertex : ToolClass
     [SerializeField] SwitchControllers switchControllers;
 
     [SerializeField] ToolRaycast ray;
-
-
-    public XRSimpleInteractable vertexGrabInteractable;
 
    // public PulleyLocomotion pulleyLocomotion;
    // public GameObject editingSpace;
@@ -35,7 +33,6 @@ public class LockVertex : ToolClass
     int selectedVertex;
     int selectedEdge;
     
-
     MeshRenderer materialSwap;
 
     private bool hover = false;
@@ -43,7 +40,6 @@ public class LockVertex : ToolClass
 
     bool holdFinish = false;
     
-
    void OnEnable()
     {
        // editingSpace = GameObject.Find("EditingSpace");
@@ -69,7 +65,7 @@ public class LockVertex : ToolClass
         
         if(currentVertex.GetComponent<MoveVertices>().isLocked)
             return;
-        Lock();
+        Lock(currentVertex.GetComponent<Vertex>());
     }
 
     public override void SecondaryAction()
@@ -83,28 +79,61 @@ public class LockVertex : ToolClass
         if(!currentVertex.GetComponent<MoveVertices>().isLocked)
             return;
 
-        Unlock();
+        Unlock(currentVertex.GetComponent<Vertex>());
     }
 
     // Change material, disable vertex grab interactable, set boolean
-    void Lock()
+    public void Lock(Vertex currentVertex, bool sendVertexLockEvent = true)
     {
-        materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        vertexGrabInteractable.enabled = false;
-        materialSwap.material = locked;
+        MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
 
+        materialSwap = currentVertex.GetComponent<MeshRenderer>();
+        currentVertex.GetComponent<XRGrabInteractable>().enabled = false;
+        materialSwap.material = locked;
         currentVertex.GetComponent<MoveVertices>().isLocked = true;
-        return;
+
+        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+        if (sendVertexLockEvent)
+        {
+            // Synchronize the cached vertex lock event to other players by vertex id
+            VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            {
+                id = currentVertex.id,
+                meshId = meshRebuilder.id,
+                isCached = true,
+                locked = true,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
+
+            NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+        }
     }
 
     // Change material, enbable vertex grab interactable, set boolean
-    void Unlock()
+    public void Unlock(Vertex currentVertex, bool sendVertexLockEvent = true)
     {
+        MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
+
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        vertexGrabInteractable.enabled = true;
+        currentVertex.GetComponent<XRGrabInteractable>().enabled = true;
         materialSwap.material = unselected;
         currentVertex.GetComponent<MoveVertices>().isLocked = false;
-        return;
+
+        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+        if (sendVertexLockEvent)
+        {
+            // Synchronize the cached vertex lock event to other players by vertex id
+            VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            {
+                id = currentVertex.id,
+                meshId = meshRebuilder.id,
+                isCached = true,
+                locked = false,
+                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            };
+
+            NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+        }
     }
 
     // Get vertex info from sphere collision
@@ -113,11 +142,10 @@ public class LockVertex : ToolClass
         if (other.CompareTag("Vertex"))
         {
             currentVertex = other.gameObject; 
-            selectedVertex = currentVertex.GetComponent<Vertex>().id;
-            vertexGrabInteractable = currentVertex.GetComponent<XRSimpleInteractable>();
             inRadius = true;
         }
     }
+
     public void OnTriggerExit(Collider other)
     {
         if(!switchControllers.rayActive)
@@ -149,11 +177,10 @@ public class LockVertex : ToolClass
             if(ray.hitVertex)
             {
                 currentVertex = ray.hit.transform.gameObject;
-                vertexGrabInteractable = currentVertex.GetComponent<XRSimpleInteractable>();
                 if(primaryButtonPressed)
-                    Lock();
+                    Lock(currentVertex.GetComponent<Vertex>());
                 if(secondaryButtonPressed)
-                    Unlock();
+                    Unlock(currentVertex.GetComponent<Vertex>());
             }
             else
             {

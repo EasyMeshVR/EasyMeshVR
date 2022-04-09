@@ -19,6 +19,18 @@ public class Face : MonoBehaviour
 
     public Vector3 normal;
 
+    public Vertex vertObj1;
+    public Vertex vertObj2;
+    public Vertex vertObj3;
+
+    public Edge edgeObj1;
+    public Edge edgeObj2;
+    public Edge edgeObj3;
+
+    public GameObject thisFace;
+
+
+
     MeshRebuilder meshRebuilder;
     // void Update()
     // {

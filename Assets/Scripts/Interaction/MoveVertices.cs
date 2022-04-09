@@ -12,16 +12,13 @@ public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] XRSimpleInteractable simpleInteractable;
-   // [SerializeField] LockVertex lockVertex;
+    // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-    //[SerializeField] SwitchControllers switchControllers;
-
-
-    GameObject model;
+    // [SerializeField] SwitchControllers switchControllers;
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -31,8 +28,9 @@ public class MoveVertices : MonoBehaviour
     public bool isLocked;
 
     // Mesh data
+    GameObject model;
     Mesh mesh;
-    MeshRebuilder meshRebuilder;
+    public MeshRebuilder meshRebuilder;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -117,6 +115,8 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
+
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = true;
     }
 
     // Stop updating the mesh data
@@ -141,13 +141,24 @@ public class MoveVertices : MonoBehaviour
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
+
+        StartCoroutine(DisableTrigger());
+        StopCoroutine(DisableTrigger());
+    }
+
+    IEnumerator DisableTrigger()
+    {
+        yield return new WaitForSeconds(0.5f);
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
     void Update()
     {
         if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
+        {
             return;
+        }
 
         if (grabHeld)
         {
