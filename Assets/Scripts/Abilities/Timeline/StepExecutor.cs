@@ -21,8 +21,8 @@ public class StepExecutor : MonoBehaviour
     {
         instance = this;
         testSendColor.action.started += SendTestColorCommand;
-        globalUndo.action.started += Undo;
-        globalRedo.action.started += Redo;
+        globalUndo.action.started += UndoInputAction;
+        globalRedo.action.started += RedoInputAction;
 
         stepBuffer = new Queue<Step>();
         stepHistory = new List<Step>();
@@ -31,8 +31,8 @@ public class StepExecutor : MonoBehaviour
     private void OnDestroy()
     {
         testSendColor.action.started -= SendTestColorCommand;
-        globalUndo.action.started -= Undo;
-        globalRedo.action.started -= Redo;
+        globalUndo.action.started -= UndoInputAction;
+        globalRedo.action.started -= RedoInputAction;
     }
 
     public static void AddStep(Step step)
@@ -67,7 +67,13 @@ public class StepExecutor : MonoBehaviour
         }
     }
 
-    public void Undo(InputAction.CallbackContext context)
+    private void UndoInputAction(InputAction.CallbackContext context)
+    {
+        Undo();
+        NetworkMeshManager.instance.SynchronizeUndoTimeline();
+    }
+
+    public void Undo()
     {
         // Make sure we're not at the beginning of the timeline
         if (counter > 0)
@@ -89,7 +95,13 @@ public class StepExecutor : MonoBehaviour
         }
     }
 
-    public void Redo(InputAction.CallbackContext context)
+    private void RedoInputAction(InputAction.CallbackContext context)
+    {
+        Redo();
+        NetworkMeshManager.instance.SynchronizeRedoTimeline();
+    }
+
+    public void Redo()
     {
         // Make sure we're not at the end of the timeline
         if (counter < stepHistory.Count)

@@ -238,6 +238,31 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, content, meshVertexLockEventOptions, SendOptions.SendReliable);
         }
 
+        // TODO: figure out whether i should cache these events
+        public void SynchronizeUndoTimeline()
+        {
+            RaiseEventOptions options = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.DoNotCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.UNDO_TIMELINE_EVENT_CODE, null, options, SendOptions.SendReliable);
+        }
+
+        // TODO: figure out whether i should cache these events
+        public void SynchronizeRedoTimeline()
+        {
+            RaiseEventOptions options = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.DoNotCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.REDO_TIMELINE_EVENT_CODE, null, options, SendOptions.SendReliable);
+        }
+
+        // TODO: figure out whether i should cache these events
         public void SynchronizeSetLightColorOp(float val)
         {
             Debug.Log("sending color event");
@@ -349,6 +374,16 @@ namespace EasyMeshVR.Multiplayer
                             object[] data = (object[])photonEvent.CustomData;
                             HandleMeshVertexLockEvent(data);
                         }
+                        break;
+                    }
+                case Constants.UNDO_TIMELINE_EVENT_CODE:
+                    {
+                        StepExecutor.instance.Undo();
+                        break;
+                    }
+                case Constants.REDO_TIMELINE_EVENT_CODE:
+                    {
+                        StepExecutor.instance.Redo();
                         break;
                     }
                 case Constants.LIGHT_COLOR_OP:
