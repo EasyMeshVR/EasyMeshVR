@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2362,6 +2362,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2063562611}
   - component: {fileID: 2063562610}
+  - component: {fileID: 2063562612}
   m_Layer: 0
   m_Name: EditingSpace
   m_TagString: EditingSpace
@@ -2409,6 +2410,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2063562612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2063562609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a79abf7cbb57264985819f6b241f891, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testSendColor: {fileID: -6870910902395430664, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  globalUndo: {fileID: 6722839445464546993, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  globalRedo: {fileID: 815259739429684470, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
 --- !u!1001 &3792769190141423836
 PrefabInstance:
   m_ObjectHideFlags: 0

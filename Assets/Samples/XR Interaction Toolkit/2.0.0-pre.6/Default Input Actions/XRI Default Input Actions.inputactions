@@ -1523,6 +1523,74 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Debugging",
+            "id": "38c21003-2eb8-4c77-a0f7-cf66cf62ae9f",
+            "actions": [
+                {
+                    "name": "SendTestColorCommand",
+                    "type": "Button",
+                    "id": "a92e378c-10d3-410a-82ad-4adf6fbc48d2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TestUndo",
+                    "type": "Button",
+                    "id": "59bf65e1-5973-4110-be9d-9103159bd07e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "TestRedo",
+                    "type": "Button",
+                    "id": "c7b2ac03-7c73-4548-a2ba-7e1544edba5d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "4d458145-eca4-473a-acf0-7e4df15b6d3d",
+                    "path": "<Keyboard>/#(C)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SendTestColorCommand",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb4b06fb-8df5-4867-93bd-b8b2892fb6ef",
+                    "path": "<Keyboard>/#(U)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestUndo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e6d60c3a-9a7e-4254-be21-7a90928afb61",
+                    "path": "<Keyboard>/#(R)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestRedo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
