@@ -11,7 +11,7 @@ using EasyMeshVR.Core;
 public class MoveFace : MonoBehaviour
 {
     // TODO: remove grabInteractable
-    [SerializeField] public XRGrabInteractable grabInteractable;
+    // [SerializeField] public XRGrabInteractable grabInteractable;
     [SerializeField] public XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material unselected;   // gray
@@ -207,11 +207,12 @@ public class MoveFace : MonoBehaviour
         Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
 
         // Update face position
-        float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
+        /*float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
         float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
         float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
 
         thisFace.transform.localPosition = new Vector3(totalX / 3, totalY / 3, totalZ / 3);
+        */
 
         // Unparent the vertices from the edge
         vertex1.transform.parent = model.transform;
@@ -257,15 +258,12 @@ public class MoveFace : MonoBehaviour
 
         NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
 
-        // TODO: comment?
-        // ---------------
         // Update face position
         float totalX = vertex1Pos.x + vertex2Pos.x + vertex3Pos.x;
         float totalY = vertex1Pos.y + vertex2Pos.y + vertex3Pos.y;
         float totalZ = vertex1Pos.z + vertex2Pos.z + vertex3Pos.z;
 
         thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
-        // ---------------
 
         pulleyLocomotion.isMovingVertex = false;
     }
@@ -378,9 +376,9 @@ public class MoveFace : MonoBehaviour
             if (currFace.id == face.id) continue;
 
             currFace.locked = !active;
-            currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
+            //currFace.GetComponent<MoveFace>().materialSwap.material = (active) ? unselected : locked;
             currFace.GetComponent<XRSimpleInteractable>().enabled = active;
-            currFace.GetComponent<XRGrabInteractable>().enabled = active;
+            // currFace.GetComponent<XRGrabInteractable>().enabled = active;
         }
     }
 

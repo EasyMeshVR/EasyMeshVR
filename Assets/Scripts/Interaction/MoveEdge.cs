@@ -10,7 +10,7 @@ using EasyMeshVR.Core;
 
 public class MoveEdge : MonoBehaviour
 {
-    [SerializeField] XRGrabInteractable grabInteractable;
+    // [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material unselected;   // gray

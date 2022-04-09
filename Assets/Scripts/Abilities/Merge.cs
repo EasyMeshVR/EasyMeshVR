@@ -10,7 +10,8 @@ using System;
 
 public class Merge : MonoBehaviour
 {
-    [SerializeField] XRGrabInteractable grabInteractable;
+    // [SerializeField] XRGrabInteractable grabInteractable;
+    [SerializeField] XRSimpleInteractable simpleInteractable;
 
     [SerializeField] Material merge;        // yellow
     [SerializeField] Material unselected;   // gray

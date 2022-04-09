@@ -88,7 +88,8 @@ public class LockVertex : ToolClass
         MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
 
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        currentVertex.GetComponent<XRGrabInteractable>().enabled = false;
+        // currentVertex.GetComponent<XRGrabInteractable>().enabled = false;
+        currentVertex.GetComponent<XRSimpleInteractable>().enabled = false;
         materialSwap.material = locked;
         currentVertex.GetComponent<MoveVertices>().isLocked = true;
 
@@ -115,7 +116,8 @@ public class LockVertex : ToolClass
         MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
 
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        currentVertex.GetComponent<XRGrabInteractable>().enabled = true;
+        // currentVertex.GetComponent<XRGrabInteractable>().enabled = true;
+        currentVertex.GetComponent<XRSimpleInteractable>().enabled = true;
         materialSwap.material = unselected;
         currentVertex.GetComponent<MoveVertices>().isLocked = false;
 

@@ -10,7 +10,7 @@ using EasyMeshVR.Core;
 
 public class MoveVertices : MonoBehaviour
 {
-    [SerializeField] XRGrabInteractable grabInteractable;
+    // [SerializeField] XRGrabInteractable grabInteractable;
     [SerializeField] XRSimpleInteractable simpleInteractable;
     // [SerializeField] LockVertex lockVertex;
 

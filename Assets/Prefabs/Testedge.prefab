@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -2442381604478648354}
   - component: {fileID: -2407395895693334474}
   m_Layer: 12
-  m_Name: Testedge
+  m_Name: TestEdge
   m_TagString: Edge
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

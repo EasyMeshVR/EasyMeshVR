@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
+  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -453,9 +453,12 @@ MonoBehaviour:
   lockScriptGrab: {fileID: 2059701659}
   extrudeScriptRay: {fileID: 1647071325}
   extrudeScriptGrab: {fileID: 2059701660}
+  lockFaceRotation: 0
+  lockEdgeRotation: 0
   grabVertex: 1
   grabEdge: 1
   grabFace: 1
+  autoMergeVertex: 0
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
@@ -1532,7 +1535,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   unityMicrophoneDevice: 
-  photonMicrophoneDeviceId: 0
+  photonMicrophoneDeviceId: -1
   interestGroup: 0
   debugEchoMode: 0
   reliableMode: 0
@@ -1789,9 +1792,9 @@ MonoBehaviour:
   inRadius: 0
   leftSphere: {fileID: 0}
   rightSphere: {fileID: 0}
-  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
-  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
-  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  vertex: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732, type: 3}
+  edge: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68, type: 3}
+  face: {fileID: 4962365024205514009, guid: 392c2699183519349b61b1821a618b78, type: 3}
   movingNewFace: 0
   materialSwap: {fileID: 0}
 --- !u!114 &1647071329
@@ -2468,9 +2471,9 @@ MonoBehaviour:
   inRadius: 0
   leftSphere: {fileID: 1282352287}
   rightSphere: {fileID: 2059701656}
-  vertex: {fileID: 4962365024205514009, guid: cd8fc9fae9fc89741a1c61f41a5cc364, type: 3}
-  edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
-  face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
+  vertex: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732, type: 3}
+  edge: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68, type: 3}
+  face: {fileID: 4962365024205514009, guid: 392c2699183519349b61b1821a618b78, type: 3}
   movingNewFace: 0
   materialSwap: {fileID: 0}
 --- !u!54 &2059701661
@@ -2613,24 +2616,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ModelManager
       objectReference: {fileID: 0}
-    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
-        type: 3}
-      propertyPath: edge
-      value: 
-      objectReference: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68,
-        type: 3}
-    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
-        type: 3}
-      propertyPath: face
-      value: 
-      objectReference: {fileID: 4962365024205514009, guid: 59b887ad925d02644825b5b741363eaa,
-        type: 3}
-    - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
-        type: 3}
-      propertyPath: vertex
-      value: 
-      objectReference: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732,
-        type: 3}
     - target: {fileID: 3792769190694460095, guid: 94afc50164b53c14c9515ca90bee0de1,
         type: 3}
       propertyPath: modelObject

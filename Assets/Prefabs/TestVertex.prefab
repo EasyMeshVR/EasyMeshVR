@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -8109944905895446732}
   - component: {fileID: -5656790495856781621}
   - component: {fileID: -4079851157257778939}
+  - component: {fileID: -3044003414603065790}
   m_Layer: 12
   m_Name: TestVertex
   m_TagString: Vertex
@@ -110,12 +111,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a7d78e45826a6a42b4c3e9e8c31d7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabInteractable: {fileID: 0}
   simpleInteractable: {fileID: -4079851157257778939}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
   isLocked: 0
+  meshRebuilder: {fileID: 0}
 --- !u!114 &-5656790495856781621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,6 +132,9 @@ MonoBehaviour:
   id: 0
   isHeldByOther: 0
   heldByActorNumber: -1
+  thisVertex: {fileID: 0}
+  connectedEdges: []
+  connectedFaces: []
 --- !u!114 &-4079851157257778939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,3 +213,19 @@ MonoBehaviour:
   m_OnDeactivate:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &-3044003414603065790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893b740d34131e45b179ae579049e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simpleInteractable: {fileID: -4079851157257778939}
+  merge: {fileID: 2100000, guid: bf855451c641c0c4c8b55fced70219f2, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  model: {fileID: 0}

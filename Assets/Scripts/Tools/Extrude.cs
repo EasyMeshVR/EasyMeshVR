@@ -29,7 +29,7 @@ public class Extrude : ToolClass
     public GameObject edge;
     public GameObject face;
     GameObject newFace;
-    XRGrabInteractable newGrab;
+    XRSimpleInteractable newGrab;
     public bool movingNewFace = false;
     public MeshRenderer materialSwap;
 
@@ -240,7 +240,7 @@ public class Extrude : ToolClass
         movingNewFace = true;
          // Move the new Face on extrusion
         newFace = meshRebuilder.faceObjects[meshRebuilder.faceObjects.Count-1].gameObject;
-        newGrab = newFace.GetComponent<MoveFace>().grabInteractable;
+        newGrab = newFace.GetComponent<MoveFace>().simpleInteractable;
 
         // change material of current face's vertices
         Face current = currentFace.GetComponent<Face>();
