@@ -2,9 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using EasyMeshVR.Multiplayer;
+using Photon.Pun;
 
 public class StepExecutor : MonoBehaviour
 {
+    public static StepExecutor instance { get; private set; }
+
     public InputActionReference testSendColor = null;
     public InputActionReference globalUndo = null;
     public InputActionReference globalRedo = null;
@@ -16,10 +20,12 @@ public class StepExecutor : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         testSendColor.action.started += SendTestColorCommand;
-        globalUndo.action.started += Undo;
-        globalRedo.action.started += Redo;
+        globalUndo.action.started += UndoInputAction;
+        globalRedo.action.started += RedoInputAction;
 
+        counter = 0;
         stepBuffer = new Queue<Step>();
         stepHistory = new List<Step>();
     }
@@ -27,22 +33,22 @@ public class StepExecutor : MonoBehaviour
     private void OnDestroy()
     {
         testSendColor.action.started -= SendTestColorCommand;
-        globalUndo.action.started -= Undo;
-        globalRedo.action.started -= Redo;
+        globalUndo.action.started -= UndoInputAction;
+        globalRedo.action.started -= RedoInputAction;
     }
 
-    public static void AddStep(Step step)
+    public void AddStep(Step step)
     {
         // If any changes were undone, future steps need to be removed so we can overwrite future history
         while (stepHistory.Count > counter)
             stepHistory.RemoveAt(counter);
 
         stepBuffer.Enqueue(step);
+        UpdateHistory();
     }
 
-    private void Update()
+    private void UpdateHistory()
     {
-        // Execute steps in execute bugger
         if (stepBuffer.Count > 0)
         {
             // Verify executable step
@@ -63,7 +69,25 @@ public class StepExecutor : MonoBehaviour
         }
     }
 
-    public void Undo(InputAction.CallbackContext context)
+    private void Update()
+    {
+        // Execute steps in execute bugger
+        UpdateHistory();
+    }
+
+    private void UndoInputAction(InputAction.CallbackContext context)
+    {
+        Undo();
+
+        UndoTimelineEvent undoTimelineEvent = new UndoTimelineEvent
+        {
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+            isCached = true
+        };
+        NetworkMeshManager.instance.SynchronizeUndoTimeline(undoTimelineEvent);
+    }
+
+    public void Undo()
     {
         // Make sure we're not at the beginning of the timeline
         if (counter > 0)
@@ -85,7 +109,19 @@ public class StepExecutor : MonoBehaviour
         }
     }
 
-    public void Redo(InputAction.CallbackContext context)
+    private void RedoInputAction(InputAction.CallbackContext context)
+    {
+        Redo();
+
+        RedoTimelineEvent redoTimelineEvent = new RedoTimelineEvent
+        {
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+            isCached = true
+        };
+        NetworkMeshManager.instance.SynchronizeRedoTimeline(redoTimelineEvent);
+    }
+
+    public void Redo()
     {
         // Make sure we're not at the end of the timeline
         if (counter < stepHistory.Count)
@@ -109,9 +145,24 @@ public class StepExecutor : MonoBehaviour
 
     public void SendTestColorCommand(InputAction.CallbackContext context)
     {
+        Vector3 colorVec = new Vector3(Random.value, Random.value, Random.value);
+        SetLightColorOp(colorVec);
+
+        ChaneLightColorEvent changeLightColorEvent = new ChaneLightColorEvent
+        {
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+            colorVec = colorVec,
+            isCached = true
+        };
+
+        NetworkMeshManager.instance.SynchronizeSetLightColorOp(changeLightColorEvent);
+    }
+
+    public void SetLightColorOp(Vector3 colorVec)
+    {
         Step step = new Step();
-        SetLightColor op = new SetLightColor(new Color(Random.value, Random.value, Random.value));
+        SetLightColor op = new SetLightColor(new Color(colorVec.x, colorVec.y, colorVec.z));
         step.AddOp(op);
-        StepExecutor.AddStep(step);
+        AddStep(step);
     }
 }
