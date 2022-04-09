@@ -276,6 +276,8 @@ public class Extrude : ToolClass
     // Actually create the vertex and edge GameObject interactables
     void CreateVisuals(MeshRebuilder meshRebuilder, List<Vector3> newVertices, List<int> newTriangles, int oldLengthVert, int oldLengthTri)
     {
+        // int edgeCount = 0;
+        // int faceCount = 0;
         Vector3[]vertices = meshRebuilder.vertices;
         int[] triangles = meshRebuilder.triangles;
 
@@ -283,14 +285,13 @@ public class Extrude : ToolClass
         {
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, meshRebuilder.model.transform);
-            
             newVertex.transform.localPosition = vertices[i];
-
             newVertex.name = "Vertex" + i.ToString();
 
             // Set the id of the Vertex component to be the index in the vertices array
             Vertex vertexObj = newVertex.GetComponent<Vertex>();
             vertexObj.id = i;
+            vertexObj.thisVertex = newVertex;
             meshRebuilder.vertexObjects.Add(vertexObj);
 
             if (!ToolManager.instance.grabVertex)
@@ -333,6 +334,7 @@ public class Extrude : ToolClass
 
                 // Same as vertex, create a new edge object and set its parent
                 GameObject newEdge = Instantiate(edge, meshRebuilder.model.transform);
+                newEdge.name = "Edge" + (meshRebuilder.edgeObjects.Count).ToString();
             
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
@@ -348,6 +350,7 @@ public class Extrude : ToolClass
                 edgeComponent.id = meshRebuilder.edgeObjects.Count();
                 edgeComponent.vert1 = i;
                 edgeComponent.vert2 = k;
+                edgeComponent.thisEdge = newEdge;
                 meshRebuilder.edgeObjects.Add(edgeComponent);
 
                 if (!ToolManager.instance.grabEdge)
@@ -362,7 +365,16 @@ public class Extrude : ToolClass
                 }
             }
 
-            if( i < oldLengthVert)
+            // Add Edge id to Vertex component (used in Merge tool)
+            foreach (Edge edge in meshRebuilder.edgeObjects)
+            {
+                if (edge.vert1 == i || edge.vert2 == i)
+                    vertexObj.connectedEdges.Add(edge);
+            }
+
+            // edgeCount--;
+
+            if ( i < oldLengthVert)
             {
                 GameObject.Destroy(newVertex);
                 meshRebuilder.vertexObjects.Remove(vertexObj);
@@ -374,6 +386,8 @@ public class Extrude : ToolClass
         for(int i = oldLengthTri; i < triangles.Length; i+=3)
         {
             GameObject newFace = Instantiate(face, meshRebuilder.model.transform);
+            newFace.name = "Face" + (meshRebuilder.faceObjects.Count).ToString();
+
             // Add face to list and get vertices
             Face currentonent = newFace.GetComponent<Face>();
             currentonent.id = meshRebuilder.faceObjects.Count();
@@ -395,8 +409,15 @@ public class Extrude : ToolClass
             float totalY = vertices[currentonent.vert1].y + vertices[currentonent.vert2].y + vertices[currentonent.vert3].y;
             float totalZ = vertices[currentonent.vert1].z + vertices[currentonent.vert2].z + vertices[currentonent.vert3].z;
 
+            // Place faceComponent in Vertex object list (Vertex.cs, used in Merge.cs)
+            foreach (Vertex vertex in meshRebuilder.vertexObjects)
+            {
+                if (vertex.id == currentonent.vert1 || vertex.id == currentonent.vert2 || vertex.id == currentonent.vert3)
+                    vertex.connectedFaces.Add(currentonent);
+            }
+
             // Store edge
-            foreach(Edge edge in meshRebuilder.edgeObjects)
+            foreach (Edge edge in meshRebuilder.edgeObjects)
             {
                  if((edge.vert1 == currentonent.vert1 && edge.vert2 == currentonent.vert2) || (edge.vert2 == currentonent.vert1 && edge.vert1 == currentonent.vert2))
                 {
@@ -417,6 +438,7 @@ public class Extrude : ToolClass
             }
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
 
+            currentonent.thisFace = newFace;
             meshRebuilder.faceObjects.Add(currentonent);
 
             if (!ToolManager.instance.grabFace)

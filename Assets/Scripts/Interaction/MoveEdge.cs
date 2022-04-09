@@ -16,8 +16,7 @@ public class MoveEdge : MonoBehaviour
     [SerializeField] Material selected;     // light blue
     [SerializeField] Material locked;     // gray with reduced opacity
 
-   // [SerializeField] SwitchControllers switchControllers;
-
+    // [SerializeField] SwitchControllers switchControllers;
 
     GameObject model;
 
@@ -39,7 +38,6 @@ public class MoveEdge : MonoBehaviour
     Vertex vertex2;
     public bool grabHeld = false;
 
-
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -49,7 +47,6 @@ public class MoveEdge : MonoBehaviour
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisedge = GetComponent<Edge>();
         //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
-
 
         // Editing space objects
         editingSpace = meshRebuilder.editingSpace;

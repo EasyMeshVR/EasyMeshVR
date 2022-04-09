@@ -27,6 +27,8 @@ public class Face : MonoBehaviour
     public Edge edgeObj2;
     public Edge edgeObj3;
 
+    public GameObject thisFace;
+
 
 
     MeshRebuilder meshRebuilder;
