@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 9077015157397384143}
   - component: {fileID: -8109944905895446732}
   - component: {fileID: -5656790495856781621}
+  - component: {fileID: -7190904109031180921}
   m_Layer: 12
   m_Name: Vertex
   m_TagString: Vertex
@@ -98,7 +99,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
@@ -247,6 +248,7 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
   isLocked: 0
+  meshRebuilder: {fileID: 0}
 --- !u!114 &-5656790495856781621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -262,3 +264,22 @@ MonoBehaviour:
   id: 0
   isHeldByOther: 0
   heldByActorNumber: -1
+  thisVertex: {fileID: 0}
+  connectedEdges: []
+  connectedFaces: []
+--- !u!114 &-7190904109031180921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4962365024205514009}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3893b740d34131e45b179ae579049e3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabInteractable: {fileID: 9077015157397384143}
+  merge: {fileID: 2100000, guid: bf855451c641c0c4c8b55fced70219f2, type: 2}
+  unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  model: {fileID: 0}

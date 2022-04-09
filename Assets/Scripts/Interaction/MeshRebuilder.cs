@@ -17,8 +17,10 @@ public class MeshRebuilder : MonoBehaviour
     // Holds the vertex and edge prefabs
     public GameObject vertex;
     public GameObject edge;
-
     public GameObject face;
+
+    GameObject newVertex;
+    GameObject newEdge;
 
     // Mesh data
     Mesh mesh;
@@ -28,12 +30,10 @@ public class MeshRebuilder : MonoBehaviour
 
     // Stores the vertex/edge visual data, i.e. which edges are connected to which vertices
     // Mostly accessed in MoveVertices.cs (and eventually MoveEdges.cs)
-    //public static Dictionary<GameObject, List<int>> visuals;
+    // public static Dictionary<GameObject, List<int>> visuals;
     public List<Edge> edgeObjects;
     public List<Vertex> vertexObjects;
-
     public List<Face> faceObjects;
-
 
     // Setup
     void Start()
@@ -156,19 +156,21 @@ public class MeshRebuilder : MonoBehaviour
     // Actually create the vertex and edge GameObject interactables
     public void CreateVisuals()
     {
+        int edgeCount = 0;
+        int faceCount = 0;
+
         // Repeats for every vertex stored in the mesh filter
         for (int i = 0; i < vertices.Length; i++)
         {
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, model.transform);
-
             newVertex.transform.localPosition = vertices[i];
-
             newVertex.name = "Vertex" + i.ToString();
 
             // Set the id of the Vertex component to be the index in the vertices array
             Vertex vertexObj = newVertex.GetComponent<Vertex>();
             vertexObj.id = i;
+            vertexObj.thisVertex = newVertex;
             vertexObjects.Add(vertexObj);
 
             if (!ToolManager.instance.grabVertex)
@@ -210,7 +212,8 @@ public class MeshRebuilder : MonoBehaviour
                     continue;
 
                 // Same as vertex, create a new edge object and set its parent
-                GameObject newEdge = Instantiate(edge, model.transform);
+                newEdge = Instantiate(edge, model.transform);
+                newEdge.name = "Edge" + (i + edgeCount++).ToString();
 
                 // Set the edge's position to between the two vertices and scale it appropriately
                 float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
@@ -226,6 +229,7 @@ public class MeshRebuilder : MonoBehaviour
                 edgeComponent.id = edgeObjects.Count();
                 edgeComponent.vert1 = i;
                 edgeComponent.vert2 = k;
+                edgeComponent.thisEdge = newEdge;
                 edgeObjects.Add(edgeComponent);
 
                 if (!ToolManager.instance.grabEdge)
@@ -233,12 +237,23 @@ public class MeshRebuilder : MonoBehaviour
                     newEdge.SetActive(false);
                 }
             }
+
+            // Add Edge id to Vertex component (used in Merge tool)
+            foreach (Edge edge in edgeObjects)
+            {
+                if (edge.vert1 == i || edge.vert2 == i)
+                    vertexObj.connectedEdges.Add(edge);
+            }
+
+            edgeCount--;
         }
 
         // Triangle handles
         for(int i = 0; i < triangles.Length; i+=3)
         {
             GameObject newFace = Instantiate(face, model.transform);
+            newFace.name = "Face" + (faceCount++).ToString();
+
             // Add face to list and get vertices
             Face faceComponent = newFace.GetComponent<Face>();
             faceComponent.id = faceObjects.Count();
@@ -260,6 +275,13 @@ public class MeshRebuilder : MonoBehaviour
             float totalX = vertices[faceComponent.vert1].x + vertices[faceComponent.vert2].x + vertices[faceComponent.vert3].x;
             float totalY = vertices[faceComponent.vert1].y + vertices[faceComponent.vert2].y + vertices[faceComponent.vert3].y;
             float totalZ = vertices[faceComponent.vert1].z + vertices[faceComponent.vert2].z + vertices[faceComponent.vert3].z;
+
+            // Place faceComponent in Vertex object list (Vertex.cs, used in Merge.cs)
+            foreach (Vertex vertex in vertexObjects)
+            {
+                if (vertex.id == faceComponent.vert1 || vertex.id == faceComponent.vert2 || vertex.id == faceComponent.vert3)
+                    vertex.connectedFaces.Add(faceComponent);
+            }
 
             // Store edge
             foreach(Edge edge in edgeObjects)
@@ -283,6 +305,7 @@ public class MeshRebuilder : MonoBehaviour
             }
             newFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
 
+            faceComponent.thisFace = newFace;
             faceObjects.Add(faceComponent);
 
             if (!ToolManager.instance.grabFace)

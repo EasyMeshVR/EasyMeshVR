@@ -22,6 +22,7 @@ public class ToolManager : MonoBehaviour
     public bool grabVertex = true;
     public bool grabEdge = true;
     public bool grabFace = true;
+    public bool autoMergeVertex = false;
 
     private void Awake()
     {
@@ -131,6 +132,32 @@ public class ToolManager : MonoBehaviour
             foreach (Face f in meshRebuilder.faceObjects)
             {
                 f.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public void EnableAutoMergeVertex()
+    {
+        autoMergeVertex = true;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.GetComponent<Merge>().enabled = true;
+            }
+        }
+    }
+
+    public void DisableAutoMergeVertex()
+    {
+        autoMergeVertex = false;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.GetComponent<Merge>().enabled = false;
             }
         }
     }
