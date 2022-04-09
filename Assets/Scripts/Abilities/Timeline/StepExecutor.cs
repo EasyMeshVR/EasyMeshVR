@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using EasyMeshVR.Multiplayer;
 
 public class StepExecutor : MonoBehaviour
 {
+    public static StepExecutor instance { get; private set; }
+
     public InputActionReference testSendColor = null;
     public InputActionReference globalUndo = null;
     public InputActionReference globalRedo = null;
@@ -16,6 +19,7 @@ public class StepExecutor : MonoBehaviour
 
     private void Awake()
     {
+        instance = this;
         testSendColor.action.started += SendTestColorCommand;
         globalUndo.action.started += Undo;
         globalRedo.action.started += Redo;
@@ -109,8 +113,15 @@ public class StepExecutor : MonoBehaviour
 
     public void SendTestColorCommand(InputAction.CallbackContext context)
     {
+        Color color = new Color(Random.value, Random.value, Random.value);
+        SetLightColorOp(color);
+        NetworkMeshManager.instance.SynchronizeSetLightColorOp(color);
+    }
+
+    public void SetLightColorOp(Color color)
+    {
         Step step = new Step();
-        SetLightColor op = new SetLightColor(new Color(Random.value, Random.value, Random.value));
+        SetLightColor op = new SetLightColor(color);
         step.AddOp(op);
         StepExecutor.AddStep(step);
     }

@@ -238,6 +238,17 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, content, meshVertexLockEventOptions, SendOptions.SendReliable);
         }
 
+        public void SynchronizeSetLightColorOp(Color color)
+        {
+            RaiseEventOptions lightColorOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.DoNotCache
+            };
+
+            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, color, lightColorOptions, SendOptions.SendReliable);
+        }
+
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
@@ -335,6 +346,16 @@ namespace EasyMeshVR.Multiplayer
                         {
                             object[] data = (object[])photonEvent.CustomData;
                             HandleMeshVertexLockEvent(data);
+                        }
+                        break;
+                    }
+                case Constants.LIGHT_COLOR_OP:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            Debug.Log("recevied networked light color op event");
+                            Color color = (Color)photonEvent.CustomData;
+                            StepExecutor.instance.SetLightColorOp(color);
                         }
                         break;
                     }
