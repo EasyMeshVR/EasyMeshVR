@@ -263,7 +263,7 @@ namespace EasyMeshVR.Multiplayer
         }
 
         // TODO: figure out whether i should cache these events
-        public void SynchronizeSetLightColorOp(float val)
+        public void SynchronizeSetLightColorOp(Vector3 colorVec)
         {
             Debug.Log("sending color event");
 
@@ -273,7 +273,7 @@ namespace EasyMeshVR.Multiplayer
                 CachingOption = EventCaching.DoNotCache
             };
 
-            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, val, lightColorOptions, SendOptions.SendReliable);
+            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, colorVec, lightColorOptions, SendOptions.SendReliable);
         }
 
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
@@ -391,8 +391,8 @@ namespace EasyMeshVR.Multiplayer
                         if (photonEvent.CustomData != null)
                         {
                             Debug.Log("recevied networked light color op event");
-                            float colorVal = (float)photonEvent.CustomData;
-                            StepExecutor.instance.SetLightColorOp(colorVal);
+                            Vector3 colorVec = (Vector3)photonEvent.CustomData;
+                            StepExecutor.instance.SetLightColorOp(colorVec);
                         }
                         break;
                     }

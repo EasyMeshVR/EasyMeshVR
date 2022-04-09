@@ -125,15 +125,15 @@ public class StepExecutor : MonoBehaviour
 
     public void SendTestColorCommand(InputAction.CallbackContext context)
     {
-        float val = Random.value;
-        SetLightColorOp(val);
-        NetworkMeshManager.instance.SynchronizeSetLightColorOp(val);
+        Vector3 colorVec = new Vector3(Random.value, Random.value, Random.value);
+        SetLightColorOp(colorVec);
+        NetworkMeshManager.instance.SynchronizeSetLightColorOp(colorVec);
     }
 
-    public void SetLightColorOp(float value)
+    public void SetLightColorOp(Vector3 colorVec)
     {
         Step step = new Step();
-        SetLightColor op = new SetLightColor(new Color(value, value, value));
+        SetLightColor op = new SetLightColor(new Color(colorVec.x, colorVec.y, colorVec.z));
         step.AddOp(op);
         StepExecutor.AddStep(step);
     }
