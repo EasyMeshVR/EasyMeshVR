@@ -238,42 +238,46 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, content, meshVertexLockEventOptions, SendOptions.SendReliable);
         }
 
-        // TODO: figure out whether i should cache these events
-        public void SynchronizeUndoTimeline()
+        public void SynchronizeUndoTimeline(UndoTimelineEvent undoTimelineEvent)
         {
+            EventCaching cachingOption = (undoTimelineEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
             RaiseEventOptions options = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.DoNotCache
+                CachingOption = cachingOption
             };
 
-            PhotonNetwork.RaiseEvent(Constants.UNDO_TIMELINE_EVENT_CODE, null, options, SendOptions.SendReliable);
+            object[] content = UndoTimelineEvent.SerializeEvent(undoTimelineEvent);
+            PhotonNetwork.RaiseEvent(Constants.UNDO_TIMELINE_EVENT_CODE, content, options, SendOptions.SendReliable);
         }
 
-        // TODO: figure out whether i should cache these events
-        public void SynchronizeRedoTimeline()
+        public void SynchronizeRedoTimeline(RedoTimelineEvent redoTimelineEvent)
         {
+            EventCaching cachingOption = (redoTimelineEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
             RaiseEventOptions options = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.DoNotCache
+                CachingOption = cachingOption
             };
 
-            PhotonNetwork.RaiseEvent(Constants.REDO_TIMELINE_EVENT_CODE, null, options, SendOptions.SendReliable);
+            object[] content = RedoTimelineEvent.SerializeEvent(redoTimelineEvent);
+            PhotonNetwork.RaiseEvent(Constants.REDO_TIMELINE_EVENT_CODE, content, options, SendOptions.SendReliable);
         }
 
-        // TODO: figure out whether i should cache these events
-        public void SynchronizeSetLightColorOp(Vector3 colorVec)
+        public void SynchronizeSetLightColorOp(ChaneLightColorEvent changeLightColorEvent)
         {
-            Debug.Log("sending color event");
+            EventCaching cachingOption = (changeLightColorEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
 
             RaiseEventOptions lightColorOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.DoNotCache
+                CachingOption = cachingOption
             };
 
-            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, colorVec, lightColorOptions, SendOptions.SendReliable);
+            object[] content = ChaneLightColorEvent.SerializeEvent(changeLightColorEvent);
+            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, content, lightColorOptions, SendOptions.SendReliable);
         }
 
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
@@ -295,6 +299,9 @@ namespace EasyMeshVR.Multiplayer
             RemoveCachedEvent(Constants.MESH_FACE_PULL_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_FACE_EXTRUDE_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.UNDO_TIMELINE_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.REDO_TIMELINE_EVENT_CODE, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.LIGHT_COLOR_OP, ReceiverGroup.Others);
         }
 
         public void RemoveAllCachedEvents()
@@ -378,21 +385,28 @@ namespace EasyMeshVR.Multiplayer
                     }
                 case Constants.UNDO_TIMELINE_EVENT_CODE:
                     {
-                        StepExecutor.instance.Undo();
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleUndoTimelineEvent(data);
+                        }
                         break;
                     }
                 case Constants.REDO_TIMELINE_EVENT_CODE:
                     {
-                        StepExecutor.instance.Redo();
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleRedoTimelineEvent(data);
+                        }
                         break;
                     }
                 case Constants.LIGHT_COLOR_OP:
                     {
                         if (photonEvent.CustomData != null)
                         {
-                            Debug.Log("recevied networked light color op event");
-                            Vector3 colorVec = (Vector3)photonEvent.CustomData;
-                            StepExecutor.instance.SetLightColorOp(colorVec);
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleChangeLightColorEvent(data);
                         }
                         break;
                     }
@@ -430,6 +444,18 @@ namespace EasyMeshVR.Multiplayer
                 {
                     HandleMeshVertexLockEvent((VertexLockEvent)networkEvent);
                 }
+                else if (eventType == typeof(UndoTimelineEvent))
+                {
+                    HandleUndoTimelineEvent((UndoTimelineEvent)networkEvent);
+                }
+                else if (eventType == typeof(RedoTimelineEvent))
+                {
+                    HandleRedoTimelineEvent((RedoTimelineEvent)networkEvent);
+                }
+                else if (eventType == typeof(ChaneLightColorEvent))
+                {
+                    HandleChangeLightColorEvent((ChaneLightColorEvent)networkEvent);
+                }
             }
         }
 
@@ -437,7 +463,6 @@ namespace EasyMeshVR.Multiplayer
         {
             VertexPullEvent vertexEvent = VertexPullEvent.DeserializeEvent(data);
 
-            // Put the vertexEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
             if (isImportingMesh)
             {
                 networkEventQueue.Enqueue(vertexEvent);
@@ -475,7 +500,6 @@ namespace EasyMeshVR.Multiplayer
         {
             EdgePullEvent edgeEvent = EdgePullEvent.DeserializeEvent(data);
 
-            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
             if (isImportingMesh)
             {
                 networkEventQueue.Enqueue(edgeEvent);
@@ -516,7 +540,6 @@ namespace EasyMeshVR.Multiplayer
         {
             FacePullEvent faceEvent = FacePullEvent.DeserializeEvent(data);
 
-            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
             if (isImportingMesh)
             {
                 networkEventQueue.Enqueue(faceEvent);
@@ -573,7 +596,6 @@ namespace EasyMeshVR.Multiplayer
         {
             FaceExtrudeEvent faceExtrudeEvent = FaceExtrudeEvent.DeserializeEvent(data);
 
-            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
             if (isImportingMesh)
             {
                 networkEventQueue.Enqueue(faceExtrudeEvent);
@@ -604,7 +626,6 @@ namespace EasyMeshVR.Multiplayer
         {
             VertexLockEvent vertexLockEvent = VertexLockEvent.DeserializeEvent(data);
 
-            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
             if (isImportingMesh)
             {
                 networkEventQueue.Enqueue(vertexLockEvent);
@@ -637,6 +658,66 @@ namespace EasyMeshVR.Multiplayer
             {
                 lockVertexTool.Unlock(vertex, false);
             }
+        }
+
+        private void HandleUndoTimelineEvent(object[] data)
+        {
+            UndoTimelineEvent undoTimelineEvent = UndoTimelineEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(undoTimelineEvent);
+            }
+            else
+            {
+                HandleUndoTimelineEvent(undoTimelineEvent);
+            }
+        }
+
+        private void HandleUndoTimelineEvent(UndoTimelineEvent undoTimelineEvent)
+        {
+            StepExecutor.instance.Undo();
+        }
+
+        private void HandleRedoTimelineEvent(object[] data)
+        {
+            RedoTimelineEvent redoTimelineEvent = RedoTimelineEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(redoTimelineEvent);
+            }
+            else
+            {
+                HandleRedoTimelineEvent(redoTimelineEvent);
+            }
+        }
+
+        private void HandleRedoTimelineEvent(RedoTimelineEvent redoTimelineEvent)
+        {
+            StepExecutor.instance.Redo();
+        }
+
+        private void HandleChangeLightColorEvent(object[] data)
+        {
+            ChaneLightColorEvent changeLightColorEvent = ChaneLightColorEvent.DeserializeEvent(data);
+
+            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(changeLightColorEvent);
+            }
+            else
+            {
+                HandleChangeLightColorEvent(changeLightColorEvent);
+            }
+        }
+
+        private void HandleChangeLightColorEvent(ChaneLightColorEvent changeLightColorEvent)
+        {
+            StepExecutor.instance.SetLightColorOp(changeLightColorEvent.colorVec);
         }
 
         #endregion

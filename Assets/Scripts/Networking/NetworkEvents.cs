@@ -159,7 +159,7 @@ namespace EasyMeshVR.Multiplayer
 
         public static object[] SerializeEvent(FaceExtrudeEvent faceExtrudeEvent)
         {
-            return new object[] 
+            return new object[]
             {
                 faceExtrudeEvent.id,
                 faceExtrudeEvent.released,
@@ -207,6 +207,67 @@ namespace EasyMeshVR.Multiplayer
                 meshId = (int)data[1],
                 actorNumber = (int)data[2],
                 locked = (bool)data[3]
+            };
+        }
+    }
+
+    public class UndoTimelineEvent : NetworkEvent
+    {
+        public static object[] SerializeEvent(UndoTimelineEvent undoTimelineEvent)
+        {
+            return new object[]
+            {
+                undoTimelineEvent.actorNumber
+            };
+        }
+
+        public static UndoTimelineEvent DeserializeEvent(object[] data)
+        {
+            return new UndoTimelineEvent
+            {
+                actorNumber = (int)data[0]
+            };
+        }
+    }
+
+    public class RedoTimelineEvent : NetworkEvent
+    {
+        public static object[] SerializeEvent(RedoTimelineEvent redoTimelineEvent)
+        {
+            return new object[]
+            {
+                redoTimelineEvent.actorNumber
+            };
+        }
+
+        public static RedoTimelineEvent DeserializeEvent(object[] data)
+        {
+            return new RedoTimelineEvent
+            {
+                actorNumber = (int)data[0]
+            };
+        }
+    }
+
+    public class ChaneLightColorEvent : NetworkEvent
+    {
+        public Vector3 colorVec { get; set; }
+
+        public static object[] SerializeEvent(ChaneLightColorEvent redoTimelineEvent)
+        {
+            return new object[]
+            {
+                redoTimelineEvent.actorNumber,
+                redoTimelineEvent.colorVec
+            };
+        }
+
+        public static ChaneLightColorEvent DeserializeEvent(object[] data)
+        {
+            return new ChaneLightColorEvent
+            {
+                actorNumber = (int)data[0],
+                colorVec = (Vector3)data[1]
             };
         }
     }
