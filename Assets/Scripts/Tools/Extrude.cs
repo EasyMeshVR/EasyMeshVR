@@ -21,8 +21,6 @@ public class Extrude : ToolClass
     public GameObject currentFace;
     public bool inRadius = false;
     
-    public SphereCollider leftSphere;
-    public SphereCollider rightSphere;
     private bool hover = false;
 
     public GameObject vertex;
@@ -35,8 +33,8 @@ public class Extrude : ToolClass
 
    void OnEnable()
     {
-        leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
-        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
+        /*leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
+        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();*/
     }
 
     public override void secondaryButtonEnd(InputAction.CallbackContext context)

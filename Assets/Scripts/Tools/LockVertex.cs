@@ -27,9 +27,6 @@ public class LockVertex : ToolClass
 
     public bool inRadius = false;
 
-    public SphereCollider leftSphere;
-    public SphereCollider rightSphere;
-
     int selectedVertex;
     int selectedEdge;
     
@@ -45,8 +42,8 @@ public class LockVertex : ToolClass
        // editingSpace = GameObject.Find("EditingSpace");
        // pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
-        leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
-        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
+        /*leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
+        rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();*/
     }
 
     public override void secondaryButtonEnd(InputAction.CallbackContext context)

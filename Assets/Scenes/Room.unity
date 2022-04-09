@@ -1659,7 +1659,6 @@ GameObject:
   - component: {fileID: 1645407433}
   - component: {fileID: 1645407436}
   - component: {fileID: 1645407435}
-  - component: {fileID: 1645407434}
   m_Layer: 10
   m_Name: LeftSphere
   m_TagString: GameController
@@ -1681,19 +1680,6 @@ Transform:
   m_Father: {fileID: 1282352284}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1645407434
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1645407432}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1645407435
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1790,8 +1776,6 @@ MonoBehaviour:
   unselected: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
-  leftSphere: {fileID: 0}
-  rightSphere: {fileID: 0}
   vertex: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732, type: 3}
   edge: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68, type: 3}
   face: {fileID: 4962365024205514009, guid: 392c2699183519349b61b1821a618b78, type: 3}
@@ -1824,8 +1808,6 @@ MonoBehaviour:
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
-  leftSphere: {fileID: 1282352287}
-  rightSphere: {fileID: 2059701656}
 --- !u!1 &1858885729
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,7 +1819,6 @@ GameObject:
   - component: {fileID: 1858885730}
   - component: {fileID: 1858885733}
   - component: {fileID: 1858885732}
-  - component: {fileID: 1858885731}
   m_Layer: 10
   m_Name: RightSphere
   m_TagString: GameController
@@ -1859,19 +1840,6 @@ Transform:
   m_Father: {fileID: 2059701653}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &1858885731
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858885729}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1858885732
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2442,8 +2410,6 @@ MonoBehaviour:
   currentVertex: {fileID: 0}
   currentEdge: {fileID: 0}
   inRadius: 0
-  leftSphere: {fileID: 1282352287}
-  rightSphere: {fileID: 2059701656}
 --- !u!114 &2059701660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2469,8 +2435,6 @@ MonoBehaviour:
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   currentFace: {fileID: 0}
   inRadius: 0
-  leftSphere: {fileID: 1282352287}
-  rightSphere: {fileID: 2059701656}
   vertex: {fileID: 4962365024205514009, guid: ec1afa8439c4fef48a792ebe4999f732, type: 3}
   edge: {fileID: 6331143426899357056, guid: 15e72890d23bae9499a8f7476b647e68, type: 3}
   face: {fileID: 4962365024205514009, guid: 392c2699183519349b61b1821a618b78, type: 3}
