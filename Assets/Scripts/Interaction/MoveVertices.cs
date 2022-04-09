@@ -28,6 +28,8 @@ public class MoveVertices : MonoBehaviour
     GameObject model;
     Mesh mesh;
     public MeshRebuilder meshRebuilder;
+    Vector3[] timelineVertices;
+    int[] timelineTriangles;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -84,6 +86,8 @@ public class MoveVertices : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
+        timelineVertices = mesh.vertices;
+        timelineTriangles = mesh.triangles;
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -113,6 +117,11 @@ public class MoveVertices : MonoBehaviour
         materialSwap.material = unselected;
 
         grabHeld = false;
+
+        Step step = new Step();
+        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        step.AddOp(op);
+        StepExecutor.AddStep(step);
 
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {

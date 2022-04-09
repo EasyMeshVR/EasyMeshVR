@@ -33,7 +33,10 @@ public class Extrude : ToolClass
     public bool movingNewFace = false;
     public MeshRenderer materialSwap;
 
-   void OnEnable()
+    Vector3[] timelineVertices;
+    int[] timelineTriangles;
+
+    void OnEnable()
     {
         leftSphere = GameObject.Find("LeftRadius").GetComponent<SphereCollider>();
         rightSphere = GameObject.Find("RightRadius").GetComponent<SphereCollider>();
@@ -57,7 +60,15 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
+        timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;
+
         extrudeFace(faceObj.id, meshRebuilder, mesh, 1f);
+
+        Step step = new Step();
+        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        step.AddOp(op);
+        StepExecutor.AddStep(step);
     }
 
 
@@ -79,15 +90,22 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
+        timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;
 
-        
 
-        if(inRadius && !movingNewFace)
+        if (inRadius && !movingNewFace)
         {
             extrudeFace(faceObj.id, meshRebuilder, mesh, 5f);
             moveNewFace(meshRebuilder);
+
+            Step step = new Step();
+            MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+            step.AddOp(op);
+            StepExecutor.AddStep(step);
+
             return;
-        }        
+        }
     }
 
     // Extrude face along normal by distance value set by either button

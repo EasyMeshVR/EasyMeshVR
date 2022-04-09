@@ -29,6 +29,8 @@ public class MoveFace : MonoBehaviour
     public Mesh mesh;
     public MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
+    Vector3[] timelineVertices;
+    int[] timelineTriangles;
 
     // Edge lookup
     //Edge thisedge;
@@ -101,9 +103,11 @@ public class MoveFace : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
+        timelineVertices = mesh.vertices;
+        timelineTriangles = mesh.triangles;
 
-                // Keep mesh filter updated with most recent mesh data changes
-       // meshRebuilder.triangles = mesh.triangles;
+        // Keep mesh filter updated with most recent mesh data changes
+        // meshRebuilder.triangles = mesh.triangles;
 
         //print("Face " +thisFace.id + " vertices " + thisFace.vert1 + " " + thisFace.vert2 + " " + thisFace.vert3);
 
@@ -188,6 +192,11 @@ public class MoveFace : MonoBehaviour
         }
 
         grabHeld = false;
+
+        Step step = new Step();
+        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        step.AddOp(op);
+        StepExecutor.AddStep(step);
 
         Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
         Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
