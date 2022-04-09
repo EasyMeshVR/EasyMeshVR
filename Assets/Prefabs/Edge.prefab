@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: -3022987318446701925}
   - component: {fileID: 2254766889956581523}
   - component: {fileID: -2442381604478648354}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Edge
   m_TagString: Edge
   m_Icon: {fileID: 0}
@@ -114,7 +114,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.0000001, y: 2, z: 1.0000002}
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &-3022987318446701925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -247,8 +247,8 @@ MonoBehaviour:
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
   selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
   locked: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
-  switchControllers: {fileID: 0}
   materialSwap: {fileID: 0}
+  grabHeld: 0
 --- !u!114 &-2442381604478648354
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,4 +265,5 @@ MonoBehaviour:
   vert1: 0
   vert2: 0
   isHeldByOther: 0
+  heldByActorNumber: -1
   locked: 0

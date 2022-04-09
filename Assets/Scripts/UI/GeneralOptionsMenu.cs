@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -53,9 +54,6 @@ namespace EasyMeshVR.UI
         private Button exportModelButton;
 
         [SerializeField]
-        private TMP_InputField importModelInputField;
-
-        [SerializeField]
         private Color subOptionDefaultColor;
 
         [SerializeField]
@@ -92,7 +90,8 @@ namespace EasyMeshVR.UI
                     playerEntries = new Dictionary<int, PlayerEntry>();
                 }
 
-                roomName.text = (string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
+                roomName.text = (PhotonNetwork.CurrentRoom == null || string.IsNullOrEmpty(PhotonNetwork.CurrentRoom.Name) 
+                    ? "Your Room" : PhotonNetwork.CurrentRoom.Name);
 
                 // Set colors of sub-option buttons
                 SetSubOptionButtonColor(saveQuitSubOption, subOptionDefaultColor);
@@ -144,15 +143,18 @@ namespace EasyMeshVR.UI
 
         #region Cloud Upload Panel Methods
 
-        public void OnClickedImportModel()
+        public void OnClickedImportButton()
         {
-            if (string.IsNullOrWhiteSpace(importModelInputField.text))
-            {
-                Debug.Log("Cannot import a model with empty code!");
-                return;
-            }
-            Debug.Log("clicked import model");
-            NetworkMeshManager.instance.SynchronizeMeshImport(importModelInputField.text, ImportCallback);
+            KeyInputManager.instance.EnableKeyboardForImportingModel(OnClickedImportModel);
+        }
+
+        public void OnClickedImportModel(string modelCode)
+        {
+            // Set the ImportCallback
+            NetworkMeshManager.instance.SetImportModelCallback(ImportCallback);
+
+            // Import the model locally
+            ModelImportExport.instance.ImportModel(modelCode, NetworkMeshManager.instance.DownloadCallback);
         }
 
         public void OnClickedExportModel()
@@ -182,15 +184,26 @@ namespace EasyMeshVR.UI
 
         #region Import/Export Callbacks
 
-        private void ImportCallback(bool success)
+        private void ImportCallback(bool success, string errorMsg, string modelCode)
         {
             if (!success)
             {
-                Debug.Log("Error encountered while importing mesh!");
-                return;
+                if (errorMsg.Contains("403") || errorMsg.Contains("404"))
+                {
+                    KeyInputManager.instance.DisplayErrorMessage("File not found.");
+                }
+                else
+                {
+                    KeyInputManager.instance.DisplayErrorMessage("Encountered network error.");
+                }
             }
+            else
+            {
+                KeyInputManager.instance.DisplaySuccessMessage("Imported model into scene.");
 
-            Debug.Log("GeneralOptionsMenu: Successfully improted model into scene");
+                // Successfully imported the model locally, send the import event to others
+                NetworkMeshManager.instance.SynchronizeMeshImport(modelCode, ImportCallback);
+            }
         }
 
         private void ExportCallback(string modelCode, string error)
@@ -221,7 +234,7 @@ namespace EasyMeshVR.UI
 
         #region Multiplayer Menu Methods
 
-        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction)
+        public void CreatePlayerEntry(Player player, UnityAction onKickAction, UnityAction onMuteAction, bool muted)
         {
             if (player == null)
             {
@@ -238,6 +251,8 @@ namespace EasyMeshVR.UI
 
             playerEntry.playerName = player.NickName;
             playerEntry.isHost = player.IsMasterClient;
+            playerEntry.isMuted = muted;
+            playerEntry.player = player;
             playerEntry.AddKickButtonOnClickAction(onKickAction);
             playerEntry.AddMuteButtonOnClickAction(onMuteAction);
 
@@ -273,6 +288,34 @@ namespace EasyMeshVR.UI
             else
             {
                 Debug.LogWarningFormat("Failed to update host entry - Name: {0} ActorNumber {1}", host.NickName, host.ActorNumber);
+            }
+        }
+
+        public void UpdateMuteIcon(Player player, bool muted)
+        {
+            PlayerEntry playerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out playerEntry) && playerEntry)
+            {
+                playerEntry.isMuted = muted;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update player entry's mute icon - Name: {0} ActorNumber {1}", player.NickName, player.ActorNumber);
+            }
+        }
+
+        public void UpdatePlayerName(Player player)
+        {
+            PlayerEntry playerEntry;
+
+            if (playerEntries.TryGetValue(player.ActorNumber, out playerEntry) && playerEntry)
+            {
+                playerEntry.playerName = player.NickName;
+            }
+            else
+            {
+                Debug.LogWarningFormat("Failed to update player entry's name - Name: {0} ActorNumber {1}", player.NickName, player.ActorNumber);
             }
         }
 

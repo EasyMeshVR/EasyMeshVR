@@ -10,4 +10,6 @@ public class Edge : MonoBehaviour
     public bool isHeldByOther;
     public int heldByActorNumber = -1;
     public bool locked;
+
+    public GameObject thisEdge;
 }

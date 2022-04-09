@@ -72,8 +72,18 @@ public class SwitchControllers : MonoBehaviour
         
     }
 
+    public bool ControllerIsRaycast(GameObject controller)
+    {
+        return controller == rayLeft || controller == rayRight;
+    }
+
+    public bool ControllerIsRadiusGrab(GameObject controller)
+    {
+        return controller == grabLeft || controller == grabRight;
+    }
+
     // For enabling either type of control
-    void switchToRay()
+    public void switchToRay()
     {
         rayLeft.SetActive(true);
         rayRight.SetActive(true);
@@ -96,9 +106,7 @@ public class SwitchControllers : MonoBehaviour
         rayActive = true;
     }
 
-    
-    
-      void switchtoGrab()
+    public void switchToGrab()
     {
         rayLeft.SetActive(false);
         rayRight.SetActive(false);

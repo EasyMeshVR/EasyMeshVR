@@ -18,6 +18,10 @@ namespace EasyMeshVR.Multiplayer
 
         public static NetworkPlayerManager instance { get; private set; }
 
+        public GameMenuManager radiusGameMenuManager;
+
+        public GameMenuManager raycastGameMenuManager;
+
         #endregion
 
         #region Private Fields
@@ -39,10 +43,6 @@ namespace EasyMeshVR.Multiplayer
 
         [SerializeField]
         private Recorder micRecorder;
-
-        private GameMenuManager radiusGameMenuManager;
-
-        private GameMenuManager raycastGameMenuManager;
 
         private GameObject spawnedPlayerPrefab;
 
@@ -90,12 +90,16 @@ namespace EasyMeshVR.Multiplayer
                 Debug.Log("Destroying player prefab");
                 PhotonNetwork.Destroy(spawnedPlayerPrefab);
             }
+            else
+            {
+                Debug.LogError("Failed to destroy spawnedPlayerPrefab because it is null.");
+            }
         }
 
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
             base.OnPlayerEnteredRoom(newPlayer);
-            CreatePlayerEntry(newPlayer);
+            CreatePlayerEntry(newPlayer, false);
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
@@ -104,7 +108,7 @@ namespace EasyMeshVR.Multiplayer
             RemovePlayerEntry(otherPlayer);
             RemoveNetworkPlayer(otherPlayer.ActorNumber);
 
-            MeshRebuilder.instance.ClearHeldDataForPlayer(otherPlayer);
+            NetworkMeshManager.instance.ClearHeldDataForPlayer(otherPlayer);
         }
 
         public override void OnMasterClientSwitched(Player newMasterClient)
@@ -149,6 +153,41 @@ namespace EasyMeshVR.Multiplayer
             return PhotonNetwork.Instantiate(networkPlayerPrefab.name, Vector3.zero, Quaternion.identity);
         }
 
+        public void SetPlayerNamesVisible(bool visible)
+        {
+            foreach (NetworkPlayer netPlayer in networkPlayers.Values)
+            {
+                // Don't do anything for my own player name
+                if (netPlayer.photonView.IsMine) continue;
+
+                netPlayer.SetPlayerNameVisible(visible);
+            }
+        }
+
+        public void MuteMicLocal()
+        {
+            micRecorder.TransmitEnabled = false;
+        }
+
+        public void UpdateMuteIcon(bool muted)
+        {
+            radiusGameMenuManager.gameMenu
+                   .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
+            raycastGameMenuManager.gameMenu
+                .generalOptionsMenuPanel.UpdateMuteIcon(PhotonNetwork.LocalPlayer, muted);
+        }
+
+        public void HideClosePlayers(bool hide)
+        {
+            foreach (NetworkPlayer netPlayer in networkPlayers.Values)
+            {
+                if (!netPlayer.photonView.IsMine)
+                {
+                    netPlayer.HidePlayerAvatar(hide);
+                }
+            }
+        }
+
         #endregion
 
         #region Private Methods
@@ -166,7 +205,6 @@ namespace EasyMeshVR.Multiplayer
 
             while (leftHandRadiusPresence.initializing || leftHandRayCastPresence.initializing) 
             {
-                Debug.Log("waiting on initialization of left hand presence");
                 yield return null;
             }
 
@@ -178,9 +216,25 @@ namespace EasyMeshVR.Multiplayer
 
         private void InitializePlayerList()
         {
+            NetworkPlayer localNetPlayer = spawnedPlayerPrefab.GetComponent<NetworkPlayer>();
+
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                CreatePlayerEntry(player);
+                if (player == PhotonNetwork.LocalPlayer && localNetPlayer.photonView.IsMine)
+                {
+                    bool muteMic = PlayerPrefs.GetInt(Constants.MUTE_MIC_ON_JOIN_PREF_KEY) != 0;
+
+                    CreatePlayerEntry(player, muteMic);
+
+                    if (muteMic)
+                    {
+                        MuteMicLocal();
+                    }
+                }
+                else
+                {
+                    CreatePlayerEntry(player, false);
+                }
             }
         }
 
@@ -199,19 +253,10 @@ namespace EasyMeshVR.Multiplayer
 
         private void OnMuteAction(Player player)
         {
-            Debug.LogFormat("NetworkPlayerManager:OnMuteAction(): Muting player Name {0} ActorNumber {1}", player.NickName, player.ActorNumber);
-
             // Mute our own mic from transmitting our voice
             if (player == PhotonNetwork.LocalPlayer)
             {
-                if (micRecorder.IsRecording)
-                {
-                    micRecorder.StopRecording();
-                }
-                else
-                {
-                    micRecorder.StartRecording();
-                }
+                micRecorder.TransmitEnabled = !micRecorder.TransmitEnabled;
             }
             // Mute the audio (locally) coming from other players
             else
@@ -229,13 +274,13 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
-        private void CreatePlayerEntry(Player player)
+        private void CreatePlayerEntry(Player player, bool muted)
         {
             UnityAction kickAction = delegate { OnKickAction(player); };
             UnityAction muteAction = delegate { OnMuteAction(player); };
 
-            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
-            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction);
+            radiusGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction, muted);
+            raycastGameMenuManager.gameMenu.generalOptionsMenuPanel.CreatePlayerEntry(player, kickAction, muteAction, muted);
         }
 
         private void RemovePlayerEntry(Player player)

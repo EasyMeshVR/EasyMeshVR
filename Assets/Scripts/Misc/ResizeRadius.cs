@@ -40,11 +40,11 @@ public class ResizeRadius : MonoBehaviour
               sphereVisual.GetComponent<MeshRenderer>().enabled = true;
               matEnabled = true;
             }
-            sphereCollider.radius += value/100;
-            sphereVisual.transform.localScale += new Vector3(value/50, value/50, value/50);
+            sphereCollider.radius += value/200;
+            sphereVisual.transform.localScale += new Vector3(value/100, value/100, value/100);
         }
         // min values , can change
-        if(sphereCollider.radius < 0.05f)
+        if(sphereCollider.radius < 0.005f)
         {
           if(!matEnabled)
           {
@@ -53,8 +53,23 @@ public class ResizeRadius : MonoBehaviour
           }
           sphereVisual.GetComponent<MeshRenderer>().enabled = true;
 
-          sphereCollider.radius = .05f;
-          sphereVisual.transform.localScale = new Vector3(.1f, .1f, .1f);
+          sphereCollider.radius = .005f;
+          sphereVisual.transform.localScale = new Vector3(.01f, .01f, .01f);
+          Vector3 spherePos = sphereVisual.transform.position;
+        }
+
+        // max values , can change
+        if(sphereCollider.radius > .3f)
+        {
+          if(!matEnabled)
+          {
+            sphereVisual.GetComponent<MeshRenderer>().enabled = true;
+            matEnabled = true;
+          }
+          sphereVisual.GetComponent<MeshRenderer>().enabled = true;
+
+          sphereCollider.radius = .3f;
+          sphereVisual.transform.localScale = new Vector3(.6f, .6f, .6f);
           Vector3 spherePos = sphereVisual.transform.position;
         }
 

@@ -1,9 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using TMPro;
-using VRKeys;
 
 namespace EasyMeshVR.UI
 {
@@ -26,11 +28,6 @@ namespace EasyMeshVR.UI
             instance = this;
         }
 
-        void Start()
-        {
-
-        }
-
         #endregion
 
         #region Public Methods
@@ -49,6 +46,31 @@ namespace EasyMeshVR.UI
             keyboard.Disable();
         }
 
+        public void AddButtonOnClick(Button button)
+        {
+            UnityAction action = delegate
+            {
+                button.onClick.Invoke();
+            };
+
+            keyboard.AddEnterButtonOnReleaseEvent(action);
+        }
+
+        public void DisplayErrorMessage(string errorMsg)
+        {
+            keyboard.DisplayErrorMessage(errorMsg);
+        }
+
+        public void DisplaySuccessMessage(string successMsg)
+        {
+            keyboard.DisplaySuccessMessage(successMsg);
+        }
+
+        public void RemoveButtonOnClick()
+        {
+            keyboard.RemoveEnterButtonOnReleaseEvent();
+        }
+
         public void UpdateTextField(string text)
         {
             if (inputField != null)
@@ -59,8 +81,50 @@ namespace EasyMeshVR.UI
 
         public void Submit()
         {
-            this.inputField = null;
-            keyboard.SetText(string.Empty);
+            if (inputField != null)
+            {
+                DeselectInputField();
+            }
+
+            keyboard.Disable();
+        }
+
+        public void Cancel()
+        {
+            if (inputField != null)
+            {
+                DeselectInputField();
+            }
+
+            keyboard.Disable();
+        }
+
+        public void EnableKeyboardForImportingModel(Action<string> callback)
+        {
+            keyboard.Enable();
+            keyboard.DisplayImportModelPanel();
+            keyboard.AddImportEnterButtonOnReleaseEvent(callback);
+        }
+
+        public void EnableKeyboardForChangingDisplayName(Action<string> callback)
+        {
+            keyboard.Enable();
+            keyboard.DisplayNameChangePanel();
+            keyboard.AddChangeDisplayNameEnterButtonOnReleaseEvent(callback);
+        }
+         
+        #endregion
+
+        #region Private Method
+
+        private void DeselectInputField()
+        {
+            EventSystem eventSystem = EventSystem.current;
+
+            if (!eventSystem.alreadySelecting)
+            {
+                eventSystem.SetSelectedGameObject(null);
+            }
         }
 
         #endregion

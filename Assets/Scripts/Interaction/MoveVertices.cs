@@ -10,16 +10,13 @@ using EasyMeshVR.Multiplayer;
 public class MoveVertices : MonoBehaviour
 {
     [SerializeField] XRGrabInteractable grabInteractable;
-   // [SerializeField] LockVertex lockVertex;
+    // [SerializeField] LockVertex lockVertex;
 
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
     [SerializeField] Material selected;     // light blue
 
-    //[SerializeField] SwitchControllers switchControllers;
-
-
-    GameObject model;
+    // [SerializeField] SwitchControllers switchControllers;
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -28,7 +25,9 @@ public class MoveVertices : MonoBehaviour
     public bool isLocked;
 
     // Mesh data
+    GameObject model;
     Mesh mesh;
+    public MeshRebuilder meshRebuilder;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -41,14 +40,15 @@ public class MoveVertices : MonoBehaviour
     void OnEnable()
     {
         // Get the editing model's MeshFilter
-        model = MeshRebuilder.instance.model;
+        meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
+        model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
         thisvertex = GetComponent<Vertex>();
 
         //switchControllers = GameObject.Find("ToolManager").GetComponent<SwitchControllers>();
 
         // Editing space objects
-        editingSpace = MeshRebuilder.instance.editingSpace;
+        editingSpace = meshRebuilder.editingSpace;
         pulleyLocomotion = editingSpace.GetComponent<PulleyLocomotion>();
 
         // Get the vertex GameObject material
@@ -79,12 +79,11 @@ public class MoveVertices : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace)
             return;
 
-
         //if(switchControllers.rayActive)
         materialSwap.material = hovered;
 
         // Keep mesh filter updated with most recent mesh data changes
-        MeshRebuilder.instance.vertices = mesh.vertices;
+        meshRebuilder.vertices = mesh.vertices;
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -104,6 +103,8 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = true;
         pulleyLocomotion.isMovingVertex = true;
+
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = true;
     }
 
     // Stop updating the mesh data
@@ -116,7 +117,8 @@ public class MoveVertices : MonoBehaviour
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
             id = selectedVertex,
-            vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+            meshId = meshRebuilder.id,
+            vertexPos = meshRebuilder.vertices[selectedVertex],
             released = true,
             isCached = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
@@ -125,6 +127,15 @@ public class MoveVertices : MonoBehaviour
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
+
+        StartCoroutine(DisableTrigger());
+        StopCoroutine(DisableTrigger());
+    }
+
+    IEnumerator DisableTrigger()
+    {
+        yield return new WaitForSeconds(0.5f);
+        thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = false;
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -132,10 +143,8 @@ public class MoveVertices : MonoBehaviour
     {
         if (pulleyLocomotion.isMovingEditingSpace || isLocked || thisvertex.isHeldByOther)
         {
-            grabInteractable.enabled = false;
             return;
         }
-        grabInteractable.enabled = true;
 
         if (grabHeld)
         {
@@ -148,7 +157,8 @@ public class MoveVertices : MonoBehaviour
             VertexPullEvent vertexEvent = new VertexPullEvent()
             {
                 id = selectedVertex,
-                vertexPos = MeshRebuilder.instance.vertices[selectedVertex],
+                meshId = meshRebuilder.id,
+                vertexPos = meshRebuilder.vertices[selectedVertex],
                 released = false,
                 isCached = false,
                 actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
@@ -178,7 +188,7 @@ public class MoveVertices : MonoBehaviour
 
         // Translate, Scale, and Rotate the vertex position based on the current transform
         // of the editingSpace object.
-        MeshRebuilder.instance.vertices[index] =
+        meshRebuilder.vertices[index] =
             Quaternion.Inverse(editingSpace.transform.rotation)
             * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
     }
@@ -186,14 +196,14 @@ public class MoveVertices : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
-        Vector3[] vertices = MeshRebuilder.instance.vertices;
+        Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.vertices = vertices;
         mesh.RecalculateNormals();
 
         // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
-        foreach (Edge edge in MeshRebuilder.instance.edgeObjects)
+        foreach (Edge edge in meshRebuilder.edgeObjects)
         {
             GameObject edgeObject = edge.gameObject;
             int vert1 = edge.vert1;
@@ -210,6 +220,33 @@ public class MoveVertices : MonoBehaviour
                 // Orient the edge to look at the vertices (specifically the one we're currently holding)
                 edgeObject.transform.LookAt(transform, Vector3.up);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
+            }
+        }
+
+        foreach (Face face in meshRebuilder.faceObjects)
+        {
+            GameObject faceObject = face.gameObject;
+            int vert1 = face.vert1;
+            int vert2 = face.vert2;
+            int vert3 = face.vert3;
+
+            // If either of the vertex values are the same as selectedVertex, it will update the edges that vertex is connected to
+            if (vert1 == index || vert2 == index || vert3 == index)
+            {
+                // // Set the edge's position to between the two vertices and scale it appropriately
+                // float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
+                // edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
+                // edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
+
+                // // Orient the edge to look at the vertices (specifically the one we're currently holding)
+                // edgeObject.transform.LookAt(transform, Vector3.up);
+                // edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
+
+                float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
+                float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
+                float totalZ = vertices[vert1].z + vertices[vert2].z + vertices[vert3].z;
+
+                faceObject.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
             }
         }
     }

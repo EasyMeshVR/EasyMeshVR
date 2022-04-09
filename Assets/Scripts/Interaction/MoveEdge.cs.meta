@@ -3,12 +3,7 @@ guid: 41059e2c70f4f0245a30fc0f5fa02ae2
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - model: {instanceID: 0}
-  - grabInteractable: {instanceID: 0}
-  - unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  - hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
-  - selected: {fileID: 2100000, guid: dbc1154b11a1b964a9e4e40565ae1250, type: 2}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

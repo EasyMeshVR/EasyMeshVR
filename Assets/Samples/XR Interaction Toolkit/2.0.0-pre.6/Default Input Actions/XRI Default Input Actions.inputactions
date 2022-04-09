@@ -1098,15 +1098,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Import Model",
-                    "type": "Button",
-                    "id": "bd548475-b68e-46df-a99e-c028a0ba3623",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1140,17 +1131,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "Toggle Game Menu",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "556ec9a8-5412-4025-88c0-3f57dba027a1",
-                    "path": "<OculusTouchController>/secondaryButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Import Model",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

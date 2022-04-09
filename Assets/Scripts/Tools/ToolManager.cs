@@ -2,105 +2,163 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using EasyMeshVR.Multiplayer;
 
 // All tools should be disabled by default, use this class to enable them
 
 public class ToolManager : MonoBehaviour
 {
+    public static ToolManager instance { get; private set; }
+
     [SerializeField] public bool LockTool;
-    [SerializeField] LockVertex lockScriptRay;
-    [SerializeField] LockVertex lockScriptGrab;
+    [SerializeField] public bool extrudeTool;
 
+    [SerializeField] public LockVertex lockScriptRay;
+    [SerializeField] public LockVertex lockScriptGrab;
 
-    List<XRGrabInteractable> vertexGrab = new List<XRGrabInteractable>();
-    List<XRGrabInteractable> edgeGrab = new List<XRGrabInteractable>();
-
+    [SerializeField] public Extrude extrudeScriptRay;
+    [SerializeField] public Extrude extrudeScriptGrab;
 
     public bool grabVertex = true;
-    public bool grabEdge = false;
+    public bool grabEdge = true;
+    public bool grabFace = true;
+    public bool autoMergeVertex = false;
 
-
-     void Start()
+    private void Awake()
     {
-        checkImport();
-
-        DisableLock();
+        instance = this;
     }
 
-    void checkImport()
+    public void EnableLock()
     {
-        vertexGrab.Clear();
-        edgeGrab.Clear();
-        GameObject [] vertices = GameObject.FindGameObjectsWithTag("Vertex");
-        GameObject [] edges = GameObject.FindGameObjectsWithTag("Edge");
+        LockTool = true;
+        lockScriptRay.Enable();
+        lockScriptGrab.Enable();
+    }
 
-        foreach(GameObject vertex in vertices)
+    public void DisableLock()
+    {
+        LockTool = false;
+        lockScriptRay.Disable();
+        lockScriptGrab.Disable();
+    }
+
+    public void EnableExtrude()
+    {
+        extrudeTool = true;
+        extrudeScriptGrab.Enable();
+        extrudeScriptRay.Enable();
+    }
+
+    public void DisableExtrude()
+    {
+        extrudeTool = false;
+        extrudeScriptGrab.Disable();
+        extrudeScriptRay.Disable();
+    }
+
+    public void EnableVertex()
+    {
+        grabVertex = true;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
         {
-            vertexGrab.Add(vertex.GetComponent<XRGrabInteractable>());
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.gameObject.SetActive(true);
+            }
         }
-        foreach(GameObject e in edges)
-            edgeGrab.Add(e.GetComponent<XRGrabInteractable>());
     }
 
-    // For now use update to check but when this gets hooked up to the UI another script will call the functions
-    void Update()
+    public void DisableVertex()
     {
-        if(LockTool)
-            EnableLock();
-            
-        if(!LockTool)
-            DisableLock();
+        grabVertex = false;
 
-        if(grabVertex)
-            EnableVertex();
-
-        if(grabEdge)
-            EnableEdge();
-
-        if(!grabEdge)
-            DisableEdge();
-
-        if(!grabVertex)
-            DisableVertex();
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.gameObject.SetActive(false);
+            }
+        }
     }
 
-    void EnableLock()
+    public void EnableEdge()
     {
-       lockScriptRay.Enable();
-       lockScriptGrab.Enable();
+
+        grabEdge = true;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Edge e in meshRebuilder.edgeObjects)
+            {
+                e.gameObject.SetActive(true);
+            }
+        }
     }
 
-    void DisableLock()
+    public void DisableEdge()
     {
-       lockScriptRay.Disable();
-       lockScriptGrab.Disable();
+        grabEdge = false;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Edge e in meshRebuilder.edgeObjects)
+            {
+                e.gameObject.SetActive(false);
+            }
+        }
     }
 
-    void EnableVertex()
+    public void EnableFace()
     {
-        checkImport();
-        foreach(XRGrabInteractable v in vertexGrab)
-            v.enabled = true;
+        grabFace = true;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Face f in meshRebuilder.faceObjects)
+            {
+                f.gameObject.SetActive(true);
+            }
+        }
     }
 
-    void DisableVertex()
+    public void DisableFace()
     {
-        checkImport();
-        foreach(XRGrabInteractable v in vertexGrab)
-            v.enabled = false;
+        grabFace = false;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Face f in meshRebuilder.faceObjects)
+            {
+                f.gameObject.SetActive(false);
+            }
+        }
     }
 
-    void DisableEdge()
-    {   
-        checkImport();
-        foreach(XRGrabInteractable e in edgeGrab)
-            e.enabled = false;
-    }
-
-    void EnableEdge()
+    public void EnableAutoMergeVertex()
     {
-        checkImport();
-        foreach(XRGrabInteractable e in edgeGrab)
-            e.enabled = true;
+        autoMergeVertex = true;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.GetComponent<Merge>().enabled = true;
+            }
+        }
+    }
+
+    public void DisableAutoMergeVertex()
+    {
+        autoMergeVertex = false;
+
+        foreach (MeshRebuilder meshRebuilder in NetworkMeshManager.instance.meshRebuilders)
+        {
+            foreach (Vertex v in meshRebuilder.vertexObjects)
+            {
+                v.GetComponent<Merge>().enabled = false;
+            }
+        }
     }
 }

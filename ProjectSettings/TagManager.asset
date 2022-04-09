@@ -11,6 +11,9 @@ TagManager:
   - NetworkPlayer
   - LeftController
   - RightController
+  - TypingSphereLeft
+  - Center
+  - Face
   layers:
   - Default
   - TransparentFX
@@ -18,14 +21,14 @@ TagManager:
   - Grab
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Hands
+  - Interactive
+  - Typing Hands
+  - Keyboard
+  - RadiusSphere
+  - KeyboardGrabInteractable
+  - MeshInteractable
+  - Player
   - 
   - 
   - 
