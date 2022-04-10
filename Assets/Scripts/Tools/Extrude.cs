@@ -66,7 +66,7 @@ public class Extrude : ToolClass
     {
         if(movingNewFace)
         {
-            print("test stop interaction");
+            //print("test stop interaction");
             directInteractor.EndManualInteraction();
             movingNewFace = false;
             return;
@@ -88,6 +88,18 @@ public class Extrude : ToolClass
             moveNewFace(meshRebuilder);
             return;
         }        
+    }
+
+    public override void triggerAction()
+    {
+        if(movingNewFace)
+        {
+            //print("test stop interaction");
+            directInteractor.EndManualInteraction();
+            movingNewFace = false;
+            return;
+        }
+
     }
 
     // Extrude face along normal by distance value set by either button

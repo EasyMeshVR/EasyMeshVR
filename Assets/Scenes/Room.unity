@@ -462,6 +462,7 @@ MonoBehaviour:
   grabVertex: 1
   grabEdge: 1
   grabFace: 1
+  autoMergeVertex: 0
 --- !u!4 &299127985
 Transform:
   m_ObjectHideFlags: 0
@@ -1767,8 +1768,10 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  rightTrigger: {fileID: 0}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
+  rightTriggerPressed: 0
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
@@ -1799,8 +1802,10 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  rightTrigger: {fileID: 0}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
+  rightTriggerPressed: 0
   isEnabled: 0
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
@@ -2416,8 +2421,11 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  rightTrigger: {fileID: -7295109100495390552, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
+  rightTriggerPressed: 0
   isEnabled: 0
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
@@ -2445,8 +2453,11 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  rightTrigger: {fileID: -7295109100495390552, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
+  rightTriggerPressed: 0
   isEnabled: 0
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}

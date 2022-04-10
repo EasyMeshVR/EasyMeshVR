@@ -11,10 +11,15 @@ using EasyMeshVR.Core;
 
 public class ToolClass : MonoBehaviour
 {
-     [SerializeReference] public InputActionReference primaryButtonref;
+    [SerializeReference] public InputActionReference primaryButtonref;
     [SerializeReference] public InputActionReference secondaryButtonRef;
+
+    [SerializeReference] public InputActionReference rightTrigger;
+
     [SerializeReference] public bool primaryButtonPressed = false;
     [SerializeReference] public bool secondaryButtonPressed = false;
+    [SerializeReference] public bool rightTriggerPressed = false;
+
 
     // For tool manager, tools should not be active by default
     [SerializeReference] public bool isEnabled = false;
@@ -27,6 +32,9 @@ public class ToolClass : MonoBehaviour
         secondaryButtonRef.action.started += secondaryButtonStart;
         secondaryButtonRef.action.canceled += secondaryButtonEnd;
 
+        rightTrigger.action.started += triggerStart;
+        rightTrigger.action.canceled += triggerEnd;
+
     }
 
     public void OnDestroy()
@@ -36,6 +44,9 @@ public class ToolClass : MonoBehaviour
 
         secondaryButtonRef.action.started -= secondaryButtonStart;
         secondaryButtonRef.action.canceled -= secondaryButtonEnd;
+
+        rightTrigger.action.started -= triggerStart;
+        rightTrigger.action.canceled -= triggerEnd;
     }
 
     // Called when primary button pressed
@@ -71,6 +82,20 @@ public class ToolClass : MonoBehaviour
         secondaryButtonPressed = false;
     }
 
+    public virtual void triggerStart(InputAction.CallbackContext context)
+    {      
+        rightTriggerPressed = true;
+        if(isEnabled)
+        {
+            triggerAction();
+        }
+    }
+
+    public virtual void triggerEnd(InputAction.CallbackContext context)
+    {
+        rightTriggerPressed = false;
+    }
+
     // action on primary press
     public virtual void PrimaryAction()
     {
@@ -81,6 +106,11 @@ public class ToolClass : MonoBehaviour
     public virtual void SecondaryAction()
     {
         //print("secondary parent");
+    }
+
+    public virtual void triggerAction()
+    {
+        //print("trigger");
     }
 
     public virtual void Enable()
