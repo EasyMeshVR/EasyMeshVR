@@ -149,7 +149,7 @@ public class MoveEdge : MonoBehaviour
         Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
         step.AddOp(op);
-        StepExecutor.AddStep(step);
+        StepExecutor.instance.AddStep(step);
 
         Vector3 vertex1Pos = meshRebuilder.vertices[thisedge.vert1];
         Vector3 vertex2Pos = meshRebuilder.vertices[thisedge.vert2];

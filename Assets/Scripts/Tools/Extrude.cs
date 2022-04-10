@@ -68,7 +68,7 @@ public class Extrude : ToolClass
         Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
         step.AddOp(op);
-        StepExecutor.AddStep(step);
+        StepExecutor.instance.AddStep(step);
     }
 
 
@@ -102,7 +102,7 @@ public class Extrude : ToolClass
             Step step = new Step();
             MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
             step.AddOp(op);
-            StepExecutor.AddStep(step);
+            StepExecutor.instance.AddStep(step);
 
             return;
         }

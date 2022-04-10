@@ -196,7 +196,7 @@ public class MoveFace : MonoBehaviour
         Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
         step.AddOp(op);
-        StepExecutor.AddStep(step);
+        StepExecutor.instance.AddStep(step);
 
         Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
         Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];

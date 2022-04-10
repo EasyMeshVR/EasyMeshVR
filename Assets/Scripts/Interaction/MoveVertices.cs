@@ -121,7 +121,7 @@ public class MoveVertices : MonoBehaviour
         Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
         step.AddOp(op);
-        StepExecutor.AddStep(step);
+        StepExecutor.instance.AddStep(step);
 
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
