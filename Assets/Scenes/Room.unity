@@ -242,7 +242,7 @@ PrefabInstance:
     - target: {fileID: 6026446785687496154, guid: 1530838bf1e80e94994997bcc9f7df66,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6026446785687496154, guid: 1530838bf1e80e94994997bcc9f7df66,
         type: 3}
@@ -664,7 +664,7 @@ Transform:
   m_LocalScale: {x: 10, y: 10, z: 10}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &675396853
 PrefabInstance:
@@ -1341,6 +1341,7 @@ MonoBehaviour:
   sC: {fileID: 1282352287}
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  nearObject: {fileID: 0}
   pm: {fileID: 2063562610}
   otherHand: {fileID: 2059701658}
 --- !u!1 &1319448459
@@ -1409,7 +1410,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1321090375
 PrefabInstance:
@@ -1521,7 +1522,7 @@ MonoBehaviour:
   voiceDetectionThreshold: 0.01
   voiceDetectionDelayMs: 500
   unityMicrophoneDevice: 
-  photonMicrophoneDeviceId: 0
+  photonMicrophoneDeviceId: -1
   interestGroup: 0
   debugEchoMode: 0
   reliableMode: 0
@@ -1774,7 +1775,6 @@ MonoBehaviour:
   ray: {fileID: 1647071324}
   directInteractor: {fileID: 0}
   unselected: {fileID: 0}
-  triggerRef: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 0}
@@ -1783,7 +1783,6 @@ MonoBehaviour:
   edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
   face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
   movingNewFace: 0
-  triggerPressed: 0
   materialSwap: {fileID: 0}
 --- !u!114 &1647071329
 MonoBehaviour:
@@ -1924,7 +1923,7 @@ PrefabInstance:
     - target: {fileID: 5049516355102781562, guid: 0988f6a80349af64a8973da033034eb9,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5049516355102781562, guid: 0988f6a80349af64a8973da033034eb9,
         type: 3}
@@ -2010,7 +2009,7 @@ Transform:
   - {fileID: 1266323253}
   - {fileID: 900901298}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2006126369
 GameObject:
@@ -2058,6 +2057,7 @@ GameObject:
   - component: {fileID: 2059701658}
   - component: {fileID: 2059701659}
   - component: {fileID: 2059701660}
+  - component: {fileID: 2059701661}
   m_Layer: 10
   m_Name: RightRadius
   m_TagString: GameController
@@ -2400,6 +2400,7 @@ MonoBehaviour:
   sC: {fileID: 2059701656}
   hoveredO: {fileID: 2100000, guid: ee08bdf117a7eb441aadf28d25ef80c3, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  nearObject: {fileID: 0}
   pm: {fileID: 2063562610}
   otherHand: {fileID: 1282352289}
 --- !u!114 &2059701659
@@ -2454,8 +2455,6 @@ MonoBehaviour:
   ray: {fileID: 1647071324}
   directInteractor: {fileID: 2059701655}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
-  triggerRef: {fileID: 5178055964656491667, guid: c348712bda248c246b8c49b3db54643f,
-    type: 3}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 1282352287}
@@ -2464,8 +2463,35 @@ MonoBehaviour:
   edge: {fileID: 6331143426899357056, guid: bec9989f61f085542b0fe93fb0411320, type: 3}
   face: {fileID: 4962365024205514009, guid: ba549513c20a8374693fac0f48422908, type: 3}
   movingNewFace: 0
-  triggerPressed: 0
   materialSwap: {fileID: 0}
+--- !u!114 &2059701661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2059701652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd623a4804c920c4fa0a86f9e19b3d9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  primaryButtonref: {fileID: -2101824809710955060, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
+  primaryButtonPressed: 0
+  secondaryButtonPressed: 0
+  isEnabled: 1
+  cm: {fileID: 2059701658}
+  currentObj: {fileID: 0}
+  inRadius: 0
+  leftSphere: {fileID: 0}
+  rightSphere: {fileID: 0}
+  unlocked: 1
+  lockX: 0
+  lockY: 0
+  lockZ: 0
 --- !u!1 &2063562609
 GameObject:
   m_ObjectHideFlags: 0
@@ -2918,7 +2944,7 @@ PrefabInstance:
     - target: {fileID: 6885944694062799487, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6885944694062799487, guid: 1fb0d2009b2d5964fa98151ca280dcfc,
         type: 3}

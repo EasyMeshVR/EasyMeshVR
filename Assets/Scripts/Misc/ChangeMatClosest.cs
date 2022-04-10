@@ -10,7 +10,7 @@ public class ChangeMatClosest : MonoBehaviour
     [SerializeField] SphereCollider sC;
     [SerializeField] Material hoveredO;
     [SerializeField] Material unselected;
-    GameObject nearObject;
+    public GameObject nearObject;
     [SerializeField] PulleyLocomotion pm;
 
     [SerializeField] ChangeMatClosest otherHand;
