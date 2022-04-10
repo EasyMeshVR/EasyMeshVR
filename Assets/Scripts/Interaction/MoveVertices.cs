@@ -28,8 +28,7 @@ public class MoveVertices : MonoBehaviour
     GameObject model;
     Mesh mesh;
     public MeshRebuilder meshRebuilder;
-    Vector3[] timelineVertices;
-    int[] timelineTriangles;
+    Vector3 oldVertexPos;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -86,8 +85,7 @@ public class MoveVertices : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
-        timelineVertices = mesh.vertices;
-        timelineTriangles = mesh.triangles;
+        oldVertexPos = meshRebuilder.vertices[thisvertex.id];
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -118,8 +116,10 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
+        Vector3 newVertexPos = meshRebuilder.vertices[selectedVertex];
+
         Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        MoveVertexOp op = new MoveVertexOp(meshRebuilder.id, selectedVertex, oldVertexPos, newVertexPos);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
 
@@ -127,7 +127,7 @@ public class MoveVertices : MonoBehaviour
         {
             id = selectedVertex,
             meshId = meshRebuilder.id,
-            vertexPos = meshRebuilder.vertices[selectedVertex],
+            vertexPos = newVertexPos,
             released = true,
             isCached = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber

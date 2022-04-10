@@ -130,6 +130,9 @@ namespace EasyMeshVR.Core
 
         public void DestroyMeshObjects()
         {
+            // Clear undo/redo timeline steps
+            StepExecutor.instance.ClearSteps();
+
             // Clear previous MeshRebuilders stored in NetworkMeshManager
             NetworkMeshManager.instance.meshRebuilders.Clear();
 

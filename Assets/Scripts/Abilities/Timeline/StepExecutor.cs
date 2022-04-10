@@ -37,6 +37,14 @@ public class StepExecutor : MonoBehaviour
         globalRedo.action.started -= RedoInputAction;
     }
 
+    // Called when canvas is cleared or a new model is imported to get rid of old steps
+    public void ClearSteps()
+    {
+        counter = 0;
+        stepBuffer.Clear();
+        stepHistory.Clear();
+    }
+
     public void AddStep(Step step)
     {
         // If any changes were undone, future steps need to be removed so we can overwrite future history
