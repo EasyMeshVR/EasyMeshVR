@@ -137,8 +137,11 @@ public class MoveVertices : MonoBehaviour
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
 
-        StartCoroutine(DisableTrigger());
-        StopCoroutine(DisableTrigger());
+        if (enabled && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(DisableTrigger());
+            StopCoroutine(DisableTrigger());
+        }
     }
 
     IEnumerator DisableTrigger()
