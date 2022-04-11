@@ -32,6 +32,7 @@ public class Merge : MonoBehaviour
     Vertex mergeVertex;
     static Vertex deleterVertex;
     static Vertex takeoverVertex;
+    static Vertex relocaterVertex;
     static int vertex1;
     static int vertex2;
     static int lastIndex;
@@ -49,9 +50,17 @@ public class Merge : MonoBehaviour
         model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
 
-        // Stealing triangles (and vertices if we need them)
+        // Stealing data (like the government)
         vertices = mesh.vertices;
         triangles = mesh.triangles;
+
+        /*
+        for (int i = 0; i < vertices.Length; i++)
+            Debug.Log("starting vertices[" + i + "] = " + vertices[i]);
+
+        for (int i = 0; i < triangles.Length; i += 3)
+            Debug.Log("starting triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+        */
 
         // This vertex (the one we're holding atm)
         // If we drag this vertex on top of another, we merge the two, and we delete the one in our hand
@@ -68,6 +77,10 @@ public class Merge : MonoBehaviour
     // Save the data we need for the vertex we're merging (this is the one of the two we're deleting)
     private void getDeleterData()
     {
+        // Reset needed data
+        vertices = mesh.vertices;
+        triangles = mesh.triangles;
+
         // Grab last index of the vertices array
         // If our deleter vertex is the last index, we don't care about updating the vertex IDs
         if (vertex1 == vertices.Length - 1)
@@ -111,9 +124,9 @@ public class Merge : MonoBehaviour
             // Delete the edge that connects the two vertices
             if (reconnect.vert1 == vertex2 || reconnect.vert2 == vertex2)
             {
-                takeoverVertex.connectedEdges.Remove(reconnect);
-                Destroy(reconnect.thisEdge);
-                meshRebuilder.edgeObjects.Remove(reconnect);
+                // takeoverVertex.connectedEdges.Remove(reconnect);
+                // Destroy(reconnect.thisEdge);
+                // meshRebuilder.edgeObjects.Remove(reconnect);
             }
             else
             {
@@ -181,7 +194,7 @@ public class Merge : MonoBehaviour
             // Move vertex in last position to the position of the one we just deleted
             Vector3 lastVertex = verticesList[verticesList.Count - 1];
             verticesList.RemoveAt(verticesList.Count - 1);
-            verticesList.Insert(vertex1 - 1, lastVertex);
+            verticesList.Insert(vertex1, lastVertex);
 
             // Update the triangles for the newly moved last vertex
             trianglesList = UpdateTriangles(trianglesList, lastVertTriReferences, vertices.Length - 1, vertex1);
@@ -190,9 +203,10 @@ public class Merge : MonoBehaviour
             // Vertex lastVertexGO = GameObject.Find("Vertex" + (vertices.Length - 1)).GetComponent<Vertex>();
             Vertex lastVertexGO = meshRebuilder.vertexObjects[meshRebuilder.vertexObjects.Count - 1];
             meshRebuilder.vertexObjects.RemoveAt(verticesList.Count - 1);
-            meshRebuilder.vertexObjects.Insert(vertex1 - 1, lastVertexGO);
+            meshRebuilder.vertexObjects.Insert(vertex1, lastVertexGO);
             lastVertexGO.name = "Vertex" + vertex1.ToString();
             lastVertexGO.id = vertex1;
+            relocaterVertex = lastVertexGO;
 
             // Update Edge.cs (Vertex.connectedEdges -> Edge.vert1 or Edge.vert2)
             foreach (Edge reconnect in lastVertexGO.connectedEdges)
@@ -225,9 +239,6 @@ public class Merge : MonoBehaviour
                 }
             }
         }
-
-        // Delete the merged vertex
-        Destroy(deleterVertex.thisVertex);
 
         vertices = verticesList.ToArray();
         triangles = trianglesList.ToArray();
@@ -268,13 +279,11 @@ public class Merge : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
-        /*
         for (int i = 0; i < vertices.Length; i++)
             Debug.Log("vertices[" + i + "] = " + vertices[i]);
 
         for (int i = 0; i < triangles.Length; i += 3)
             Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
-        */
 
         // Update actual mesh data
         mesh.Clear();
@@ -284,15 +293,13 @@ public class Merge : MonoBehaviour
         meshRebuilder.triangles = triangles;
         mesh.RecalculateNormals();
 
-        /*
         for (int i = 0; i < mesh.vertices.Length; i++)
             Debug.Log("mesh.vertices[" + i + "] = " + mesh.vertices[i]);
 
         for (int i = 0; i < mesh.triangles.Length; i += 3)
             Debug.Log("mesh.triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i + 1] + ", " + mesh.triangles[i + 2]);
-        */
 
-        // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
+        // Reconnect edges to vertices (visually)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
             GameObject edgeObject = edge.thisEdge;
@@ -309,16 +316,27 @@ public class Merge : MonoBehaviour
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
 
-        // meshRebuilder.removeVisuals();
-        // meshRebuilder.CreateVisuals(mesh.vertices, mesh.triangles);
+        // Make sure faces are in the correct spots
+        UpdateFaces(takeoverVertex);
+        UpdateFaces(relocaterVertex);
     }
 
-    void checkImport()
+    // Put the faces in the center of each triangle ("visually")
+    void UpdateFaces(Vertex vertex)
     {
-        // editingSpace = GameObject.Find("EditingSpace");
-        meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
-        model = meshRebuilder.model;
-        mesh = model.GetComponent<MeshFilter>().mesh;
+        foreach (Face face in vertex.connectedFaces)
+        {
+            GameObject faceObject = face.gameObject;
+            int vert1 = face.vert1;
+            int vert2 = face.vert2;
+            int vert3 = face.vert3;
+
+            float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
+            float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
+            float totalZ = vertices[vert1].z + vertices[vert2].z + vertices[vert3].z;
+
+            faceObject.transform.localPosition = new Vector3(totalX / 3, totalY / 3, totalZ / 3);
+        }
     }
 
     // Easiest way to detect a vertex being dragged on top of another was with triggers
@@ -354,8 +372,6 @@ public class Merge : MonoBehaviour
         }
         triggerCheck = 2;
 
-        // checkImport();
-
         meshRebuilder.vertices = mesh.vertices;
         meshRebuilder.triangles = mesh.triangles;
 
@@ -386,5 +402,6 @@ public class Merge : MonoBehaviour
         getDeleterData();
         mergeWithTakeover();
         UpdateMesh(vertex2);
+        Destroy(deleterVertex.thisVertex);
     }
 }

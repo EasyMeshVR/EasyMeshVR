@@ -124,6 +124,7 @@ public class MoveFace : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace || thisFace.locked)
             return;
 
+        Debug.Log("edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
 
         edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
         edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
