@@ -29,8 +29,9 @@ public class MoveFace : MonoBehaviour
     public Mesh mesh;
     public MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
-    Vector3[] timelineVertices;
-    int[] timelineTriangles;
+    Vector3 oldFacePosition;
+    Vector3 oldVert1Position, oldVert2Position, oldVert3Position;
+    Vector3 oldEdge1Position, oldEdge2Position, oldEdge3Position;
 
     // Edge lookup
     //Edge thisedge;
@@ -103,8 +104,13 @@ public class MoveFace : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
-        timelineVertices = mesh.vertices;
-        timelineTriangles = mesh.triangles;
+        oldFacePosition = thisFace.transform.position;
+        oldVert1Position = meshRebuilder.vertices[thisFace.vert1];
+        oldVert2Position = meshRebuilder.vertices[thisFace.vert2];
+        oldVert3Position = meshRebuilder.vertices[thisFace.vert3];
+        oldEdge1Position = thisFace.edgeObj1.transform.position;
+        oldEdge2Position = thisFace.edgeObj2.transform.position;
+        oldEdge3Position = thisFace.edgeObj3.transform.position;
 
         // Keep mesh filter updated with most recent mesh data changes
         // meshRebuilder.triangles = mesh.triangles;
@@ -193,8 +199,18 @@ public class MoveFace : MonoBehaviour
 
         grabHeld = false;
 
+        Vector3 newVert1Position = meshRebuilder.vertices[thisFace.vert1];
+        Vector3 newVert2Position = meshRebuilder.vertices[thisFace.vert2];
+        Vector3 newVert3Position = meshRebuilder.vertices[thisFace.vert3];
+        Vector3 newEdge1Position = thisFace.edgeObj1.transform.position;
+        Vector3 newEdge2Position = thisFace.edgeObj2.transform.position;
+        Vector3 newEdge3Position = thisFace.edgeObj3.transform.position;
+
         Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        MoveFaceOp op = new MoveFaceOp(meshRebuilder.id, thisFace.id, oldFacePosition, thisFace.transform.position, 
+                                       oldVert1Position, newVert1Position, oldVert2Position, newVert2Position,
+                                       oldVert3Position, newVert3Position, oldEdge1Position, newEdge1Position,
+                                       oldEdge2Position, newEdge2Position, oldEdge2Position, newEdge3Position);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
 
@@ -206,6 +222,7 @@ public class MoveFace : MonoBehaviour
         FacePullEvent faceEvent = new FacePullEvent
         {
             id = thisFace.id,
+            meshId = meshRebuilder.id,
             vert1 = thisFace.vert1,
             vert2 = thisFace.vert2,
             vert3 = thisFace.vert3,
@@ -291,6 +308,7 @@ public class MoveFace : MonoBehaviour
             FacePullEvent faceEvent = new FacePullEvent
             {
                 id = thisFace.id,
+                meshId = meshRebuilder.id,
                 vert1 = thisFace.vert1,
                 vert2 = thisFace.vert2,
                 vert3 = thisFace.vert3,

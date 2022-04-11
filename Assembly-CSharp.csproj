@@ -152,6 +152,7 @@
     <Compile Include="Assets\Scripts\UI\GameSettingsMenu.cs" />
     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveVertexOp.cs" />
     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveEdgeOp.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveFaceOp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />
