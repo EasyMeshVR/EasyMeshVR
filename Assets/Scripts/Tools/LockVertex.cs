@@ -149,6 +149,11 @@ public class LockVertex : ToolClass
         
         foreach(Edge e in meshRebuilder.edgeObjects)
         {
+            // Don't unlock edge if it has another vertex that is locked
+            if(meshRebuilder.vertexObjects[e.vert1].GetComponent<MoveVertices>().isLocked
+                || meshRebuilder.vertexObjects[e.vert2].GetComponent<MoveVertices>().isLocked)
+                continue;
+
             if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
             {
                 e.GetComponent<XRGrabInteractable>().enabled = true;
@@ -165,6 +170,12 @@ public class LockVertex : ToolClass
 
         foreach(Face f in meshRebuilder.faceObjects)
         {
+            // Don't unlock if another vertex on the face is locked
+            if(meshRebuilder.vertexObjects[f.vert1].GetComponent<MoveVertices>().isLocked
+                || meshRebuilder.vertexObjects[f.vert2].GetComponent<MoveVertices>().isLocked
+                || meshRebuilder.vertexObjects[f.vert3].GetComponent<MoveVertices>().isLocked)
+                continue;
+
             if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id || f.vert3 == currentVertex.id)
             {
                 f.GetComponent<XRGrabInteractable>().enabled = true;

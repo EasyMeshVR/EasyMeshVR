@@ -1811,6 +1811,7 @@ MonoBehaviour:
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  lockedEdge: {fileID: 0}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
   currentVertex: {fileID: 0}
@@ -2433,6 +2434,7 @@ MonoBehaviour:
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   hovered: {fileID: 2100000, guid: f03d16f65ed867045afd4310497c7535, type: 2}
+  lockedEdge: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
   switchControllers: {fileID: 299127986}
   ray: {fileID: 1647071324}
   currentVertex: {fileID: 0}
@@ -2491,8 +2493,10 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
+  rightTrigger: {fileID: 0}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
+  rightTriggerPressed: 0
   isEnabled: 1
   cm: {fileID: 2059701658}
   currentObj: {fileID: 0}
