@@ -28,6 +28,7 @@ public class MoveVertices : MonoBehaviour
     GameObject model;
     Mesh mesh;
     public MeshRebuilder meshRebuilder;
+    Vector3 oldVertexPos;
     MeshRenderer materialSwap;
 
     // Vertex lookup
@@ -84,6 +85,7 @@ public class MoveVertices : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
+        oldVertexPos = meshRebuilder.vertices[thisvertex.id];
 
         // The selected vertex is just the saved id of this vertex representing its index in the vertices array
         selectedVertex = thisvertex.id;
@@ -114,22 +116,38 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
+        Vector3 newVertexPos = meshRebuilder.vertices[selectedVertex];
+
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
             id = selectedVertex,
             meshId = meshRebuilder.id,
-            vertexPos = meshRebuilder.vertices[selectedVertex],
+            oldVertexPos = oldVertexPos,
+            vertexPos = newVertexPos,
             released = true,
             isCached = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
 
+        AddMoveVertexOpStep(vertexEvent);
+
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
 
-        StartCoroutine(DisableTrigger());
-        StopCoroutine(DisableTrigger());
+        if (enabled && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(DisableTrigger());
+            StopCoroutine(DisableTrigger());
+        }
+    }
+
+    public void AddMoveVertexOpStep(VertexPullEvent vertexEvent)
+    {
+        MoveVertexOp op = new MoveVertexOp(vertexEvent.meshId, vertexEvent.id, vertexEvent.oldVertexPos, vertexEvent.vertexPos);
+        Step step = new Step();
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
     }
 
     IEnumerator DisableTrigger()

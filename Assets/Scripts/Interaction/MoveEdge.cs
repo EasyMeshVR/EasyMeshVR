@@ -28,6 +28,7 @@ public class MoveEdge : MonoBehaviour
     Mesh mesh;
     MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
+    Vector3 oldEdgePosition, oldVert1Position, oldVert2Position;
 
     // Edge lookup
     Edge thisedge;
@@ -85,6 +86,9 @@ public class MoveEdge : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
+        oldEdgePosition = thisedge.transform.position;
+        oldVert1Position = meshRebuilder.vertices[thisedge.vert1];
+        oldVert2Position = meshRebuilder.vertices[thisedge.vert2];
     }
 
     // Set material back to Unselected
@@ -152,16 +156,30 @@ public class MoveEdge : MonoBehaviour
             meshId = meshRebuilder.id,
             vert1 = thisedge.vert1,
             vert2 = thisedge.vert2,
+            oldPosition = oldEdgePosition,
             position = thisedge.transform.position,
+            oldVertex1Pos = oldVert1Position,
             vertex1Pos = vertex1Pos,
+            oldVertex2Pos = oldVert2Position,
             vertex2Pos = vertex2Pos,
             isCached = true,
             released = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
 
+        AddMoveEdgeOpStep(edgeEvent);
+
         NetworkMeshManager.instance.SynchronizeMeshEdgePull(edgeEvent);
         pulleyLocomotion.isMovingVertex = false;
+    }
+
+    public void AddMoveEdgeOpStep(EdgePullEvent edgeEvent)
+    {
+        Step step = new Step();
+        MoveEdgeOp op = new MoveEdgeOp(edgeEvent.meshId, edgeEvent.id, edgeEvent.oldPosition, edgeEvent.position,
+                                       edgeEvent.oldVertex1Pos, edgeEvent.vertex1Pos, edgeEvent.oldVertex2Pos, edgeEvent.vertex2Pos);
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
     }
 
     // If the grab button is held, keep updating mesh data until it's released
