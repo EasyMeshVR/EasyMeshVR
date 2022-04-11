@@ -29,6 +29,9 @@ public class MoveFace : MonoBehaviour
     public Mesh mesh;
     public MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
+    Vector3 oldFacePosition;
+    Vector3 oldVert1Position, oldVert2Position, oldVert3Position;
+    Vector3 oldEdge1Position, oldEdge2Position, oldEdge3Position;
 
     // Edge lookup
     //Edge thisedge;
@@ -101,9 +104,16 @@ public class MoveFace : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
+        oldFacePosition = thisFace.transform.position;
+        oldVert1Position = meshRebuilder.vertices[thisFace.vert1];
+        oldVert2Position = meshRebuilder.vertices[thisFace.vert2];
+        oldVert3Position = meshRebuilder.vertices[thisFace.vert3];
+        oldEdge1Position = thisFace.edgeObj1.transform.position;
+        oldEdge2Position = thisFace.edgeObj2.transform.position;
+        oldEdge3Position = thisFace.edgeObj3.transform.position;
 
-                // Keep mesh filter updated with most recent mesh data changes
-       // meshRebuilder.triangles = mesh.triangles;
+        // Keep mesh filter updated with most recent mesh data changes
+        // meshRebuilder.triangles = mesh.triangles;
 
         //print("Face " +thisFace.id + " vertices " + thisFace.vert1 + " " + thisFace.vert2 + " " + thisFace.vert3);
 
@@ -190,6 +200,10 @@ public class MoveFace : MonoBehaviour
 
         grabHeld = false;
 
+        Vector3 newEdge1Position = thisFace.edgeObj1.transform.position;
+        Vector3 newEdge2Position = thisFace.edgeObj2.transform.position;
+        Vector3 newEdge3Position = thisFace.edgeObj3.transform.position;
+
         Vector3 vertex1Pos = meshRebuilder.vertices[thisFace.vert1];
         Vector3 vertex2Pos = meshRebuilder.vertices[thisFace.vert2];
         Vector3 vertex3Pos = meshRebuilder.vertices[thisFace.vert3];
@@ -198,21 +212,34 @@ public class MoveFace : MonoBehaviour
         FacePullEvent faceEvent = new FacePullEvent
         {
             id = thisFace.id,
+            meshId = meshRebuilder.id,
             vert1 = thisFace.vert1,
             vert2 = thisFace.vert2,
             vert3 = thisFace.vert3,
             edge1 = thisFace.edge1,
             edge2 = thisFace.edge2,
             edge3 = thisFace.edge3,
+            oldPosition = oldFacePosition,
             position = thisFace.transform.position,
+            oldVertex1Pos = oldVert1Position,
             vertex1Pos = vertex1Pos,
+            oldVertex2Pos = oldVert2Position,
             vertex2Pos = vertex2Pos,
+            oldVertex3Pos = oldVert3Position,
             vertex3Pos = vertex3Pos,
+            oldEdge1Pos = oldEdge1Position,
+            edge1Pos = newEdge1Position,
+            oldEdge2Pos = oldEdge2Position,
+            edge2Pos = newEdge2Position,
+            oldEdge3Pos = oldEdge3Position,
+            edge3Pos = newEdge3Position,
             normal = thisFace.normal,
             isCached = true,
             released = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
+
+        AddMoveFaceOpStep(faceEvent);
 
         NetworkMeshManager.instance.SynchronizeMeshFacePull(faceEvent);
 
@@ -223,6 +250,17 @@ public class MoveFace : MonoBehaviour
 
         thisFace.transform.localPosition = new Vector3(totalX/3, totalY/3, totalZ/3);
         pulleyLocomotion.isMovingVertex = false;
+    }
+
+    public void AddMoveFaceOpStep(FacePullEvent faceEvent)
+    {
+        Step step = new Step();
+        MoveFaceOp op = new MoveFaceOp(faceEvent.meshId, faceEvent.id, faceEvent.oldPosition, faceEvent.position,
+                                       faceEvent.oldVertex1Pos, faceEvent.vertex1Pos, faceEvent.oldVertex2Pos, faceEvent.vertex2Pos,
+                                       faceEvent.oldVertex3Pos, faceEvent.vertex3Pos, faceEvent.oldEdge1Pos, faceEvent.edge1Pos,
+                                       faceEvent.oldEdge2Pos, faceEvent.edge2Pos, faceEvent.oldEdge3Pos, faceEvent.edge3Pos);
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
     }
 
     // If the grab button is held, keep updating mesh data until it's released
@@ -283,6 +321,7 @@ public class MoveFace : MonoBehaviour
             FacePullEvent faceEvent = new FacePullEvent
             {
                 id = thisFace.id,
+                meshId = meshRebuilder.id,
                 vert1 = thisFace.vert1,
                 vert2 = thisFace.vert2,
                 vert3 = thisFace.vert3,

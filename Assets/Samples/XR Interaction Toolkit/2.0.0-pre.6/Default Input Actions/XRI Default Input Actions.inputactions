@@ -1561,8 +1561,63 @@
                 },
                 {
                     "name": "",
+                    "id": "737bcfdf-ecfa-446d-8d96-c6c767a5b45d",
+                    "path": "<XRController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Generic XR Controller",
+                    "action": "TestUndo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ed30c1a5-6cad-4126-9569-20ff520d261e",
+                    "path": "<ValveIndexController>{LeftHand}/primaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestUndo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "e6d60c3a-9a7e-4254-be21-7a90928afb61",
                     "path": "<Keyboard>/#(R)",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestRedo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6f13ef6-8d22-4c2f-9271-a1109e55ba45",
+                    "path": "<OculusTouchController>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestRedo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c7a93423-6388-4b16-9c02-c56e01b8dbff",
+                    "path": "<ValveIndexController>{LeftHand}/secondaryButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TestRedo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "01b53a72-c7ea-4b67-932d-32771f90c2cb",
+                    "path": "<XRInputV1::Oculus::OculusTouchControllerLeft>{LeftHand}/secondarybutton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
