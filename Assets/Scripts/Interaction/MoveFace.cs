@@ -56,6 +56,8 @@ public class MoveFace : MonoBehaviour
     
     public bool grabHeld = false;
 
+    public bool isLocked = false;
+
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -345,7 +347,7 @@ public class MoveFace : MonoBehaviour
     {
         foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
-            if (currEdge.id == edge.id) continue;
+            if (currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
@@ -357,7 +359,7 @@ public class MoveFace : MonoBehaviour
     {
         foreach (Face currFace in meshRebuilder.faceObjects)
         {
-            if (currFace.id == face.id) continue;
+            if (currFace.id == face.id || currFace.GetComponent<MoveFace>().isLocked) continue;
 
             currFace.locked = !active;
             currFace.GetComponent<XRGrabInteractable>().enabled = active;

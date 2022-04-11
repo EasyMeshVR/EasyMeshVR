@@ -69,26 +69,31 @@ public class ChangeMatClosest : MonoBehaviour
 
             materialSwap = nearObject.GetComponent<MeshRenderer>();
 
+            if(nearObject.CompareTag("Edge"))
+                if(nearObject.GetComponent<Edge>().locked)
+                    return;
 
             if(nearObject.CompareTag("Face"))
             {
+                if(nearObject.GetComponent<Face>().locked)
+                    return;
+                    
                 Face faceComp = nearObject.GetComponent<Face>();
                 // don't change material of locked vertices
-                if(!faceComp.vertObj1.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
-                    materialSwap.material = hoveredO;
-                }
-                if(!faceComp.vertObj2.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
-                    materialSwap.material = hoveredO;
-                }
-                if(!faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
-                    materialSwap.material = hoveredO;
-                }
+
+                // return if anything is locked
+                if(faceComp.vertObj1.GetComponent<MoveVertices>().isLocked || faceComp.vertObj2.GetComponent<MoveVertices>().isLocked || faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
+                    return;
+               
+                materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+            
+                materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+            
+                materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = hoveredO;
+                
 
                 // change material of edges
 
@@ -119,7 +124,9 @@ public class ChangeMatClosest : MonoBehaviour
         if(nearObject == null)
             return;
 
-    
+        if(nearObject.CompareTag("Edge"))
+            if(nearObject.GetComponent<Edge>().locked)
+                return;
 
          if(pm.isMovingEditingSpace || pm.isMovingVertex)
             return;
@@ -129,24 +136,24 @@ public class ChangeMatClosest : MonoBehaviour
 
         if(nearObject.CompareTag("Face"))
         {
+            if(nearObject.GetComponent<Face>().locked)
+                    return;
+
                 Face faceComp = nearObject.GetComponent<Face>();
                 // don't change material of locked vertices
-                if(!faceComp.vertObj1.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
-                    materialSwap.material = unselected;
-                }
-                if(!faceComp.vertObj2.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
-                    materialSwap.material = unselected;
-                }
-                if(!faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
-                {
-                    materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
-                    materialSwap.material = unselected;
-                }
 
+                if(faceComp.vertObj1.GetComponent<MoveVertices>().isLocked || faceComp.vertObj2.GetComponent<MoveVertices>().isLocked || faceComp.vertObj3.GetComponent<MoveVertices>().isLocked)
+                    return;
+               
+                materialSwap = faceComp.vertObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+           
+                materialSwap = faceComp.vertObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+                
+                materialSwap = faceComp.vertObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = unselected;
+                
                 // change material of edges
 
                 materialSwap = faceComp.edgeObj1.GetComponent<MeshRenderer>();

@@ -16,6 +16,9 @@ public class LockVertex : ToolClass
     [SerializeField] Material unselected;   // gray
     [SerializeField] Material hovered;      // orange
 
+
+    [SerializeField] Material lockedEdge;     // red
+
     [SerializeField] SwitchControllers switchControllers;
 
     [SerializeField] ToolRaycast ray;
@@ -92,6 +95,30 @@ public class LockVertex : ToolClass
         materialSwap.material = locked;
         currentVertex.GetComponent<MoveVertices>().isLocked = true;
 
+        foreach(Edge e in meshRebuilder.edgeObjects)
+        {
+            if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
+            {
+                e.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap = e.GetComponent<MeshRenderer>();
+                // maybe use the pink lock
+                materialSwap.material = lockedEdge;
+                e.locked = true;
+                e.GetComponent<MoveEdge>().isLocked = true;
+                // maybe add isLocked to all move scipts
+            }
+        }
+
+        foreach(Face f in meshRebuilder.faceObjects)
+        {
+            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id  || f.vert3 == currentVertex.id)
+            {
+                f.GetComponent<XRGrabInteractable>().enabled = false;
+                f.GetComponent<MoveFace>().isLocked = true;
+                f.locked = true;
+            }
+        }
+
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendVertexLockEvent)
         {
@@ -118,6 +145,33 @@ public class LockVertex : ToolClass
         currentVertex.GetComponent<XRGrabInteractable>().enabled = true;
         materialSwap.material = unselected;
         currentVertex.GetComponent<MoveVertices>().isLocked = false;
+
+        
+        foreach(Edge e in meshRebuilder.edgeObjects)
+        {
+            if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
+            {
+                e.GetComponent<XRGrabInteractable>().enabled = true;
+                materialSwap = e.GetComponent<MeshRenderer>();
+                // maybe use the pink lock
+                materialSwap.material = unselected;
+                e.locked = false;
+                e.GetComponent<MoveEdge>().isLocked = false;
+                // maybe add isLocked to all move scipts
+
+            }
+
+        }
+
+        foreach(Face f in meshRebuilder.faceObjects)
+        {
+            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id || f.vert3 == currentVertex.id)
+            {
+                f.GetComponent<XRGrabInteractable>().enabled = true;
+                f.GetComponent<MoveFace>().isLocked = false;
+                f.locked = false;
+            }
+        }
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendVertexLockEvent)
