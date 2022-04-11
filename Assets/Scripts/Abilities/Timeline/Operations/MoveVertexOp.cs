@@ -27,10 +27,9 @@ public class MoveVertexOp : IOperation
     {
         vertexObj.transform.localPosition = newPosition;
         meshRebuilder.vertices[vertexId] = newPosition;
-        //moveVertices.UpdateVertex(vertexObj.transform, vertexId);
         moveVertices.UpdateMesh(vertexId);
 
-        Debug.LogFormat("MoveVertexOp(): Execute on meshId {0} vertexId {1}", meshId, vertexId);
+        // Debug.LogFormat("MoveVertexOp(): Execute on meshId {0} vertexId {1}", meshId, vertexId);
     }
 
     bool IOperation.CanBeExecuted()
@@ -42,10 +41,9 @@ public class MoveVertexOp : IOperation
     {
         vertexObj.transform.localPosition = oldPosition;
         meshRebuilder.vertices[vertexId] = oldPosition;
-        //moveVertices.UpdateVertex(vertexObj.transform, vertexId);
         moveVertices.UpdateMesh(vertexId);
 
-        Debug.LogFormat("MoveVertexOp(): Deexecute on meshId {0} vertexId {1}", meshId, vertexId);
+        // Debug.LogFormat("MoveVertexOp(): Deexecute on meshId {0} vertexId {1}", meshId, vertexId);
     }
 
     public bool CanBeDeexecuted()

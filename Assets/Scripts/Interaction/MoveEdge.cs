@@ -28,8 +28,7 @@ public class MoveEdge : MonoBehaviour
     Mesh mesh;
     MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
-    Vector3[] timelineVertices;
-    int[] timelineTriangles;
+    Vector3 oldEdgePosition, oldVert1Position, oldVert2Position;
 
     // Edge lookup
     Edge thisedge;
@@ -87,8 +86,9 @@ public class MoveEdge : MonoBehaviour
 
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
-        timelineVertices = mesh.vertices;
-        timelineTriangles = mesh.triangles;
+        oldEdgePosition = thisedge.transform.position;
+        oldVert1Position = meshRebuilder.vertices[thisedge.vert1];
+        oldVert2Position = meshRebuilder.vertices[thisedge.vert2];
     }
 
     // Set material back to Unselected
@@ -146,8 +146,12 @@ public class MoveEdge : MonoBehaviour
 
         grabHeld = false;
 
+        Vector3 newVert1Position = meshRebuilder.vertices[thisedge.vert1];
+        Vector3 newVert2Position = meshRebuilder.vertices[thisedge.vert2];
+
         Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        MoveEdgeOp op = new MoveEdgeOp(meshRebuilder.id, thisedge.id, oldEdgePosition, thisedge.transform.position, 
+                                       oldVert1Position, newVert1Position, oldVert2Position, newVert2Position);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
 
