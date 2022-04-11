@@ -35,15 +35,26 @@ public class LockAxis : ToolClass
     }
 
     // First press - locks to x, 2nd press - locks to y, 3rd press - locks to z, 4th - unlocked
+
+    // need to prevent cycling while grabbing
     public override void PrimaryAction()
     {
+        if(!rightTriggerPressed)
+            return;
+
         if(!inRadius)
             return;
 
         if(currentObj == null)
             return;
 
-        if(unlocked)
+        // should prevent cycling while grabbing
+        if(!unlocked && (lockX || lockY || lockZ))
+            return;
+
+        // Lock x first (Z axis)
+        // lock Z indicates to go back
+        if(unlocked && (!lockX && !lockY))
         {
             lockX = true;
             unlocked = false;
@@ -53,6 +64,7 @@ public class LockAxis : ToolClass
             return;
         }
 
+        // Lock y 2nd
         if(lockX)
         {
             lockX = false;
@@ -64,6 +76,7 @@ public class LockAxis : ToolClass
             return;
         }
 
+        // Lock Z 3rd
          if(lockY)
         {
             lockX = false;
@@ -73,19 +86,10 @@ public class LockAxis : ToolClass
 
             lockAxis();
             return;
-        }
-
-         if(lockZ)
-        {
-            lockX = false;
-            lockY = false;
-            lockZ = false;
-            unlocked = true;
-            Unlock();
-            return;
-        }
+        } 
     }
 
+    // unlock but cycle back to beginning
     public override void SecondaryAction()
     {
         if(!inRadius)
@@ -94,10 +98,18 @@ public class LockAxis : ToolClass
         if(currentObj == null)
             return;
 
-       // unlocked = true;
-      //  lockX = false;
-       // lockY = false;
-       // lockZ = false;
+       unlocked = true;
+       lockX = false;
+       lockY = false;
+       lockZ = false;
+        Unlock();
+    }
+
+    // When object is let go, unlock
+    public override void triggerEnd(InputAction.CallbackContext context)
+    {
+        //base.triggerEnd(context);
+        unlocked = true;
         Unlock();
     }
 
@@ -118,6 +130,7 @@ public class LockAxis : ToolClass
         // add configjoint and change settings
         currentObj.AddComponent<ConfigurableJoint>();
         currentObj.GetComponent<ConfigurableJoint>().axis = new Vector3(0,0,-1);
+        unlocked = true;
         
         // Lock X axis relative to player 1 spawn (Z axis)
         if(lockX)
@@ -196,12 +209,15 @@ public class LockAxis : ToolClass
 
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Vertex") || other.CompareTag("Edge") || other.CompareTag("Face"))
-        {
+       // if (other.CompareTag("Vertex") || other.CompareTag("Edge") || other.CompareTag("Face"))
+       // {
            // currentObj = other.gameObject;
-           currentObj = cm.nearObject; 
+           //currentObj = cm.nearObject; 
+           // Faces and edges get weird when messing with it
+            if(cm.nearObject.CompareTag("Vertex"))
+                currentObj = cm.nearObject;
             inRadius = true;
-        }
+        //}
     }
 
     public void OnTriggerExit(Collider other)
