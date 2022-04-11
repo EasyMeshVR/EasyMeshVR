@@ -118,20 +118,18 @@ public class MoveVertices : MonoBehaviour
 
         Vector3 newVertexPos = meshRebuilder.vertices[selectedVertex];
 
-        Step step = new Step();
-        MoveVertexOp op = new MoveVertexOp(meshRebuilder.id, selectedVertex, oldVertexPos, newVertexPos);
-        step.AddOp(op);
-        StepExecutor.instance.AddStep(step);
-
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
             id = selectedVertex,
             meshId = meshRebuilder.id,
+            oldVertexPos = oldVertexPos,
             vertexPos = newVertexPos,
             released = true,
             isCached = true,
             actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
         };
+
+        AddMoveVertexOpStep(vertexEvent);
 
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
@@ -142,6 +140,14 @@ public class MoveVertices : MonoBehaviour
             StartCoroutine(DisableTrigger());
             StopCoroutine(DisableTrigger());
         }
+    }
+
+    public void AddMoveVertexOpStep(VertexPullEvent vertexEvent)
+    {
+        MoveVertexOp op = new MoveVertexOp(vertexEvent.meshId, vertexEvent.id, vertexEvent.oldVertexPos, vertexEvent.vertexPos);
+        Step step = new Step();
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
     }
 
     IEnumerator DisableTrigger()

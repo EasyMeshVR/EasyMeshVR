@@ -63,18 +63,18 @@ public class Extrude : ToolClass
         Face faceObj = currentFace.GetComponent<Face>();
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
-        Mesh mesh = moveFace.mesh;
         float extrudeDistance = 1f;
 
-        // Don't need this here anymore since ExtrudeOp calls extrudeFace() already
-        // extrudeFace(faceObj.id, meshRebuilder, mesh, extrudeDistance);
+        AddExtrudeOpStep(meshRebuilder.id, faceObj.id, extrudeDistance);
+    }
 
+    public void AddExtrudeOpStep(int meshId, int faceId, float extrudeDistance, bool sendFaceExtrudeEvent = true)
+    {
         Step step = new Step();
-        ExtrudeOp op = new ExtrudeOp(meshRebuilder.id, faceObj.id, extrudeDistance);
+        ExtrudeOp op = new ExtrudeOp(meshId, faceId, extrudeDistance, sendFaceExtrudeEvent);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
     }
-
 
     // Extrude and move on first press, stop moving on second press
     public override void SecondaryAction()
@@ -98,15 +98,8 @@ public class Extrude : ToolClass
 
         if (inRadius && !movingNewFace)
         {
-            // Don't need this here anymore since ExtrudeOp calls extrudeFace() already
-            //moveNewFace(meshRebuilder);
-
-            Step step = new Step();
-            ExtrudeOp op = new ExtrudeOp(meshRebuilder.id, faceObj.id, extrudeDistance);
-            step.AddOp(op);
-            StepExecutor.instance.AddStep(step);
+            AddExtrudeOpStep(meshRebuilder.id, faceObj.id, extrudeDistance);
             moveNewFace(meshRebuilder);
-
             return;
         }
     }

@@ -489,6 +489,11 @@ namespace EasyMeshVR.Multiplayer
             Vertex vertexObj = meshRebuilder.vertexObjects[index];
             MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
 
+            if (vertexEvent.released)
+            {
+                moveVertices.AddMoveVertexOpStep(vertexEvent);
+            }
+
             vertexObj.transform.localPosition = vertexPos;
             vertexObj.isHeldByOther = !released;
             vertexObj.heldByActorNumber = (released) ? -1 : vertexEvent.actorNumber;
@@ -524,6 +529,11 @@ namespace EasyMeshVR.Multiplayer
             Vertex vert1Obj = meshRebuilder.vertexObjects[edgeEvent.vert1];
             Vertex vert2Obj = meshRebuilder.vertexObjects[edgeEvent.vert2];
             MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+
+            if (edgeEvent.released)
+            {
+                moveEdge.AddMoveEdgeOpStep(edgeEvent);
+            }
 
             int heldByActorNumber = (edgeEvent.released) ? -1 : edgeEvent.actorNumber;
             edgeObj.isHeldByOther = vert1Obj.isHeldByOther = vert2Obj.isHeldByOther = !edgeEvent.released;
@@ -569,6 +579,11 @@ namespace EasyMeshVR.Multiplayer
             Edge edge3Obj = meshRebuilder.edgeObjects[faceEvent.edge3];
             MoveFace moveFace = faceObj.GetComponent<MoveFace>();
 
+            if (faceEvent.released)
+            {
+                moveFace.AddMoveFaceOpStep(faceEvent);
+            }
+
             int heldByActorNumber = (faceEvent.released) ? -1 : faceEvent.actorNumber;
 
             faceObj.isHeldByOther 
@@ -608,18 +623,8 @@ namespace EasyMeshVR.Multiplayer
 
         private void HandleMeshFaceExtrudeEvent(FaceExtrudeEvent faceExtrudeEvent)
         {
-            MeshRebuilder meshRebuilder = meshRebuilders[faceExtrudeEvent.meshId];
-
-            if (meshRebuilder == null)
-            {
-                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshFaceExtrudeEvent() - meshRebuilder is null for meshId {0}", faceExtrudeEvent.meshId);
-                return;
-            }
-
-            Mesh mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
-            
             Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
-            extrudeTool.extrudeFace(faceExtrudeEvent.id, meshRebuilder, mesh, faceExtrudeEvent.extrudeDistance, false);
+            extrudeTool.AddExtrudeOpStep(faceExtrudeEvent.meshId, faceExtrudeEvent.id, faceExtrudeEvent.extrudeDistance, false);
         }
 
         private void HandleMeshVertexLockEvent(object[] data)

@@ -12,12 +12,14 @@ public class ExtrudeOp : IOperation
     Extrude.ExtrudedObjects extrudedObjects;
     int meshId, faceId;
     float extrudeDistance;
+    bool sendFaceExtrudeEvent;
 
-    public ExtrudeOp(int meshId, int faceId, float extrudeDistance)
+    public ExtrudeOp(int meshId, int faceId, float extrudeDistance, bool sendFaceExtrudeEvent)
     {
         this.meshId = meshId;
         this.faceId = faceId;
         this.extrudeDistance = extrudeDistance;
+        this.sendFaceExtrudeEvent = sendFaceExtrudeEvent;
 
         meshRebuilder = NetworkMeshManager.instance.meshRebuilders[meshId];
         mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
@@ -28,7 +30,11 @@ public class ExtrudeOp : IOperation
     public void Execute()
     {
         Extrude extrudeTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.extrudeScriptRay : ToolManager.instance.extrudeScriptGrab;
-        extrudedObjects = extrudeTool.extrudeFace(faceId, meshRebuilder, mesh, extrudeDistance, false);
+        extrudedObjects = extrudeTool.extrudeFace(faceId, meshRebuilder, mesh, extrudeDistance, sendFaceExtrudeEvent);
+
+        // Set the sendFaceExtrudeEvent to false after sending, since we only want to send it once and
+        // let the redo timeline event handle re-creating the mesh
+        if (sendFaceExtrudeEvent) sendFaceExtrudeEvent = false;
 
         // Debug.LogFormat("ExtrudeOp(): Execute on meshId {0} faceId {1}", meshId, faceId);
     }
