@@ -657,11 +657,11 @@ namespace EasyMeshVR.Multiplayer
             LockVertex lockVertexTool = (SwitchControllers.instance.rayActive) ? ToolManager.instance.lockScriptRay : ToolManager.instance.lockScriptGrab;
             if (locked)
             {
-                lockVertexTool.Lock(vertex, false);
+                lockVertexTool.Lock(vertex.gameObject, false);
             }
             else
             {
-                lockVertexTool.Unlock(vertex, false);
+                lockVertexTool.Unlock(vertex.gameObject, false);
             }
         }
 

@@ -26,7 +26,7 @@ public class MoveEdge : MonoBehaviour
 
     // Mesh data
     Mesh mesh;
-    MeshRebuilder meshRebuilder;
+    public MeshRebuilder meshRebuilder;
     public MeshRenderer materialSwap;
     Vector3 oldEdgePosition, oldVert1Position, oldVert2Position;
 

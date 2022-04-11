@@ -25,9 +25,7 @@ public class LockVertex : ToolClass
 
    // public PulleyLocomotion pulleyLocomotion;
    // public GameObject editingSpace;
-    public GameObject currentVertex;
-    public GameObject currentEdge;
-
+    public GameObject currentObj;
     public bool inRadius = false;
 
     public SphereCollider leftSphere;
@@ -63,12 +61,22 @@ public class LockVertex : ToolClass
         if(!inRadius)
             return;
 
-        if(currentVertex == null)
+        if(currentObj == null)
             return;
         
-        if(currentVertex.GetComponent<MoveVertices>().isLocked)
-            return;
-        Lock(currentVertex.GetComponent<Vertex>());
+        if(currentObj.CompareTag("Vertex"))
+            if(currentObj.GetComponent<MoveVertices>().isLocked)
+                return;
+
+        if(currentObj.CompareTag("Edge"))
+            if(currentObj.GetComponent<MoveEdge>().isLocked)
+                return;
+
+        if(currentObj.CompareTag("Face"))
+            if(currentObj.GetComponent<MoveFace>().isLocked)
+                return;
+
+        Lock(currentObj);
     }
 
     public override void SecondaryAction()
@@ -76,126 +84,343 @@ public class LockVertex : ToolClass
         if(!inRadius)
             return;
 
-        if(currentVertex == null)
+        if(currentObj == null)
             return;
         
-        if(!currentVertex.GetComponent<MoveVertices>().isLocked)
-            return;
+        if(currentObj.CompareTag("Vertex"))
+            if(!currentObj.GetComponent<MoveVertices>().isLocked)
+                return;
 
-        Unlock(currentVertex.GetComponent<Vertex>());
+        if(currentObj.CompareTag("Edge"))
+            if(!currentObj.GetComponent<MoveEdge>().isLocked)
+                return;
+
+        if(currentObj.CompareTag("Face"))
+            if(!currentObj.GetComponent<MoveFace>().isLocked)
+                return;
+
+        Unlock(currentObj);
     }
 
     // Change material, disable vertex grab interactable, set boolean
-    public void Lock(Vertex currentVertex, bool sendVertexLockEvent = true)
+    public void Lock(GameObject currentObj, bool sendVertexLockEvent = true)
     {
-        MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
-
-        materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        currentVertex.GetComponent<XRGrabInteractable>().enabled = false;
-        materialSwap.material = locked;
-        currentVertex.GetComponent<MoveVertices>().isLocked = true;
-
-        foreach(Edge e in meshRebuilder.edgeObjects)
+        
+        if(currentObj == null)
+            return;
+        if(currentObj.CompareTag("Vertex"))
         {
-            if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveVertices>().meshRebuilder;
+
+            materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = false;
+            materialSwap.material = locked;
+            currentObj.GetComponent<MoveVertices>().isLocked = true;
+            Vertex currVert = currentObj.GetComponent<Vertex>();
+
+            foreach(Edge e in meshRebuilder.edgeObjects)
             {
-                e.GetComponent<XRGrabInteractable>().enabled = false;
-                materialSwap = e.GetComponent<MeshRenderer>();
-                // maybe use the pink lock
-                materialSwap.material = lockedEdge;
-                e.locked = true;
-                e.GetComponent<MoveEdge>().isLocked = true;
-                // maybe add isLocked to all move scipts
+                if(e.vert1 == currVert.id || e.vert2 == currVert.id)
+                {
+                    e.GetComponent<XRGrabInteractable>().enabled = false;
+                    materialSwap = e.GetComponent<MeshRenderer>();
+                    materialSwap.material = lockedEdge;
+                    e.locked = true;
+                    e.GetComponent<MoveEdge>().isLocked = true;
+                }
+            }
+
+            foreach(Face f in meshRebuilder.faceObjects)
+            {
+                if(f.vert1 == currVert.id || f.vert2 == currVert.id  || f.vert3 == currVert.id)
+                {
+                    f.GetComponent<XRGrabInteractable>().enabled = false;
+                    f.GetComponent<MoveFace>().isLocked = true;
+                    f.locked = true;
+                }
+            }
+
+            // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+
+            if (sendVertexLockEvent)
+            {
+                // Synchronize the cached vertex lock event to other players by vertex id
+                VertexLockEvent vertexLockEvent = new VertexLockEvent()
+                {
+                    id = currVert.id,
+                    meshId = meshRebuilder.id,
+                    isCached = true,
+                    locked = true,
+                    actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+                };
+
+                NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
             }
         }
 
-        foreach(Face f in meshRebuilder.faceObjects)
+        if(currentObj.CompareTag("Edge"))
         {
-            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id  || f.vert3 == currentVertex.id)
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveEdge>().meshRebuilder;
+
+            materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = false;
+            materialSwap.material = locked;
+            currentObj.GetComponent<MoveVertices>().isLocked = true;
+            Edge currEdge = currentObj.GetComponent<Edge>();
+
+            foreach(Vertex v in meshRebuilder.vertexObjects)
             {
-                f.GetComponent<XRGrabInteractable>().enabled = false;
-                f.GetComponent<MoveFace>().isLocked = true;
-                f.locked = true;
+                if(v.id == currEdge.vert1 || v.id == currEdge.vert2)
+                {
+                    v.GetComponent<XRGrabInteractable>().enabled = false;
+                    materialSwap = v.GetComponent<MeshRenderer>();
+                    materialSwap.material = locked;
+                    v.GetComponent<MoveVertices>().isLocked = true;
+                }
             }
-        }
 
-        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
-        if (sendVertexLockEvent)
-        {
-            // Synchronize the cached vertex lock event to other players by vertex id
-            VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            foreach(Face f in meshRebuilder.faceObjects)
             {
-                id = currentVertex.id,
-                meshId = meshRebuilder.id,
-                isCached = true,
-                locked = true,
-                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
-            };
+                if(f.edge1 == currEdge.id || f.edge2 == currEdge.id  || f.edge3 == currEdge.id)
+                {
+                    f.GetComponent<XRGrabInteractable>().enabled = false;
+                    f.GetComponent<MoveFace>().isLocked = true;
+                    f.locked = true;
+                }
+            }
 
-            NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+            // if (sendVertexLockEvent)
+            // {
+            //     // Synchronize the cached vertex lock event to other players by vertex id
+            //     VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            //     {
+            //         id = currEdge.id,
+            //         meshId = meshRebuilder.id,
+            //         isCached = true,
+            //         locked = true,
+            //         actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            //     };
+
+            //     NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+            // }
         }
+
+        if(currentObj.CompareTag("Face"))
+        {
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveFace>().meshRebuilder;
+
+           // materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = false;
+           // materialSwap.material = locked;
+            currentObj.GetComponent<MoveVertices>().isLocked = true;
+            Face currFace = currentObj.GetComponent<Face>();
+
+            foreach(Edge e in meshRebuilder.edgeObjects)
+            {
+                if(e.id == currFace.edge1 || e.id == currFace.edge2 || e.id == currFace.edge3)
+                {
+                    e.GetComponent<XRGrabInteractable>().enabled = false;
+                    materialSwap = e.GetComponent<MeshRenderer>();
+                    materialSwap.material = lockedEdge;
+                    e.locked = true;
+                    e.GetComponent<MoveEdge>().isLocked = true;
+                }
+            }
+
+            foreach(Vertex v in meshRebuilder.vertexObjects)
+            {
+                if(v.id == currFace.vert1 || v.id == currFace.vert2 || v.id == currFace.vert3)
+                {
+                    v.GetComponent<XRGrabInteractable>().enabled = false;
+                    materialSwap = v.GetComponent<MeshRenderer>();
+                    materialSwap.material = locked;
+                    v.GetComponent<MoveVertices>().isLocked = true;
+                }
+            }
+
+            // if (sendVertexLockEvent)
+            // {
+            //     // Synchronize the cached vertex lock event to other players by vertex id
+            //     VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            //     {
+            //         id = currFace.id,
+            //         meshId = meshRebuilder.id,
+            //         isCached = true,
+            //         locked = true,
+            //         actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            //     };
+
+            //     NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+            // }
+        }
+
+       
     }
 
     // Change material, enbable vertex grab interactable, set boolean
-    public void Unlock(Vertex currentVertex, bool sendVertexLockEvent = true)
+    public void Unlock(GameObject currentObj, bool sendVertexLockEvent = true)
     {
-        MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
-
-        materialSwap = currentVertex.GetComponent<MeshRenderer>();
-        currentVertex.GetComponent<XRGrabInteractable>().enabled = true;
-        materialSwap.material = unselected;
-        currentVertex.GetComponent<MoveVertices>().isLocked = false;
-
-        
-        foreach(Edge e in meshRebuilder.edgeObjects)
+        if(currentObj == null)
+            return;
+        if(currentObj.CompareTag("Vertex"))
         {
-            if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveVertices>().meshRebuilder;
+
+            materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = true;
+            materialSwap.material = unselected;
+            currentObj.GetComponent<MoveVertices>().isLocked = false;
+            Vertex currVert = currentObj.GetComponent<Vertex>();
+
+            
+            foreach(Edge e in meshRebuilder.edgeObjects)
             {
-                e.GetComponent<XRGrabInteractable>().enabled = true;
-                materialSwap = e.GetComponent<MeshRenderer>();
-                // maybe use the pink lock
-                materialSwap.material = unselected;
-                e.locked = false;
-                e.GetComponent<MoveEdge>().isLocked = false;
-                // maybe add isLocked to all move scipts
+                if(e.vert1 == currVert.id || e.vert2 == currVert.id)
+                {
+                    e.GetComponent<XRGrabInteractable>().enabled = true;
+                    materialSwap = e.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                    e.locked = false;
+                    e.GetComponent<MoveEdge>().isLocked = false;
+                }
 
             }
 
-        }
-
-        foreach(Face f in meshRebuilder.faceObjects)
-        {
-            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id || f.vert3 == currentVertex.id)
+            foreach(Face f in meshRebuilder.faceObjects)
             {
-                f.GetComponent<XRGrabInteractable>().enabled = true;
-                f.GetComponent<MoveFace>().isLocked = false;
-                f.locked = false;
+                if(f.vert1 == currVert.id || f.vert2 == currVert.id || f.vert3 == currVert.id)
+                {
+                    f.GetComponent<XRGrabInteractable>().enabled = true;
+                    f.GetComponent<MoveFace>().isLocked = false;
+                    f.locked = false;
+                }
+            }
+
+            // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+            if (sendVertexLockEvent)
+            {
+                // Synchronize the cached vertex lock event to other players by vertex id
+                VertexLockEvent vertexLockEvent = new VertexLockEvent()
+                {
+                    id = currVert.id,
+                    meshId = meshRebuilder.id,
+                    isCached = true,
+                    locked = false,
+                    actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+                };
+
+                NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
             }
         }
 
-        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
-        if (sendVertexLockEvent)
+        if(currentObj.CompareTag("Edge"))
         {
-            // Synchronize the cached vertex lock event to other players by vertex id
-            VertexLockEvent vertexLockEvent = new VertexLockEvent()
-            {
-                id = currentVertex.id,
-                meshId = meshRebuilder.id,
-                isCached = true,
-                locked = false,
-                actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
-            };
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveEdge>().meshRebuilder;
 
-            NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+            materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = true;
+            materialSwap.material = unselected;
+            currentObj.GetComponent<MoveVertices>().isLocked = false;
+            Edge currEdge = currentObj.GetComponent<Edge>();
+
+            
+            foreach(Vertex v in meshRebuilder.vertexObjects)
+            {
+                if(v.id == currEdge.vert1 || v.id == currEdge.vert2)
+                {
+                    v.GetComponent<XRGrabInteractable>().enabled = true;
+                    materialSwap = v.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                    v.GetComponent<MoveVertices>().isLocked = false;
+                }
+            }
+
+            foreach(Face f in meshRebuilder.faceObjects)
+            {
+                if(f.edge1 == currEdge.id || f.edge2 == currEdge.id  || f.edge3 == currEdge.id)
+                {
+                    f.GetComponent<XRGrabInteractable>().enabled = true;
+                    f.GetComponent<MoveFace>().isLocked = false;
+                    f.locked = false;
+                }
+            }
+
+            // // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+            // if (sendVertexLockEvent)
+            // {
+            //     // Synchronize the cached vertex lock event to other players by vertex id
+            //     VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            //     {
+            //         id = currEdge.id,
+            //         meshId = meshRebuilder.id,
+            //         isCached = true,
+            //         locked = false,
+            //         actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            //     };
+
+            //     NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+            // }
+        }
+
+        if(currentObj.CompareTag("Face"))
+        {
+            MeshRebuilder meshRebuilder = currentObj.GetComponent<MoveFace>().meshRebuilder;
+
+            //materialSwap = currentObj.GetComponent<MeshRenderer>();
+            currentObj.GetComponent<XRGrabInteractable>().enabled = true;
+           // materialSwap.material = unselected;
+            currentObj.GetComponent<MoveVertices>().isLocked = false;
+            Face currFace = currentObj.GetComponent<Face>();
+
+            
+            foreach(Edge e in meshRebuilder.edgeObjects)
+            {
+                if(currFace.edge1 == e.id || currFace.edge2 == e.id  || currFace.edge3 == e.id)
+                {
+                    e.GetComponent<XRGrabInteractable>().enabled = true;
+                    materialSwap = e.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                    e.locked = false;
+                    e.GetComponent<MoveEdge>().isLocked = false;
+                }
+
+            }
+
+            foreach(Vertex v in meshRebuilder.vertexObjects)
+            {
+                if(v.id == currFace.vert1 || v.id == currFace.vert2 || v.id == currFace.vert3)
+                {
+                    v.GetComponent<XRGrabInteractable>().enabled = true;
+                    materialSwap = v.GetComponent<MeshRenderer>();
+                    materialSwap.material = unselected;
+                    v.GetComponent<MoveVertices>().isLocked = false;
+                }
+            }
+
+            // // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+            // if (sendVertexLockEvent)
+            // {
+            //     // Synchronize the cached vertex lock event to other players by vertex id
+            //     VertexLockEvent vertexLockEvent = new VertexLockEvent()
+            //     {
+            //         id = currFace.id,
+            //         meshId = meshRebuilder.id,
+            //         isCached = true,
+            //         locked = false,
+            //         actorNumber = PhotonNetwork.LocalPlayer.ActorNumber
+            //     };
+
+            //     NetworkMeshManager.instance.SynchronizeMeshVertexLock(vertexLockEvent);
+           // }
         }
     }
 
     // Get vertex info from sphere collision
     public void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Vertex"))
+        if (other.CompareTag("Vertex") || other.CompareTag("Edge") || other.CompareTag("Face"))
         {
-            currentVertex = other.gameObject; 
+            currentObj = other.gameObject; 
             inRadius = true;
         }
     }
@@ -205,7 +430,7 @@ public class LockVertex : ToolClass
         if(!switchControllers.rayActive)
         {
             inRadius = false;
-            currentVertex = null;
+            currentObj = null;
         }
     }
 
@@ -228,18 +453,18 @@ public class LockVertex : ToolClass
         if(switchControllers.rayActive)
         {
             
-            if(ray.hitVertex)
+            if(ray.hitVertex || ray.hitEdge || ray.hitFace)
             {
-                currentVertex = ray.hit.transform.gameObject;
+                currentObj = ray.hit.transform.gameObject;
                 if(primaryButtonPressed)
-                    Lock(currentVertex.GetComponent<Vertex>());
+                    Lock(currentObj);
                 if(secondaryButtonPressed)
-                    Unlock(currentVertex.GetComponent<Vertex>());
+                    Unlock(currentObj);
             }
             else
             {
                 inRadius = false;
-                currentVertex = null;
+                currentObj = null;
             }
         }
     }
