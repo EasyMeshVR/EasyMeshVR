@@ -2493,7 +2493,8 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  rightTrigger: {fileID: 0}
+  rightTrigger: {fileID: -7295109100495390552, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   rightTriggerPressed: 0
