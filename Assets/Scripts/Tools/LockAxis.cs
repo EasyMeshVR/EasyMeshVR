@@ -125,6 +125,8 @@ public class LockAxis : ToolClass
 
         // change rigidbody
         currentObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
+        currentObj.GetComponent<Rigidbody>().isKinematic = true;
+
         // change grabinteractable
         currentObj.GetComponent<XRGrabInteractable>().movementType = XRBaseInteractable.MovementType.VelocityTracking;
         // add configjoint and change settings
@@ -209,12 +211,13 @@ public class LockAxis : ToolClass
 
     public void OnTriggerEnter(Collider other)
     {
-       // if (other.CompareTag("Vertex") || other.CompareTag("Edge") || other.CompareTag("Face"))
+        //if (other.CompareTag("Vertex") || other.CompareTag("Face"))
        // {
            // currentObj = other.gameObject;
            //currentObj = cm.nearObject; 
-           // Faces and edges get weird when messing with it
-            if(cm.nearObject.CompareTag("Vertex"))
+           // Edges start drifting for some reason
+
+            if(cm.nearObject.CompareTag("Vertex") || cm.nearObject.CompareTag("Face"))
                 currentObj = cm.nearObject;
             inRadius = true;
         //}

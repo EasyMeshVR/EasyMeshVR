@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\Interaction\MeshRebuilder.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveFaceOp.cs" />
      <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
      <Compile Include="Assets\Scripts\Abilities\Timeline\StepExecutor.cs" />
      <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
@@ -84,6 +85,7 @@
      <Compile Include="Assets\Scripts\Interaction\MoveEdge.cs" />
      <Compile Include="Assets\Scripts\Networking\Launcher.cs" />
      <Compile Include="Assets\Scripts\UI\GameMenuManager.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\ExtrudeOp.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\MouseLookHelper.cs" />
      <Compile Include="Assets\Scripts\Tools\Extrude.cs" />
      <Compile Include="Assets\Scripts\Networking\NetworkMeshManager.cs" />
@@ -97,11 +99,13 @@
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\PointersController.cs" />
      <Compile Include="Assets\Scripts\Abilities\Locomotion\ControllersMidpoint.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\Highlighter.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveVertexOp.cs" />
      <Compile Include="Assets\Scripts\Networking\XRGrabNetworkInteractable.cs" />
      <Compile Include="Assets\Scripts\Interaction\MoveVertices.cs" />
      <Compile Include="Assets\Scripts\UI\KeyboardButton.cs" />
      <Compile Include="Assets\Scripts\UI\ButtonVR.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\ProximityVoiceTrigger.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveEdgeOp.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\MicrophoneDropdownFiller.cs" />
      <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\SetLightColor.cs" />
@@ -110,6 +114,7 @@
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\CodecSettingsUI.cs" />
      <Compile Include="Assets\Scripts\UI\Keyboard.cs" />
      <Compile Include="Assets\Scripts\Misc\Constants.cs" />
+     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MeshChange.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\UiExtensions.cs" />
      <Compile Include="Assets\Scripts\Tools\ToolManager.cs" />
      <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
