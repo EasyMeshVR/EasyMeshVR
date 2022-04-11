@@ -12,6 +12,8 @@ namespace EasyMeshVR.Multiplayer
 
         void OnTriggerEnter(Collider other)
         {
+            if (networkPlayer == null || networkPlayer.photonView == null) return;
+
             if (networkPlayer.photonView.IsMine && PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY) != 0)
             {
                 NetworkPlayerHeadCollider headCollider = other.GetComponent<NetworkPlayerHeadCollider>();
@@ -27,6 +29,8 @@ namespace EasyMeshVR.Multiplayer
 
         void OnTriggerExit(Collider other)
         {
+            if (networkPlayer == null || networkPlayer.photonView == null) return;
+
             if (networkPlayer.photonView.IsMine && PlayerPrefs.GetInt(Constants.HIDE_CLOSE_PLAYERS_PREF_KEY) != 0)
             {
                 NetworkPlayerHeadCollider headCollider = other.GetComponent<NetworkPlayerHeadCollider>();

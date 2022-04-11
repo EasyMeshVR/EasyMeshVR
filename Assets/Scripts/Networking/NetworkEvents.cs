@@ -16,6 +16,7 @@ namespace EasyMeshVR.Multiplayer
     {
         public int id { get; set; }
         public int meshId { get; set; }
+        public Vector3 oldVertexPos { get; set; }
         public Vector3 vertexPos { get; set; }
 
         public static object[] SerializeEvent(VertexPullEvent vertexEvent)
@@ -26,7 +27,8 @@ namespace EasyMeshVR.Multiplayer
                vertexEvent.vertexPos,
                vertexEvent.released,
                vertexEvent.actorNumber,
-               vertexEvent.meshId
+               vertexEvent.meshId,
+               vertexEvent.oldVertexPos
             };
         }
 
@@ -38,7 +40,8 @@ namespace EasyMeshVR.Multiplayer
                 vertexPos = (Vector3)data[1],
                 released = (bool)data[2],
                 actorNumber = (int)data[3],
-                meshId = (int)data[4]
+                meshId = (int)data[4],
+                oldVertexPos = (Vector3)data[5]
             };
         }
     }
@@ -49,8 +52,11 @@ namespace EasyMeshVR.Multiplayer
         public int meshId { get; set; }
         public int vert1 { get; set; }
         public int vert2 { get; set; }
+        public Vector3 oldPosition { get; set; }
         public Vector3 position { get; set; }
+        public Vector3 oldVertex1Pos { get; set; }
         public Vector3 vertex1Pos { get; set; }
+        public Vector3 oldVertex2Pos { get; set; }
         public Vector3 vertex2Pos { get; set; }
 
         public static object[] SerializeEvent(EdgePullEvent edgeEvent)
@@ -65,7 +71,10 @@ namespace EasyMeshVR.Multiplayer
                 edgeEvent.vertex2Pos,
                 edgeEvent.released,
                 edgeEvent.actorNumber,
-                edgeEvent.meshId
+                edgeEvent.meshId,
+                edgeEvent.oldPosition,
+                edgeEvent.oldVertex1Pos,
+                edgeEvent.oldVertex2Pos
             };
         }
 
@@ -81,7 +90,10 @@ namespace EasyMeshVR.Multiplayer
                 vertex2Pos = (Vector3)data[5],
                 released = (bool)data[6],
                 actorNumber = (int)data[7],
-                meshId = (int)data[8]
+                meshId = (int)data[8],
+                oldPosition = (Vector3)data[9],
+                oldVertex1Pos = (Vector3)data[10],
+                oldVertex2Pos = (Vector3)data[11]
             };
 
             return edgeEvent;
@@ -99,10 +111,20 @@ namespace EasyMeshVR.Multiplayer
         public int edge2 { get; set; }
         public int edge3 { get; set; }
         public Vector3 normal { get; set; }
+        public Vector3 oldPosition { get; set; }
         public Vector3 position { get; set; }
+        public Vector3 oldVertex1Pos { get; set; }
         public Vector3 vertex1Pos { get; set; }
+        public Vector3 oldVertex2Pos { get; set; }
         public Vector3 vertex2Pos { get; set; }
+        public Vector3 oldVertex3Pos { get; set; }
         public Vector3 vertex3Pos { get; set; }
+        public Vector3 oldEdge1Pos { get; set; }
+        public Vector3 edge1Pos { get; set; }
+        public Vector3 oldEdge2Pos { get; set; }
+        public Vector3 edge2Pos { get; set; }
+        public Vector3 oldEdge3Pos { get; set; }
+        public Vector3 edge3Pos { get; set; }
 
         public static object[] SerializeEvent(FacePullEvent faceEvent)
         {
@@ -122,7 +144,17 @@ namespace EasyMeshVR.Multiplayer
                 faceEvent.vertex3Pos,
                 faceEvent.released,
                 faceEvent.actorNumber,
-                faceEvent.meshId
+                faceEvent.meshId,
+                faceEvent.oldPosition,
+                faceEvent.oldVertex1Pos,
+                faceEvent.oldVertex2Pos,
+                faceEvent.oldVertex3Pos,
+                faceEvent.oldEdge1Pos,
+                faceEvent.oldEdge2Pos,
+                faceEvent.oldEdge3Pos,
+                faceEvent.edge1Pos,
+                faceEvent.edge2Pos,
+                faceEvent.edge3Pos,
             };
         }
 
@@ -144,7 +176,17 @@ namespace EasyMeshVR.Multiplayer
                 vertex3Pos = (Vector3)data[11],
                 released = (bool)data[12],
                 actorNumber = (int)data[13],
-                meshId = (int)data[14]
+                meshId = (int)data[14],
+                oldPosition = (Vector3)data[15],
+                oldVertex1Pos = (Vector3)data[16],
+                oldVertex2Pos = (Vector3)data[17],
+                oldVertex3Pos = (Vector3)data[18],
+                oldEdge1Pos = (Vector3)data[19],
+                oldEdge2Pos = (Vector3)data[20],
+                oldEdge3Pos = (Vector3)data[21],
+                edge1Pos = (Vector3)data[22],
+                edge2Pos = (Vector3)data[23],
+                edge3Pos = (Vector3)data[24]
             };
 
             return faceEvent;

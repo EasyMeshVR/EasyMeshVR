@@ -27,6 +27,8 @@ public class Merge : MonoBehaviour
     static int[] triangles;
     static List<int> triangleReferences = new List<int>();
     static List<int> lastVertTriReferences = new List<int>();
+    Vector3[] timelineVertices;
+    int[] timelineTriangles;
 
     // Vertex lookup
     Vertex mergeVertex;
@@ -48,6 +50,10 @@ public class Merge : MonoBehaviour
         meshRebuilder = transform.parent.GetComponent<MeshRebuilder>();
         model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
+
+        // MeshFilter references for undo/redo
+        timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;
 
         // Stealing triangles (and vertices if we need them)
         vertices = mesh.vertices;
@@ -325,9 +331,7 @@ public class Merge : MonoBehaviour
     private void OnTriggerStay(Collider takeover)
     {
         if (!enabled)
-        {
             return;
-        }
 
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
@@ -359,6 +363,9 @@ public class Merge : MonoBehaviour
         meshRebuilder.vertices = mesh.vertices;
         meshRebuilder.triangles = mesh.triangles;
 
+        timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;
+
         // Get Vertex references
         deleterVertex = mergeVertex;
         takeoverVertex = takeover.gameObject.GetComponent<Vertex>();
@@ -386,5 +393,10 @@ public class Merge : MonoBehaviour
         getDeleterData();
         mergeWithTakeover();
         UpdateMesh(vertex2);
+
+        Step step = new Step();
+        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
     }
 }
