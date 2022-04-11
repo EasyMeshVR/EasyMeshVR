@@ -5,8 +5,6 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveVertexOp : IOperation
 {
-    Vertex vertexObj;
-    MoveVertices moveVertices;
     MeshRebuilder meshRebuilder;
     int meshId, vertexId;
     Vector3 oldPosition, newPosition;
@@ -19,12 +17,13 @@ public class MoveVertexOp : IOperation
         this.newPosition = newPosition;
 
         meshRebuilder = NetworkMeshManager.instance.meshRebuilders[meshId];
-        vertexObj = meshRebuilder.vertexObjects[vertexId];
-        moveVertices = vertexObj.GetComponent<MoveVertices>();
     }
 
     public void Execute()
     {
+        Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
+        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
+
         vertexObj.transform.localPosition = newPosition;
         meshRebuilder.vertices[vertexId] = newPosition;
         moveVertices.UpdateMesh(vertexId);
@@ -39,6 +38,9 @@ public class MoveVertexOp : IOperation
 
     public void Deexecute()
     {
+        Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
+        MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
+
         vertexObj.transform.localPosition = oldPosition;
         meshRebuilder.vertices[vertexId] = oldPosition;
         moveVertices.UpdateMesh(vertexId);

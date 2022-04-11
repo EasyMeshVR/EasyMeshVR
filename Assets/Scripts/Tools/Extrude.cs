@@ -20,7 +20,7 @@ public class Extrude : ToolClass
 
     public GameObject currentFace;
     public bool inRadius = false;
-    
+
     public SphereCollider leftSphere;
     public SphereCollider rightSphere;
     private bool hover = false;
@@ -33,8 +33,12 @@ public class Extrude : ToolClass
     public bool movingNewFace = false;
     public MeshRenderer materialSwap;
 
-    Vector3[] timelineVertices;
-    int[] timelineTriangles;
+    public class ExtrudedObjects
+    {
+        public List<int> newVertexIds;
+        public int newTriangleIndexStart;
+        public int newTriangleCount;
+    }
 
     void OnEnable()
     {
@@ -60,13 +64,13 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
-        timelineVertices = meshRebuilder.vertices;
-        timelineTriangles = meshRebuilder.triangles;
+        float extrudeDistance = 1f;
 
-        extrudeFace(faceObj.id, meshRebuilder, mesh, 1f);
+        // Don't need this here anymore since ExtrudeOp calls extrudeFace() already
+        // extrudeFace(faceObj.id, meshRebuilder, mesh, extrudeDistance);
 
         Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        ExtrudeOp op = new ExtrudeOp(meshRebuilder.id, faceObj.id, extrudeDistance);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
     }
@@ -90,26 +94,25 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         Mesh mesh = moveFace.mesh;
-        timelineVertices = meshRebuilder.vertices;
-        timelineTriangles = meshRebuilder.triangles;
-
+        float extrudeDistance = 5f;
 
         if (inRadius && !movingNewFace)
         {
-            extrudeFace(faceObj.id, meshRebuilder, mesh, 5f);
-            moveNewFace(meshRebuilder);
+            // Don't need this here anymore since ExtrudeOp calls extrudeFace() already
+            //moveNewFace(meshRebuilder);
 
             Step step = new Step();
-            MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+            ExtrudeOp op = new ExtrudeOp(meshRebuilder.id, faceObj.id, extrudeDistance);
             step.AddOp(op);
             StepExecutor.instance.AddStep(step);
+            moveNewFace(meshRebuilder);
 
             return;
         }
     }
 
     // Extrude face along normal by distance value set by either button
-    public void extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, float extrudeDistance, bool sendFaceExtrudeEvent = true)
+    public ExtrudedObjects extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, float extrudeDistance, bool sendFaceExtrudeEvent = true)
     {
         Face faceObj = meshRebuilder.faceObjects[faceId];
         Vertex vertex1 = meshRebuilder.vertexObjects[faceObj.vert1];
@@ -148,23 +151,26 @@ public class Extrude : ToolClass
         }
 
        List<Vector3> vertUnique = new List<Vector3>(meshRebuilder.vertices);
+       List<int> newVertexIds = new List<int>();
 
         // Only add to list if vertex isn't already in
         if(newVert1 == vertList.Count-3)
         {
             vertUnique.Add(new1);
             newVertices.Add(new1);
+            newVertexIds.Add(newVert1);
         }
         if(newVert2 == vertList.Count-2)
         {
             vertUnique.Add(new2);
             newVertices.Add(new2);
-
+            newVertexIds.Add(newVert2);
         }
         if(newVert3 == vertList.Count-1)
         {
             vertUnique.Add(new3);
             newVertices.Add(new3);
+            newVertexIds.Add(newVert3);
         }
 
         // If one of the three was a duplicate then the non duplicate index will be out of bounds
@@ -249,7 +255,16 @@ public class Extrude : ToolClass
 
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
-        return;
+
+        // Return the list of new vertexIds that were generated for this extruded face
+        // as well as the amount of triangles generated and the starting index of the
+        // new triangles in the array. (Used in ExtrudeOp to undo the mesh triangles/verts extrusion)
+        return new ExtrudedObjects
+        {
+            newVertexIds = newVertexIds,
+            newTriangleIndexStart = oldLengthTri,
+            newTriangleCount = newTriangles.Count
+        };
     }
 
     // Move the new face when extruding with the secondary button

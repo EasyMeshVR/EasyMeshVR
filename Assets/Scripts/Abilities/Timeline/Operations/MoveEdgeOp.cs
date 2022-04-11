@@ -5,9 +5,6 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveEdgeOp : IOperation
 {
-    Edge edgeObj;
-    Vertex vert1Obj, vert2Obj;
-    MoveEdge moveEdge;
     MeshRebuilder meshRebuilder;
     int meshId, edgeId;
     Vector3 oldEdgePosition, newEdgePosition;
@@ -27,14 +24,15 @@ public class MoveEdgeOp : IOperation
         this.newVert2Position = newVert2Position;
 
         meshRebuilder = NetworkMeshManager.instance.meshRebuilders[meshId];
-        edgeObj = meshRebuilder.edgeObjects[edgeId];
-        vert1Obj = meshRebuilder.vertexObjects[edgeObj.vert1];
-        vert2Obj = meshRebuilder.vertexObjects[edgeObj.vert2];
-        moveEdge = edgeObj.GetComponent<MoveEdge>();
     }
 
     public void Execute()
     {
+        Edge edgeObj = meshRebuilder.edgeObjects[edgeId];
+        Vertex vert1Obj = meshRebuilder.vertexObjects[edgeObj.vert1];
+        Vertex vert2Obj = meshRebuilder.vertexObjects[edgeObj.vert2];
+        MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+
         edgeObj.transform.localPosition = newEdgePosition;
         vert1Obj.transform.localPosition = newVert1Position;
         vert2Obj.transform.localPosition = newVert2Position;
@@ -52,6 +50,11 @@ public class MoveEdgeOp : IOperation
 
     public void Deexecute()
     {
+        Edge edgeObj = meshRebuilder.edgeObjects[edgeId];
+        Vertex vert1Obj = meshRebuilder.vertexObjects[edgeObj.vert1];
+        Vertex vert2Obj = meshRebuilder.vertexObjects[edgeObj.vert2];
+        MoveEdge moveEdge = edgeObj.GetComponent<MoveEdge>();
+
         edgeObj.transform.localPosition = oldEdgePosition;
         vert1Obj.transform.localPosition = oldVert1Position;
         vert2Obj.transform.localPosition = oldVert2Position;

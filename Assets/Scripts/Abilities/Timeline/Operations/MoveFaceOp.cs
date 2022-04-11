@@ -5,10 +5,6 @@ using EasyMeshVR.Multiplayer;
 
 public class MoveFaceOp : IOperation
 {
-    Face faceObj;
-    Vertex vert1Obj, vert2Obj, vert3Obj;
-    Edge edge1Obj, edge2Obj, edge3Obj;
-    MoveFace moveFace;
     MeshRebuilder meshRebuilder;
     int meshId, faceId;
     Vector3 oldFacePosition, newFacePosition;
@@ -48,18 +44,19 @@ public class MoveFaceOp : IOperation
         this.newEdge3Position = newEdge3Position;
 
         meshRebuilder = NetworkMeshManager.instance.meshRebuilders[meshId];
-        faceObj = meshRebuilder.faceObjects[faceId];
-        vert1Obj = meshRebuilder.vertexObjects[faceObj.vert1];
-        vert2Obj = meshRebuilder.vertexObjects[faceObj.vert2];
-        vert3Obj = meshRebuilder.vertexObjects[faceObj.vert3];
-        edge1Obj = meshRebuilder.edgeObjects[faceObj.edge1];
-        edge2Obj = meshRebuilder.edgeObjects[faceObj.edge2];
-        edge3Obj = meshRebuilder.edgeObjects[faceObj.edge3];
-        moveFace = faceObj.GetComponent<MoveFace>();
     }
 
     public void Execute()
     {
+        Face faceObj = meshRebuilder.faceObjects[faceId];
+        Vertex vert1Obj = meshRebuilder.vertexObjects[faceObj.vert1];
+        Vertex vert2Obj = meshRebuilder.vertexObjects[faceObj.vert2];
+        Vertex vert3Obj = meshRebuilder.vertexObjects[faceObj.vert3];
+        Edge edge1Obj = meshRebuilder.edgeObjects[faceObj.edge1];
+        Edge edge2Obj = meshRebuilder.edgeObjects[faceObj.edge2];
+        Edge edge3Obj = meshRebuilder.edgeObjects[faceObj.edge3];
+        MoveFace moveFace = faceObj.GetComponent<MoveFace>();
+
         faceObj.transform.localPosition = newFacePosition;
         vert1Obj.transform.localPosition = newVert1Position;
         vert2Obj.transform.localPosition = newVert2Position;
@@ -74,7 +71,7 @@ public class MoveFaceOp : IOperation
 
         moveFace.UpdateMesh(faceObj.vert1, faceObj.vert2, faceObj.vert3, false);
 
-        Debug.LogFormat("MoveFaceOp(): Execute on meshId {0} faceId {1}", meshId, faceId);
+        // Debug.LogFormat("MoveFaceOp(): Execute on meshId {0} faceId {1}", meshId, faceId);
     }
 
     bool IOperation.CanBeExecuted()
@@ -84,6 +81,15 @@ public class MoveFaceOp : IOperation
 
     public void Deexecute()
     {
+        Face faceObj = meshRebuilder.faceObjects[faceId];
+        Vertex vert1Obj = meshRebuilder.vertexObjects[faceObj.vert1];
+        Vertex vert2Obj = meshRebuilder.vertexObjects[faceObj.vert2];
+        Vertex vert3Obj = meshRebuilder.vertexObjects[faceObj.vert3];
+        Edge edge1Obj = meshRebuilder.edgeObjects[faceObj.edge1];
+        Edge edge2Obj = meshRebuilder.edgeObjects[faceObj.edge2];
+        Edge edge3Obj = meshRebuilder.edgeObjects[faceObj.edge3];
+        MoveFace moveFace = faceObj.GetComponent<MoveFace>();
+
         faceObj.transform.localPosition = oldFacePosition;
         vert1Obj.transform.localPosition = oldVert1Position;
         vert2Obj.transform.localPosition = oldVert2Position;
@@ -98,7 +104,7 @@ public class MoveFaceOp : IOperation
 
         moveFace.UpdateMesh(faceObj.vert1, faceObj.vert2, faceObj.vert3, false);
 
-        Debug.LogFormat("MoveFaceOp(): Deexecute on meshId {0} faceId {1}", meshId, faceId);
+        // Debug.LogFormat("MoveFaceOp(): Deexecute on meshId {0} faceId {1}", meshId, faceId);
     }
 
     public bool CanBeDeexecuted()
