@@ -92,11 +92,11 @@ public class LockAxis : ToolClass
     // unlock but cycle back to beginning
     public override void SecondaryAction()
     {
-        if(!inRadius)
-            return;
+        // if(!inRadius)
+        //     return;
 
-        if(currentObj == null)
-            return;
+        // if(currentObj == null)
+        //     return;
 
        unlocked = true;
        lockX = false;
@@ -119,9 +119,10 @@ public class LockAxis : ToolClass
         if(unlocked || currentObj == null)
             return;
     
+       // Unlock();
         // reinstantiate config joint every time
-        if(currentObj.GetComponent<ConfigurableJoint>() != null)
-            Destroy(currentObj.GetComponent<ConfigurableJoint>());
+       // if(currentObj.GetComponent<ConfigurableJoint>() != null)
+         //   Destroy(currentObj.GetComponent<ConfigurableJoint>());
 
         // change rigidbody
         currentObj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
@@ -129,6 +130,7 @@ public class LockAxis : ToolClass
 
         // change grabinteractable
         currentObj.GetComponent<XRGrabInteractable>().movementType = XRBaseInteractable.MovementType.VelocityTracking;
+
         // add configjoint and change settings
         currentObj.AddComponent<ConfigurableJoint>();
         currentObj.GetComponent<ConfigurableJoint>().axis = new Vector3(0,0,-1);
