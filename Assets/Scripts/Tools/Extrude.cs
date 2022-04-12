@@ -17,6 +17,8 @@ public class Extrude : ToolClass
     [SerializeField] ToolRaycast ray;
     [SerializeField] XRDirectInteractor directInteractor;
     [SerializeField] Material unselected;
+    [SerializeField] Material lockedEdge;
+
 
     public GameObject currentFace;
     public bool inRadius = false;
@@ -244,6 +246,20 @@ public class Extrude : ToolClass
         mesh.RecalculateNormals();
 
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
+
+        Vertex old1 = currentFace.GetComponent<Face>().vertObj1;
+        Vertex old2 = currentFace.GetComponent<Face>().vertObj2;
+        Vertex old3 = currentFace.GetComponent<Face>().vertObj3;
+        // Lock new edges and triangles connected to locked vertices
+        if(old1.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old1.id);
+
+        if(old2.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old2.id);
+
+        if(old3.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old3.id);            
+
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)
         {
@@ -482,6 +498,32 @@ public class Extrude : ToolClass
             if (!ToolManager.instance.grabFace)
             {
                 newFace.SetActive(false);
+            }
+        }
+    }
+
+    // Lock new visuals if any of the old vertices are locked
+    void LockNewVisuals(MeshRebuilder meshRebuilder, int lockedVertex)
+    {
+        foreach(Edge e in meshRebuilder.edgeObjects)
+        {
+            if(e.vert1 == lockedVertex|| e.vert2 == lockedVertex)
+            {
+                e.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap = e.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                e.locked = true;
+                e.GetComponent<MoveEdge>().isLocked = true;
+            }
+        }
+
+        foreach(Face f in meshRebuilder.faceObjects)
+        {
+            if(f.vert1 == lockedVertex || f.vert2 == lockedVertex  || f.vert3 == lockedVertex)
+            {
+                f.GetComponent<XRGrabInteractable>().enabled = false;
+                f.GetComponent<MoveFace>().isLocked = true;
+                f.locked = true;
             }
         }
     }

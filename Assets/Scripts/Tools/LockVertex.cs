@@ -101,11 +101,9 @@ public class LockVertex : ToolClass
             {
                 e.GetComponent<XRGrabInteractable>().enabled = false;
                 materialSwap = e.GetComponent<MeshRenderer>();
-                // maybe use the pink lock
                 materialSwap.material = lockedEdge;
                 e.locked = true;
                 e.GetComponent<MoveEdge>().isLocked = true;
-                // maybe add isLocked to all move scipts
             }
         }
 
@@ -158,12 +156,9 @@ public class LockVertex : ToolClass
             {
                 e.GetComponent<XRGrabInteractable>().enabled = true;
                 materialSwap = e.GetComponent<MeshRenderer>();
-                // maybe use the pink lock
                 materialSwap.material = unselected;
                 e.locked = false;
                 e.GetComponent<MoveEdge>().isLocked = false;
-                // maybe add isLocked to all move scipts
-
             }
 
         }
