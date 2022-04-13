@@ -247,9 +247,23 @@ public class Extrude : ToolClass
 
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
 
+
         Vertex old1 = currentFace.GetComponent<Face>().vertObj1;
         Vertex old2 = currentFace.GetComponent<Face>().vertObj2;
         Vertex old3 = currentFace.GetComponent<Face>().vertObj3;
+
+        connectOldVerts(meshRebuilder, old1, old2, old3);
+
+        old1.connectedEdges = old1.connectedEdges.Distinct().ToList();
+        old1.connectedFaces = old1.connectedFaces.Distinct().ToList();
+
+        old2.connectedEdges = old2.connectedEdges.Distinct().ToList();
+        old2.connectedFaces = old2.connectedFaces.Distinct().ToList(); 
+
+        old3.connectedEdges = old3.connectedEdges.Distinct().ToList();
+        old3.connectedFaces = old3.connectedFaces.Distinct().ToList();
+
+
         // Lock new edges and triangles connected to locked vertices
         if(old1.GetComponent<MoveVertices>().isLocked)
             LockNewVisuals(meshRebuilder, old1.id);
@@ -258,7 +272,7 @@ public class Extrude : ToolClass
             LockNewVisuals(meshRebuilder, old2.id);
 
         if(old3.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old3.id);            
+            LockNewVisuals(meshRebuilder, old3.id);
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)
@@ -327,6 +341,46 @@ public class Extrude : ToolClass
         }
     }
 
+    void connectOldVerts(MeshRebuilder meshRebuilder, Vertex old1, Vertex old2, Vertex old3)
+    {
+        for(int i = meshRebuilder.faceObjects.Count - 8; i < meshRebuilder.faceObjects.Count - 1; i++)
+        {
+            Face currentFace = meshRebuilder.faceObjects[i];
+            if(currentFace.vert1 == old1.id || currentFace.vert2 == old1.id || currentFace.vert3 == old1.id)
+            {
+                old1.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old1.id || currentFace.edgeObj1.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old1.id || currentFace.edgeObj2.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old1.id || currentFace.edgeObj3.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj3);
+            }
+
+            if(currentFace.vert1 == old2.id || currentFace.vert2 == old2.id || currentFace.vert3 == old2.id)
+            {
+                old2.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old2.id || currentFace.edgeObj1.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old2.id || currentFace.edgeObj2.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old2.id || currentFace.edgeObj3.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj3);
+            }
+
+            if(currentFace.vert1 == old3.id || currentFace.vert2 == old3.id || currentFace.vert3 == old3.id)
+            {
+                old1.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old3.id || currentFace.edgeObj1.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old3.id || currentFace.edgeObj2.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old3.id || currentFace.edgeObj3.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj3);
+            }
+        }
+    }
+
     // Actually create the vertex and edge GameObject interactables
     void CreateVisuals(MeshRebuilder meshRebuilder, List<Vector3> newVertices, List<int> newTriangles, int oldLengthVert, int oldLengthTri)
     {
@@ -336,7 +390,7 @@ public class Extrude : ToolClass
         int[] triangles = meshRebuilder.triangles;
 
         for (int i = 0; i < vertices.Length; i++)
-        {
+        {          
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, meshRebuilder.model.transform);
             newVertex.transform.localPosition = vertices[i];
@@ -505,45 +559,22 @@ public class Extrude : ToolClass
     // Lock new visuals if any of the old vertices are locked
     void LockNewVisuals(MeshRebuilder meshRebuilder, int lockedVertex)
     {
-        foreach(Edge e in meshRebuilder.edgeObjects)
+        Vertex currentVertex = meshRebuilder.vertexObjects[lockedVertex];
+        foreach(Edge e in currentVertex.connectedEdges)
         {
-            if(e.vert1 == lockedVertex|| e.vert2 == lockedVertex)
-            {
-                e.GetComponent<XRGrabInteractable>().enabled = false;
-                materialSwap = e.GetComponent<MeshRenderer>();
-                materialSwap.material = lockedEdge;
-                e.locked = true;
-                e.GetComponent<MoveEdge>().isLocked = true;
-            }
+            e.GetComponent<XRGrabInteractable>().enabled = false;
+            materialSwap = e.GetComponent<MeshRenderer>();
+            materialSwap.material = lockedEdge;
+            e.locked = true;
+            e.GetComponent<MoveEdge>().isLocked = true;     
         }
 
-        foreach(Face f in meshRebuilder.faceObjects)
+        foreach(Face f in currentVertex.connectedFaces)
         {
-            if(f.vert1 == lockedVertex || f.vert2 == lockedVertex  || f.vert3 == lockedVertex)
-            {
                 f.GetComponent<XRGrabInteractable>().enabled = false;
                 f.GetComponent<MoveFace>().isLocked = true;
                 f.locked = true;
-            }
         }
-
-
-        // optimized search
-        // foreach(Edge e in currentVertex.connectedEdges)
-        // {
-        //     e.GetComponent<XRGrabInteractable>().enabled = false;
-        //     materialSwap = e.GetComponent<MeshRenderer>();
-        //     materialSwap.material = lockedEdge;
-        //     e.locked = true;
-        //     e.GetComponent<MoveEdge>().isLocked = true;     
-        // }
-
-        // foreach(Face f in currentVertex.connectedFaces)
-        // {
-        //         f.GetComponent<XRGrabInteractable>().enabled = false;
-        //         f.GetComponent<MoveFace>().isLocked = true;
-        //         f.locked = true;
-        // }
 
     }
 
