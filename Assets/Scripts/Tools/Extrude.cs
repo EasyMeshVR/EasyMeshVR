@@ -67,6 +67,31 @@ public class Extrude : ToolClass
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         float extrudeDistance = 1f;
 
+        Vertex old1 = currentFace.GetComponent<Face>().vertObj1;
+        Vertex old2 = currentFace.GetComponent<Face>().vertObj2;
+        Vertex old3 = currentFace.GetComponent<Face>().vertObj3;
+
+        connectOldVerts(meshRebuilder, old1, old2, old3);
+
+        old1.connectedEdges = old1.connectedEdges.Distinct().ToList();
+        old1.connectedFaces = old1.connectedFaces.Distinct().ToList();
+
+        old2.connectedEdges = old2.connectedEdges.Distinct().ToList();
+        old2.connectedFaces = old2.connectedFaces.Distinct().ToList(); 
+
+        old3.connectedEdges = old3.connectedEdges.Distinct().ToList();
+        old3.connectedFaces = old3.connectedFaces.Distinct().ToList();
+
+        // Lock new edges and triangles connected to locked vertices
+        if(old1.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old1.id);
+
+        if(old2.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old2.id);
+
+        if(old3.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, old3.id);
+
         AddExtrudeOpStep(meshRebuilder.id, faceObj.id, extrudeDistance);
     }
 
@@ -244,37 +269,10 @@ public class Extrude : ToolClass
         mesh.triangles = tris;
         meshRebuilder.triangles = tris;
         mesh.RecalculateNormals();
-
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
 
 
-        Vertex old1 = currentFace.GetComponent<Face>().vertObj1;
-        Vertex old2 = currentFace.GetComponent<Face>().vertObj2;
-        Vertex old3 = currentFace.GetComponent<Face>().vertObj3;
-
-        connectOldVerts(meshRebuilder, old1, old2, old3);
-
-        old1.connectedEdges = old1.connectedEdges.Distinct().ToList();
-        old1.connectedFaces = old1.connectedFaces.Distinct().ToList();
-
-        old2.connectedEdges = old2.connectedEdges.Distinct().ToList();
-        old2.connectedFaces = old2.connectedFaces.Distinct().ToList(); 
-
-        old3.connectedEdges = old3.connectedEdges.Distinct().ToList();
-        old3.connectedFaces = old3.connectedFaces.Distinct().ToList();
-
-
-        // Lock new edges and triangles connected to locked vertices
-        if(old1.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old1.id);
-
-        if(old2.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old2.id);
-
-        if(old3.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old3.id);
-
-        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+          // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)
         {
             // Synchronize the cached face extrusion event to other players by face id
@@ -290,7 +288,6 @@ public class Extrude : ToolClass
 
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
-
         // Return the list of new vertexIds that were generated for this extruded face
         // as well as the amount of triangles generated and the starting index of the
         // new triangles in the array. (Used in ExtrudeOp to undo the mesh triangles/verts extrusion)
