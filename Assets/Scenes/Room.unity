@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
+  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1769,7 +1769,8 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  rightTrigger: {fileID: 0}
+  rightTrigger: {fileID: -7295109100495390552, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   rightTriggerPressed: 0
@@ -1804,7 +1805,8 @@ MonoBehaviour:
     type: 3}
   secondaryButtonRef: {fileID: 8607665140860814295, guid: c348712bda248c246b8c49b3db54643f,
     type: 3}
-  rightTrigger: {fileID: 0}
+  rightTrigger: {fileID: -7295109100495390552, guid: c348712bda248c246b8c49b3db54643f,
+    type: 3}
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   rightTriggerPressed: 0
