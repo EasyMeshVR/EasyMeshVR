@@ -53,6 +53,7 @@ public class ExtrudeOp : IOperation
 
         foreach (int vertexId in extrudedObjects.newVertexIds)
         {
+            Debug.Log("removedVerts " + removedVertsCount);
             Vertex vertexObj = meshRebuilder.vertexObjects[vertexId - removedVertsCount];
             GameObject.Destroy(vertexObj.gameObject);
             meshRebuilder.vertexObjects.RemoveAt(vertexId - removedVertsCount);
@@ -85,7 +86,7 @@ public class ExtrudeOp : IOperation
             // Destroy connected faces, and be careful not to call destroy on already deleted face
             foreach (Face face in vertexObj.connectedFaces)
             {
-                if (!deletedFaceIds.Contains(face.id))
+                if (!deletedFaceIds.Contains(face.id) && face != null)
                 {
                     GameObject.Destroy(face.gameObject);
                     meshRebuilder.faceObjects.Remove(face);

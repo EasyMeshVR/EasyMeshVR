@@ -263,30 +263,27 @@ public class Extrude : ToolClass
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
 
-        Vertex old1 = faceObj.vertObj1;
-        Vertex old2 = faceObj.vertObj2;
-        Vertex old3 = faceObj.vertObj3;
 
-        connectOldVerts(meshRebuilder, old1, old2, old3);
+        connectOldVerts(meshRebuilder, vertex1, vertex2, vertex3);
 
-        old1.connectedEdges = old1.connectedEdges.Distinct().ToList();
-        old1.connectedFaces = old1.connectedFaces.Distinct().ToList();
+        vertex1.connectedEdges = vertex1.connectedEdges.Distinct().ToList();
+        vertex1.connectedFaces = vertex1.connectedFaces.Distinct().ToList();
 
-        old2.connectedEdges = old2.connectedEdges.Distinct().ToList();
-        old2.connectedFaces = old2.connectedFaces.Distinct().ToList(); 
+        vertex2.connectedEdges = vertex2.connectedEdges.Distinct().ToList();
+        vertex2.connectedFaces = vertex2.connectedFaces.Distinct().ToList(); 
 
-        old3.connectedEdges = old3.connectedEdges.Distinct().ToList();
-        old3.connectedFaces = old3.connectedFaces.Distinct().ToList();
+        vertex3.connectedEdges = vertex3.connectedEdges.Distinct().ToList();
+        vertex3.connectedFaces = vertex3.connectedFaces.Distinct().ToList();
 
         // Lock new edges and triangles connected to locked vertices
-        if(old1.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old1.id);
+        if(vertex1.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex1.id);
 
-        if(old2.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old2.id);
+        if(vertex2.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex2.id);
 
-        if(old3.GetComponent<MoveVertices>().isLocked)
-            LockNewVisuals(meshRebuilder, old3.id);
+        if(vertex3.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex3.id);
         // Return the list of new vertexIds that were generated for this extruded face
         // as well as the amount of triangles generated and the starting index of the
         // new triangles in the array. (Used in ExtrudeOp to undo the mesh triangles/verts extrusion)
