@@ -39,7 +39,7 @@ public class LockAxis : ToolClass
     // need to prevent cycling while grabbing
     public override void PrimaryAction()
     {
-        if(!rightTriggerPressed)
+        if(rightTriggerPressed)
             return;
 
         if(!inRadius)
@@ -48,13 +48,16 @@ public class LockAxis : ToolClass
         if(currentObj == null)
             return;
 
-        // should prevent cycling while grabbing
-        if(!unlocked && (lockX || lockY || lockZ))
+        if(!unlocked)
             return;
+
+        // should prevent cycling while grabbing
+      //  if(!unlocked && (lockX || lockY || lockZ))
+            //return;
 
         // Lock x first (Z axis)
         // lock Z indicates to go back
-        if(unlocked && (!lockX && !lockY))
+        if((unlocked && (!lockX && !lockY)) || lockZ)
         {
             lockX = true;
             unlocked = false;
@@ -110,6 +113,7 @@ public class LockAxis : ToolClass
     {
         //base.triggerEnd(context);
         unlocked = true;
+        rightTriggerPressed = false;
         Unlock();
     }
 
@@ -119,7 +123,7 @@ public class LockAxis : ToolClass
         if(unlocked || currentObj == null)
             return;
     
-       // Unlock();
+        Unlock();
         // reinstantiate config joint every time
        // if(currentObj.GetComponent<ConfigurableJoint>() != null)
          //   Destroy(currentObj.GetComponent<ConfigurableJoint>());
