@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.08031376, g: 0.099693164, b: 0.30093476, a: 1}
+  m_IndirectSpecularColor: {r: 0.080313474, g: 0.09970753, b: 0.3011242, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -455,10 +455,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LockTool: 1
   extrudeTool: 1
+  LockAxis: 0
   lockScriptRay: {fileID: 1647071329}
   lockScriptGrab: {fileID: 2059701659}
   extrudeScriptRay: {fileID: 1647071325}
   extrudeScriptGrab: {fileID: 2059701660}
+  lockAxisGrab: {fileID: 2059701661}
   grabVertex: 1
   grabEdge: 1
   grabFace: 1
@@ -2488,7 +2490,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2059701652}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd623a4804c920c4fa0a86f9e19b3d9d, type: 3}
   m_Name: 
@@ -2502,7 +2504,7 @@ MonoBehaviour:
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   rightTriggerPressed: 0
-  isEnabled: 0
+  isEnabled: 1
   cm: {fileID: 2059701658}
   currentObj: {fileID: 0}
   inRadius: 0
