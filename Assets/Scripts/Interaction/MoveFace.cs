@@ -136,9 +136,13 @@ public class MoveFace : MonoBehaviour
 
         Debug.Log("edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
 
-        edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
-        edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
-        edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
+        // edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
+        // edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
+        // edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
+
+        edge1 = thisFace.edgeObj1;
+        edge2 = thisFace.edgeObj2;
+        edge3 = thisFace.edgeObj3;
 
         SetActiveEdges(edge1, false);
         SetActiveEdges(edge2, false);

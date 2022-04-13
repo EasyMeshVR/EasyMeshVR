@@ -60,13 +60,11 @@ public class Merge : MonoBehaviour
         timelineVertices = meshRebuilder.vertices;
         timelineTriangles = meshRebuilder.triangles;
 
-        /*
         for (int i = 0; i < vertices.Length; i++)
             Debug.Log("starting vertices[" + i + "] = " + vertices[i]);
 
         for (int i = 0; i < triangles.Length; i += 3)
             Debug.Log("starting triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
-        */
 
         // This vertex (the one we're holding atm)
         // If we drag this vertex on top of another, we merge the two, and we delete the one in our hand
@@ -107,8 +105,10 @@ public class Merge : MonoBehaviour
     // Make the second vertex inherit all the data of the first (this is the one of the two we're keeping)
     private void mergeWithTakeover()
     {
-        // Update and remove triangles relative to vertex1
+        List<Vector3> verticesList = new List<Vector3>();
         List<int> trianglesList = triangles.ToList();
+
+        // Update and remove triangles relative to vertex1
         trianglesList = UpdateTriangles(trianglesList, triangleReferences, vertex1, vertex2);
 
         // Get references to all triangles the last vertex is a part of (all adjacent vertices)
@@ -124,15 +124,36 @@ public class Merge : MonoBehaviour
             }
         }
 
+        // Used for renaming and re-id'ing the edges
+        int edgeCountOld = meshRebuilder.edgeObjects.Count;
+        int edgeCountNew = 0;
+
+        // Used for finding duplicate edges and remapping them to faces
+        List<Edge> edgeDupes = new List<Edge>();
+        List<Edge> reface = new List<Edge>();
+
+        // Remove mesh object components
+        reface = RemoveEdges(edgeDupes, reface);
+        RemoveFaces(edgeDupes, reface);
+        verticesList = RemoveVertices(verticesList, trianglesList);
+
+        // Updated data
+        vertices = verticesList.ToArray();
+        triangles = trianglesList.ToArray();
+    }
+
+    // Delete edge that connects the two vertices and all overlapping edges
+    private List<Edge> RemoveEdges(List<Edge> edgeDupes, List<Edge> reface)
+    {
         // All edges that were connected to vertex 1, connect to vertex 2
         foreach (Edge reconnect in deleterVertex.connectedEdges)
         {
             // Delete the edge that connects the two vertices
             if (reconnect.vert1 == vertex2 || reconnect.vert2 == vertex2)
             {
-                // takeoverVertex.connectedEdges.Remove(reconnect);
-                // Destroy(reconnect.thisEdge);
-                // meshRebuilder.edgeObjects.Remove(reconnect);
+                takeoverVertex.connectedEdges.Remove(reconnect);
+                meshRebuilder.edgeObjects.Remove(reconnect);
+                Destroy(reconnect.thisEdge);
             }
             else
             {
@@ -147,6 +168,47 @@ public class Merge : MonoBehaviour
             }
         }
 
+        // If data from vertex 1 goes to vertex 2, there should be two copies of an edge with the same vertex ids
+        // Look through all edges connected to vertex 2, if two share the same vertex ids, delete one of them
+        foreach (Edge duplicate1 in deleterVertex.connectedEdges)
+        {
+            if (duplicate1 == null)
+                continue;
+
+            // Compare vertex ids between deleter and takeover to find duplicates to get rid of
+            foreach (Edge duplicate2 in takeoverVertex.connectedEdges)
+            {
+                // Same edge
+                if (duplicate1.id == duplicate2.id)
+                    continue;
+
+                // Cross vertex id check
+                if ((duplicate1.vert1 == duplicate2.vert1 && duplicate1.vert2 == duplicate2.vert2) || (duplicate1.vert1 == duplicate2.vert2 && duplicate1.vert2 == duplicate2.vert1))
+                {
+                    // Need lists to use indexing, don't want duplicates
+                    if (!edgeDupes.Contains(duplicate1))
+                    {
+                        edgeDupes.Add(duplicate1);
+                        reface.Add(duplicate2);
+                    }
+                }
+            }
+        }
+
+        // Actually delete the edges from the takeover
+        foreach (Edge confirmed in edgeDupes)
+        {
+            takeoverVertex.connectedEdges.Remove(confirmed);
+            meshRebuilder.edgeObjects.Remove(confirmed);
+            Destroy(confirmed.thisEdge);
+        }
+
+        return reface;
+    }
+
+    // Delete faces after merging two vertices
+    void RemoveFaces(List<Edge> edgeDupes, List<Edge> reface)
+    {
         // Sift through the deleter vertex faces (vertex1)
         foreach (Face remove in deleterVertex.connectedFaces)
         {
@@ -154,8 +216,8 @@ public class Merge : MonoBehaviour
             if (remove.vert1 == vertex2 || remove.vert2 == vertex2 || remove.vert3 == vertex2)
             {
                 takeoverVertex.connectedFaces.Remove(remove);
-                Destroy(remove.thisFace);
                 meshRebuilder.faceObjects.Remove(remove);
+                Destroy(remove.thisFace);
             }
             else
             {
@@ -179,16 +241,34 @@ public class Merge : MonoBehaviour
                 // Add the new face to the takeover vertex
                 takeoverVertex.connectedFaces.Add(remove);
             }
+
+            // Deleting edges causes Faces to lose edge data
+            // Compare the edge ids from edgeDupes list and replace it with the id from reface list
+            for (int i = 0; i < edgeDupes.Count; i++)
+            {
+                if (remove.edge1 == edgeDupes[i].id)
+                {
+                    remove.edge1 = reface[i].id;
+                    remove.edgeObj1 = reface[i].thisEdge.GetComponent<Edge>();
+                }
+                else if (remove.edge2 == edgeDupes[i].id)
+                {
+                    remove.edge2 = reface[i].id;
+                    remove.edgeObj2 = reface[i].thisEdge.GetComponent<Edge>();
+                }
+                else if (remove.edge3 == edgeDupes[i].id)
+                {
+                    remove.edge3 = reface[i].id;
+                    remove.edgeObj3 = reface[i].thisEdge.GetComponent<Edge>();
+                }
+            }
         }
+    }
 
-        // Delete edges in the same position (overlapping / duplicate) as one of them is no longer needed
-        // > If this is not possible, we can do some kind of dynamic deletion by comparing triangle triplets with edge ids
-        // > Or brute force it and delete all edges and remake them based on updated triangles array
-        // > NEW IDEA: If data from vertex 1 goes to vertex 2, there should be two copies of an edge with the same vertex ids
-        //             Look through all edges connected to vertex 2, if two share the same vertex ids, delete one of them
-
+    // Remove vertex from the mesh filter, special case for removing vertices in the middle of the array
+    private List<Vector3> RemoveVertices(List<Vector3> verticesList, List<int> trianglesList)
+    {
         // Remove vertex1 from the vertices array and meshRebuilder vertexObjects list
-        List<Vector3> verticesList = new List<Vector3>();
         verticesList = vertices.ToList();
         verticesList.RemoveAt(vertex1);
         meshRebuilder.vertexObjects.Remove(deleterVertex);
@@ -246,8 +326,7 @@ public class Merge : MonoBehaviour
             }
         }
 
-        vertices = verticesList.ToArray();
-        triangles = trianglesList.ToArray();
+        return verticesList;
     }
 
     // Removes triangles with both deleter and takeover in it, replaces deleter ID with takeover ID otherwise
@@ -308,7 +387,13 @@ public class Merge : MonoBehaviour
         // Reconnect edges to vertices (visually)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
-            GameObject edgeObject = edge.thisEdge;
+            GameObject edgeObject;
+
+            if (edge.thisEdge != null)
+                edgeObject = edge.thisEdge;
+            else
+                continue;
+
             int vert1 = edge.vert1;
             int vert2 = edge.vert2;
 
@@ -324,7 +409,8 @@ public class Merge : MonoBehaviour
 
         // Make sure faces are in the correct spots
         UpdateFaces(takeoverVertex);
-        UpdateFaces(relocaterVertex);
+        if (lastIndex != -1)
+            UpdateFaces(relocaterVertex);
     }
 
     // Put the faces in the center of each triangle ("visually")
@@ -332,7 +418,13 @@ public class Merge : MonoBehaviour
     {
         foreach (Face face in vertex.connectedFaces)
         {
-            GameObject faceObject = face.gameObject;
+            GameObject faceObject;
+
+            if (face.thisFace != null)
+                faceObject = face.thisFace;
+            else
+                continue;
+
             int vert1 = face.vert1;
             int vert2 = face.vert2;
             int vert3 = face.vert3;
@@ -348,9 +440,6 @@ public class Merge : MonoBehaviour
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerStay(Collider takeover)
     {
-        if (!enabled)
-            return;
-
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
