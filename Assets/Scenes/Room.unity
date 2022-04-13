@@ -2490,7 +2490,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2059701652}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd623a4804c920c4fa0a86f9e19b3d9d, type: 3}
   m_Name: 
@@ -2504,7 +2504,7 @@ MonoBehaviour:
   primaryButtonPressed: 0
   secondaryButtonPressed: 0
   rightTriggerPressed: 0
-  isEnabled: 1
+  isEnabled: 0
   cm: {fileID: 2059701658}
   currentObj: {fileID: 0}
   inRadius: 0
