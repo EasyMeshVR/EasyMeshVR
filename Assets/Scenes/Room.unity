@@ -1778,6 +1778,7 @@ MonoBehaviour:
   ray: {fileID: 1647071324}
   directInteractor: {fileID: 0}
   unselected: {fileID: 0}
+  lockedEdge: {fileID: 0}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 0}
@@ -2468,6 +2469,7 @@ MonoBehaviour:
   ray: {fileID: 1647071324}
   directInteractor: {fileID: 2059701655}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
+  lockedEdge: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
   currentFace: {fileID: 0}
   inRadius: 0
   leftSphere: {fileID: 1282352287}

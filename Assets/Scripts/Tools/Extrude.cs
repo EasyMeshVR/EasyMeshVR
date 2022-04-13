@@ -526,6 +526,25 @@ public class Extrude : ToolClass
                 f.locked = true;
             }
         }
+
+
+        // optimized search
+        // foreach(Edge e in currentVertex.connectedEdges)
+        // {
+        //     e.GetComponent<XRGrabInteractable>().enabled = false;
+        //     materialSwap = e.GetComponent<MeshRenderer>();
+        //     materialSwap.material = lockedEdge;
+        //     e.locked = true;
+        //     e.GetComponent<MoveEdge>().isLocked = true;     
+        // }
+
+        // foreach(Face f in currentVertex.connectedFaces)
+        // {
+        //         f.GetComponent<XRGrabInteractable>().enabled = false;
+        //         f.GetComponent<MoveFace>().isLocked = true;
+        //         f.locked = true;
+        // }
+
     }
 
     // Clear data on exiting radius

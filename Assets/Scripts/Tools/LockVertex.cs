@@ -95,26 +95,20 @@ public class LockVertex : ToolClass
         materialSwap.material = locked;
         currentVertex.GetComponent<MoveVertices>().isLocked = true;
 
-        foreach(Edge e in meshRebuilder.edgeObjects)
+        foreach(Edge e in currentVertex.connectedEdges)
         {
-            if(e.vert1 == currentVertex.id || e.vert2 == currentVertex.id)
-            {
-                e.GetComponent<XRGrabInteractable>().enabled = false;
-                materialSwap = e.GetComponent<MeshRenderer>();
-                materialSwap.material = lockedEdge;
-                e.locked = true;
-                e.GetComponent<MoveEdge>().isLocked = true;
-            }
+            e.GetComponent<XRGrabInteractable>().enabled = false;
+            materialSwap = e.GetComponent<MeshRenderer>();
+            materialSwap.material = lockedEdge;
+            e.locked = true;
+            e.GetComponent<MoveEdge>().isLocked = true;     
         }
 
-        foreach(Face f in meshRebuilder.faceObjects)
+        foreach(Face f in currentVertex.connectedFaces)
         {
-            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id  || f.vert3 == currentVertex.id)
-            {
                 f.GetComponent<XRGrabInteractable>().enabled = false;
                 f.GetComponent<MoveFace>().isLocked = true;
                 f.locked = true;
-            }
         }
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
@@ -145,7 +139,7 @@ public class LockVertex : ToolClass
         currentVertex.GetComponent<MoveVertices>().isLocked = false;
 
         
-        foreach(Edge e in meshRebuilder.edgeObjects)
+        foreach(Edge e in currentVertex.connectedEdges)
         {
             // Don't unlock edge if it has another vertex that is locked
             if(meshRebuilder.vertexObjects[e.vert1].GetComponent<MoveVertices>().isLocked
@@ -163,20 +157,16 @@ public class LockVertex : ToolClass
 
         }
 
-        foreach(Face f in meshRebuilder.faceObjects)
+        foreach(Face f in currentVertex.connectedFaces)
         {
             // Don't unlock if another vertex on the face is locked
-            if(meshRebuilder.vertexObjects[f.vert1].GetComponent<MoveVertices>().isLocked
-                || meshRebuilder.vertexObjects[f.vert2].GetComponent<MoveVertices>().isLocked
-                || meshRebuilder.vertexObjects[f.vert3].GetComponent<MoveVertices>().isLocked)
+            if(f.vertObj1.GetComponent<MoveVertices>().isLocked || f.vertObj2.GetComponent<MoveVertices>().isLocked || f.vertObj3.GetComponent<MoveVertices>().isLocked)
                 continue;
-
-            if(f.vert1 == currentVertex.id || f.vert2 == currentVertex.id || f.vert3 == currentVertex.id)
-            {
-                f.GetComponent<XRGrabInteractable>().enabled = true;
-                f.GetComponent<MoveFace>().isLocked = false;
-                f.locked = false;
-            }
+                
+            f.GetComponent<XRGrabInteractable>().enabled = true;
+            f.GetComponent<MoveFace>().isLocked = false;
+            f.locked = false;
+            
         }
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
