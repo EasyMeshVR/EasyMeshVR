@@ -217,6 +217,9 @@ public class LockAxis : ToolClass
 
     public void OnTriggerEnter(Collider other)
     {
+        if (!enabled || !gameObject.activeInHierarchy)
+            return;
+
         //if (other.CompareTag("Vertex") || other.CompareTag("Face"))
        // {
            // currentObj = other.gameObject;
@@ -231,10 +234,13 @@ public class LockAxis : ToolClass
 
     public void OnTriggerExit(Collider other)
     {
+        if (!enabled || !gameObject.activeInHierarchy)
+            return;
+
         //if(!switchControllers.rayActive)
-       // {
-           // Unlock();
-            inRadius = false;
+        // {
+        // Unlock();
+        inRadius = false;
             currentObj = null;
         //}
     }
