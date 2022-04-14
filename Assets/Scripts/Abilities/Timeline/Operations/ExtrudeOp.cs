@@ -50,6 +50,7 @@ public class ExtrudeOp : IOperation
         HashSet<int> deletedEdgeIds = new HashSet<int>();
         HashSet<int> deletedFaceIds = new HashSet<int>();
         int removedVertsCount = 0;
+        int vertLen = meshRebuilder.vertexObjects.Count;
 
         foreach (int vertexId in extrudedObjects.newVertexIds)
         {
@@ -88,17 +89,17 @@ public class ExtrudeOp : IOperation
                     deletedFaceIds.Add(face.id);
 
                     // Remove connectedFaces from adjacent vertices' array
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert1))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert1) && face.vert1 < vertLen && face.vert1 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert1];
                         adjacentVertex.connectedFaces.Remove(face);
                     }
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert2))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert2) && face.vert2 < vertLen && face.vert2 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert2];
                         adjacentVertex.connectedFaces.Remove(face);
                     }
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert3))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert3) && face.vert3 < vertLen && face.vert3 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert3];
                         adjacentVertex.connectedFaces.Remove(face);
