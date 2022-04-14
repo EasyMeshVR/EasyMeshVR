@@ -266,16 +266,16 @@ public class Extrude : ToolClass
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
 
-        connectOldVerts(meshRebuilder, vertex1, vertex2, vertex3);
+        // connectOldVerts(meshRebuilder, vertex1, vertex2, vertex3);
 
-        vertex1.connectedEdges = vertex1.connectedEdges.Distinct().ToList();
-        vertex1.connectedFaces = vertex1.connectedFaces.Distinct().ToList();
+        // vertex1.connectedEdges = vertex1.connectedEdges.Distinct().ToList();
+        // vertex1.connectedFaces = vertex1.connectedFaces.Distinct().ToList();
 
-        vertex2.connectedEdges = vertex2.connectedEdges.Distinct().ToList();
-        vertex2.connectedFaces = vertex2.connectedFaces.Distinct().ToList(); 
+        // vertex2.connectedEdges = vertex2.connectedEdges.Distinct().ToList();
+        // vertex2.connectedFaces = vertex2.connectedFaces.Distinct().ToList(); 
 
-        vertex3.connectedEdges = vertex3.connectedEdges.Distinct().ToList();
-        vertex3.connectedFaces = vertex3.connectedFaces.Distinct().ToList();
+        // vertex3.connectedEdges = vertex3.connectedEdges.Distinct().ToList();
+        // vertex3.connectedFaces = vertex3.connectedFaces.Distinct().ToList();
 
         // Lock new edges and triangles connected to locked vertices
         if(vertex1.GetComponent<MoveVertices>().isLocked)
@@ -286,6 +286,7 @@ public class Extrude : ToolClass
 
         if(vertex3.GetComponent<MoveVertices>().isLocked)
             LockNewVisuals(meshRebuilder, vertex3.id);
+            
         // Return the list of new vertexIds that were generated for this extruded face
         // as well as the amount of triangles generated and the starting index of the
         // new triangles in the array. (Used in ExtrudeOp to undo the mesh triangles/verts extrusion)
@@ -554,21 +555,45 @@ public class Extrude : ToolClass
     // Lock new visuals if any of the old vertices are locked
     void LockNewVisuals(MeshRebuilder meshRebuilder, int lockedVertex)
     {
-        Vertex currentVertex = meshRebuilder.vertexObjects[lockedVertex];
-        foreach(Edge e in currentVertex.connectedEdges)
+       // Vertex currentVertex = meshRebuilder.vertexObjects[lockedVertex];
+        for(int i = meshRebuilder.faceObjects.Count - 8; i < meshRebuilder.faceObjects.Count - 1; i++)
         {
-            e.GetComponent<XRGrabInteractable>().enabled = false;
-            materialSwap = e.GetComponent<MeshRenderer>();
-            materialSwap.material = lockedEdge;
-            e.locked = true;
-            e.GetComponent<MoveEdge>().isLocked = true;     
-        }
+            Face currentFace = meshRebuilder.faceObjects[i];
+            // Lock face connected to locked vertex
+            if(currentFace.vert1 == lockedVertex || currentFace.vert2 == lockedVertex || currentFace.vert3 ==lockedVertex)
+            {
+                currentFace.GetComponent<XRGrabInteractable>().enabled = false;
+                currentFace.GetComponent<MoveFace>().isLocked = true;
+                currentFace.locked = true;
+            } 
 
-        foreach(Face f in currentVertex.connectedFaces)
-        {
-                f.GetComponent<XRGrabInteractable>().enabled = false;
-                f.GetComponent<MoveFace>().isLocked = true;
-                f.locked = true;
+            // lock edges connected to locked vertex
+            if(currentFace.edgeObj1.vert1 == lockedVertex || currentFace.edgeObj1.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj1.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj1.locked = true;
+                currentFace.edgeObj1.GetComponent<MoveEdge>().isLocked = true;   
+            }
+            if(currentFace.edgeObj2.vert1 == lockedVertex || currentFace.edgeObj2.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj2.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj2.locked = true;
+                currentFace.edgeObj2.GetComponent<MoveEdge>().isLocked = true; 
+                
+            }
+            if(currentFace.edgeObj3.vert1 == lockedVertex || currentFace.edgeObj3.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj3.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj3.locked = true;
+                currentFace.edgeObj3.GetComponent<MoveEdge>().isLocked = true; 
+                
+            }
         }
 
     }
