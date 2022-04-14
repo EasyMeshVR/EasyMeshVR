@@ -125,7 +125,10 @@ public class Extrude : ToolClass
         Vertex vertex2 = meshRebuilder.vertexObjects[faceObj.vert2];
         Vertex vertex3 = meshRebuilder.vertexObjects[faceObj.vert3];
 
-        // calculating normals is done in mesh rebuilder
+        // Re-calculate the normal of the face since the positon of the vertices may have changed
+        Vector3 e1 = meshRebuilder.vertices[faceObj.vert2] - meshRebuilder.vertices[faceObj.vert1];
+        Vector3 e2 = meshRebuilder.vertices[faceObj.vert3] - meshRebuilder.vertices[faceObj.vert2];
+        faceObj.normal = Vector3.Normalize(Vector3.Cross(e1, e2));
 
         // align new vertices w/ face normal
         Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized ) / extrudeDistance;
@@ -262,7 +265,6 @@ public class Extrude : ToolClass
 
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
-
 
         connectOldVerts(meshRebuilder, vertex1, vertex2, vertex3);
 
