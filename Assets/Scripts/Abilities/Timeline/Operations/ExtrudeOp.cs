@@ -53,12 +53,7 @@ public class ExtrudeOp : IOperation
 
         foreach (int vertexId in extrudedObjects.newVertexIds)
         {
-            Debug.Log("removedVerts " + removedVertsCount);
-            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId - removedVertsCount];
-            GameObject.Destroy(vertexObj.gameObject);
-            meshRebuilder.vertexObjects.RemoveAt(vertexId - removedVertsCount);
-            newVertsList.RemoveAt(vertexId - removedVertsCount);
-            removedVertsCount++;
+            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
 
             // Destroy connected edges, and be careful not to call destroy on an already deleted edge
             foreach (Edge edge in vertexObj.connectedEdges)
@@ -110,6 +105,16 @@ public class ExtrudeOp : IOperation
                     }
                 }
             }
+        }
+
+        // Delete the vertex references
+        foreach (int vertexId in extrudedObjects.newVertexIds)
+        {
+            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId - removedVertsCount];
+            GameObject.Destroy(vertexObj.gameObject);
+            meshRebuilder.vertexObjects.RemoveAt(vertexId - removedVertsCount);
+            newVertsList.RemoveAt(vertexId - removedVertsCount);
+            removedVertsCount++;
         }
 
         mesh.Clear();
