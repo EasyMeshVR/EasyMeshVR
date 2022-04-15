@@ -124,10 +124,6 @@ public class Merge : MonoBehaviour
             }
         }
 
-        // Used for renaming and re-id'ing the edges
-        int edgeCountOld = meshRebuilder.edgeObjects.Count;
-        int edgeCountNew = 0;
-
         // Used for finding duplicate edges and remapping them to faces
         List<Edge> edgeDupes = new List<Edge>();
         List<Edge> reface = new List<Edge>();
@@ -135,6 +131,7 @@ public class Merge : MonoBehaviour
         // Remove mesh object components
         reface = RemoveEdges(edgeDupes, reface);
         RemoveFaces(edgeDupes, reface);
+        RelocateObjects();
         verticesList = RemoveVertices(verticesList, trianglesList);
 
         // Updated data
@@ -145,12 +142,20 @@ public class Merge : MonoBehaviour
     // Delete edge that connects the two vertices and all overlapping edges
     private List<Edge> RemoveEdges(List<Edge> edgeDupes, List<Edge> reface)
     {
+        // Used for renaming and re-id'ing the edges
+        int edgeCountOld = meshRebuilder.edgeObjects.Count;
+        List<int> edgesToReID = new List<int>();
+
         // All edges that were connected to vertex 1, connect to vertex 2
         foreach (Edge reconnect in deleterVertex.connectedEdges)
         {
             // Delete the edge that connects the two vertices
             if (reconnect.vert1 == vertex2 || reconnect.vert2 == vertex2)
             {
+                // For moving edges through the edgeObjects list when we're done deleting them
+                if (reconnect.id != edgeCountOld - 1)
+                    edgesToReID.Add(reconnect.id);
+
                 takeoverVertex.connectedEdges.Remove(reconnect);
                 meshRebuilder.edgeObjects.Remove(reconnect);
                 Destroy(reconnect.thisEdge);
@@ -186,11 +191,18 @@ public class Merge : MonoBehaviour
                 if ((duplicate1.vert1 == duplicate2.vert1 && duplicate1.vert2 == duplicate2.vert2) || (duplicate1.vert1 == duplicate2.vert2 && duplicate1.vert2 == duplicate2.vert1))
                 {
                     // Need lists to use indexing, don't want duplicates
+
+                    // Deleting
                     if (!edgeDupes.Contains(duplicate1))
-                    {
                         edgeDupes.Add(duplicate1);
+
+                    // Keeping
+                    if (!reface.Contains(duplicate2))
                         reface.Add(duplicate2);
-                    }
+                    
+                    // For moving edges through the edgeObjects list when we're done deleting them
+                    if (!edgesToReID.Contains(duplicate1.id))
+                        edgesToReID.Add(duplicate1.id);
                 }
             }
         }
@@ -203,66 +215,160 @@ public class Merge : MonoBehaviour
             Destroy(confirmed.thisEdge);
         }
 
+        int edgeCountDiff = edgeCountOld - meshRebuilder.edgeObjects.Count;
+
+        Debug.Log("-----------------");
+        Debug.Log("edgeCountDiff = " + edgeCountDiff);
+        Debug.Log("meshRebuilder.edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
+        Debug.Log("-----------------");
+        Debug.Log("edgesToReID = " + edgesToReID.Count);
+        foreach (int i in edgesToReID)
+            Debug.Log("edges: " + i);
+        Debug.Log("-----------------");
+        foreach (Edge edge in edgeDupes)
+            Debug.Log("edgeDupes: " + edge.id);
+        foreach (Edge edge in reface)
+            Debug.Log("refaces: " + edge.id);
+        Debug.Log("-----------------");
+
+        ReIDEdges(edgeCountDiff, edgesToReID);
+
         return reface;
+    }
+
+    private void ReIDEdges(int edgeCountDiff, List<int> edgesToReID)
+    {
+        int idCount = 0;
+
+        for (int i = meshRebuilder.edgeObjects.Count - 1; i >= 0; i--)
+        {
+            if (idCount > edgesToReID.Count - 1)
+                break;
+
+            if (meshRebuilder.edgeObjects[i].id == meshRebuilder.edgeObjects.Count - 1)
+            {
+                idCount++;
+            }
+            else
+            {
+                meshRebuilder.edgeObjects[i].id = edgesToReID[idCount];
+                meshRebuilder.edgeObjects[i].name = "Edge" + (edgesToReID[idCount]).ToString();
+                idCount++;
+            }
+        }
     }
 
     // Delete faces after merging two vertices
     void RemoveFaces(List<Edge> edgeDupes, List<Edge> reface)
     {
+        // Used for renaming and re-id'ing the faces
+        int faceCountOld = meshRebuilder.faceObjects.Count;
+        List<int> facesToReID = new List<int>();
+
         // Sift through the deleter vertex faces (vertex1)
-        foreach (Face remove in deleterVertex.connectedFaces)
+        foreach (Face face in deleterVertex.connectedFaces)
         {
             // If any of the face vertices contain both deleter and takeover (vertex1 and 2), delete
-            if (remove.vert1 == vertex2 || remove.vert2 == vertex2 || remove.vert3 == vertex2)
+            if (face.vert1 == vertex2 || face.vert2 == vertex2 || face.vert3 == vertex2)
             {
-                takeoverVertex.connectedFaces.Remove(remove);
-                meshRebuilder.faceObjects.Remove(remove);
-                Destroy(remove.thisFace);
+                // For moving faces through the faceObjects list when we're done deleting them
+                if (face.id != faceCountOld - 1)
+                    facesToReID.Add(face.id);
+
+                takeoverVertex.connectedFaces.Remove(face);
+                meshRebuilder.faceObjects.Remove(face);
+                Destroy(face.thisFace);
             }
             else
             {
                 // Update vert1 or vert2 ids in the Face.cs script to reference the takeover
-                if (remove.vert1 == vertex1)
+                if (face.vert1 == vertex1)
                 {
-                    remove.vert1 = vertex2;
-                    remove.vertObj1 = takeoverVertex;
+                    face.vert1 = vertex2;
+                    face.vertObj1 = takeoverVertex;
                 }
-                else if (remove.vert2 == vertex1)
+                else if (face.vert2 == vertex1)
                 {
-                    remove.vert2 = vertex2;
-                    remove.vertObj2 = takeoverVertex;
+                    face.vert2 = vertex2;
+                    face.vertObj2 = takeoverVertex;
                 }
-                else if (remove.vert3 == vertex1)
+                else if (face.vert3 == vertex1)
                 {
-                    remove.vert3 = vertex2;
-                    remove.vertObj3 = takeoverVertex;
+                    face.vert3 = vertex2;
+                    face.vertObj3 = takeoverVertex;
                 }
 
                 // Add the new face to the takeover vertex
-                takeoverVertex.connectedFaces.Add(remove);
+                takeoverVertex.connectedFaces.Add(face);
             }
 
             // Deleting edges causes Faces to lose edge data
             // Compare the edge ids from edgeDupes list and replace it with the id from reface list
-            for (int i = 0; i < edgeDupes.Count; i++)
+            for (int i = 0; i < reface.Count; i++)
             {
-                if (remove.edge1 == edgeDupes[i].id)
+                if (face.edge1 == edgeDupes[i].id)
                 {
-                    remove.edge1 = reface[i].id;
-                    remove.edgeObj1 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edgeObj1 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edge1 = face.edgeObj1.id;
                 }
-                else if (remove.edge2 == edgeDupes[i].id)
+                else if (face.edge2 == edgeDupes[i].id)
                 {
-                    remove.edge2 = reface[i].id;
-                    remove.edgeObj2 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edgeObj2 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edge2 = face.edgeObj2.id;
                 }
-                else if (remove.edge3 == edgeDupes[i].id)
+                else if (face.edge3 == edgeDupes[i].id)
                 {
-                    remove.edge3 = reface[i].id;
-                    remove.edgeObj3 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edgeObj3 = reface[i].thisEdge.GetComponent<Edge>();
+                    face.edge3 = face.edgeObj3.id;
                 }
             }
+
+            face.edge1 = face.edgeObj1.id;
+            face.edge2 = face.edgeObj2.id;
+            face.edge3 = face.edgeObj3.id;
         }
+
+        int faceCountDiff = faceCountOld - meshRebuilder.faceObjects.Count;
+        ReIDFaces(faceCountDiff, facesToReID);
+    }
+
+    void ReIDFaces(int faceCountDiff, List<int> facesToReID)
+    {
+        int idCount = 0;
+
+        for (int i = meshRebuilder.faceObjects.Count - 1; i >= 0; i--)
+        {
+            if (idCount > facesToReID.Count - 1)
+                break;
+
+            if (meshRebuilder.faceObjects[i].id == meshRebuilder.faceObjects.Count - 1)
+            {
+                idCount++;
+            }
+            else
+            {
+                meshRebuilder.faceObjects[i].id = facesToReID[idCount];
+                meshRebuilder.faceObjects[i].name = "Face" + (facesToReID[idCount]).ToString();
+                idCount++;
+            }
+        }
+    }
+
+    void RelocateObjects()
+    {
+        List<Edge> sortedEdges = meshRebuilder.edgeObjects.OrderBy(e => e.id).ToList();
+        List<Face> sortedFaces = meshRebuilder.faceObjects.OrderBy(f => f.id).ToList();
+
+        meshRebuilder.edgeObjects = sortedEdges;
+        meshRebuilder.faceObjects = sortedFaces;
+
+        // Edge move = meshRebuilder.edgeObjects[i];
+        // meshRebuilder.edgeObjects.Remove(move);
+        // meshRebuilder.edgeObjects.Insert(move.id, move);
+
+        // Face move = meshRebuilder.faceObjects[i];
+        // meshRebuilder.faceObjects.Remove(move);
+        // meshRebuilder.faceObjects.Insert(move.id, move);
     }
 
     // Remove vertex from the mesh filter, special case for removing vertices in the middle of the array
@@ -364,11 +470,13 @@ public class Merge : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
+        /*
         for (int i = 0; i < vertices.Length; i++)
             Debug.Log("vertices[" + i + "] = " + vertices[i]);
 
         for (int i = 0; i < triangles.Length; i += 3)
             Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
+        */
 
         // Update actual mesh data
         mesh.Clear();
@@ -378,12 +486,52 @@ public class Merge : MonoBehaviour
         meshRebuilder.triangles = triangles;
         mesh.RecalculateNormals();
 
+        /*
         for (int i = 0; i < mesh.vertices.Length; i++)
             Debug.Log("mesh.vertices[" + i + "] = " + mesh.vertices[i]);
 
         for (int i = 0; i < mesh.triangles.Length; i += 3)
             Debug.Log("mesh.triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i + 1] + ", " + mesh.triangles[i + 2]);
 
+        for (int i = 0; i < meshRebuilder.vertices.Length; i++)
+            Debug.Log("meshRebuilder.vertices[" + i + "] = " + meshRebuilder.vertices[i]);
+
+        for (int i = 0; i < meshRebuilder.triangles.Length; i += 3)
+            Debug.Log("meshRebuilder.triangles = " + meshRebuilder.triangles[i] + ", " + meshRebuilder.triangles[i + 1] + ", " + meshRebuilder.triangles[i + 2]);
+        */
+
+        // Make sure everthing's in its designated spots
+        UpdateVertices(takeoverVertex.thisVertex.transform, takeoverVertex.id);
+        UpdateEdges(takeoverVertex);
+
+        UpdateFaces(takeoverVertex);
+        if (lastIndex != -1)
+            UpdateFaces(relocaterVertex);
+    }
+
+    public void UpdateVertices(Transform transform, int index)
+    {
+        Vector3 editingSpaceScale = editingSpace.transform.localScale;
+
+        // Handle divide by zero error
+        if (editingSpaceScale.x == 0 || editingSpaceScale.y == 0 || editingSpaceScale.z == 0)
+            return;
+
+        // Calculate inverse scale vector based on editing space scale
+        Vector3 inverseScale = new Vector3(
+            1.0f / editingSpaceScale.x,
+            1.0f / editingSpaceScale.y,
+            1.0f / editingSpaceScale.z
+        );
+
+        // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
+        meshRebuilder.vertices[index] =
+            Quaternion.Inverse(editingSpace.transform.rotation)
+            * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
+    }
+
+    void UpdateEdges(Vertex vertex)
+    {
         // Reconnect edges to vertices (visually)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
@@ -406,11 +554,6 @@ public class Merge : MonoBehaviour
             edgeObject.transform.LookAt(transform, Vector3.up);
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
-
-        // Make sure faces are in the correct spots
-        UpdateFaces(takeoverVertex);
-        if (lastIndex != -1)
-            UpdateFaces(relocaterVertex);
     }
 
     // Put the faces in the center of each triangle ("visually")
@@ -437,13 +580,18 @@ public class Merge : MonoBehaviour
         }
     }
 
+    private void OnTriggerExit(Collider takeover)
+    {
+        materialSwap.material = unselected;
+    }
+
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerStay(Collider takeover)
     {
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
-            Debug.Log("Tag != Vertex");
+            // Debug.Log("Tag != Vertex");
             return;
         }
 
@@ -451,7 +599,7 @@ public class Merge : MonoBehaviour
 
         if (pulleyLocomotion.isMovingVertex == true)
         {
-            Debug.Log("You need to let go of the vertex first.");
+            // Debug.Log("You need to let go of the vertex first.");
             return;
         }
 
@@ -499,6 +647,59 @@ public class Merge : MonoBehaviour
         mergeWithTakeover();
         UpdateMesh(vertex2);
         Destroy(deleterVertex.thisVertex);
+
+        /*
+        Debug.Log("#####################################################################");
+        Debug.Log("Vertices");
+        foreach (Vertex vertex in meshRebuilder.vertexObjects)
+        {
+            Debug.Log(vertex.name);
+            Debug.Log(vertex.id);
+
+            Debug.Log("+++++++++++++++++");
+            foreach (Edge edge in vertex.connectedEdges)
+                Debug.Log(edge.id);
+
+            Debug.Log("+++++++++++++++++");
+            foreach (Face face in vertex.connectedFaces)
+                Debug.Log(face.id);
+
+            Debug.Log("---------------------------------------");
+        }
+
+        Debug.Log("#####################################################################");
+        Debug.Log("Edges");
+        foreach (Edge edge in meshRebuilder.edgeObjects)
+        {
+            Debug.Log(edge.name);
+            Debug.Log(edge.id);
+            Debug.Log(edge.vert1);
+            Debug.Log(edge.vert2);
+            Debug.Log("---------------------------------------");
+        }
+
+        Debug.Log("#####################################################################");
+        Debug.Log("Faces");
+        foreach (Face face in meshRebuilder.faceObjects)
+        {
+            Debug.Log(face.name);
+            Debug.Log(face.id);
+            Debug.Log(face.vert1);
+            Debug.Log(face.vert2);
+            Debug.Log(face.vert3);
+            Debug.Log(face.vertObj1.id);
+            Debug.Log(face.vertObj2.id);
+            Debug.Log(face.vertObj3.id);
+            Debug.Log(face.edge1);
+            Debug.Log(face.edge2);
+            Debug.Log(face.edge3);
+            Debug.Log(face.edgeObj1.id);
+            Debug.Log(face.edgeObj2.id);
+            Debug.Log(face.edgeObj3.id);
+            Debug.Log("---------------------------------------");
+        }
+        Debug.Log("#####################################################################");
+        */
 
         Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);

@@ -150,9 +150,13 @@ public class MoveFace : MonoBehaviour
 
         SetActiveFaces(thisFace, false);
 
-        vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-        vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-        vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
+        // vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
+        // vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
+        // vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
+
+        vertex1 = thisFace.vertObj1;
+        vertex2 = thisFace.vertObj2;
+        vertex3 = thisFace.vertObj3;
 
         thisFace.transform.parent = model.transform;
 
