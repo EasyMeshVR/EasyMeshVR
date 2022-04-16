@@ -269,9 +269,10 @@ public class Merge : MonoBehaviour
                 break;
 
             // Don't update edges outside of the index range
-            if (edgesToReID[idIndex] >= lastEdgeIndex)
+            if (edgesToReID[idIndex] > lastEdgeIndex)
             {
                 idIndex++;
+                i++;
             }
             else
             {
@@ -346,15 +347,19 @@ public class Merge : MonoBehaviour
 
         // While the faces get the correct EdgeObj components, the IDs weren't updating properly
         // This was the only way I could find to get them to have the same data
+        int z = 0;
         foreach (Face face in meshRebuilder.faceObjects)
         {
+            face.name = "Face" + z.ToString();
+            face.id = z++;
+
             face.edge1 = face.edgeObj1.id;
             face.edge2 = face.edgeObj2.id;
             face.edge3 = face.edgeObj3.id;
         }
 
         // Move faces around the faceObjects list
-        ReIDFaces(meshRebuilder.faceObjects.Count - 1, facesToReID);
+        // ReIDFaces(meshRebuilder.faceObjects.Count - 1, facesToReID);
 
         Debug.Log("-----------------");
         Debug.Log("-----------------");

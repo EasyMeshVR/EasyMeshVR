@@ -136,13 +136,13 @@ public class MoveFace : MonoBehaviour
 
         Debug.Log("edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
 
-        // edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
-        // edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
-        // edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
+        edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
+        edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
+        edge3 = meshRebuilder.edgeObjects[thisFace.edge3];
 
-        edge1 = thisFace.edgeObj1;
-        edge2 = thisFace.edgeObj2;
-        edge3 = thisFace.edgeObj3;
+        // edge1 = thisFace.edgeObj1;
+        // edge2 = thisFace.edgeObj2;
+        // edge3 = thisFace.edgeObj3;
 
         SetActiveEdges(edge1, false);
         SetActiveEdges(edge2, false);
@@ -150,13 +150,13 @@ public class MoveFace : MonoBehaviour
 
         SetActiveFaces(thisFace, false);
 
-        // vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
-        // vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
-        // vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
+        vertex1 = meshRebuilder.vertexObjects[thisFace.vert1];
+        vertex2 = meshRebuilder.vertexObjects[thisFace.vert2];
+        vertex3 = meshRebuilder.vertexObjects[thisFace.vert3];
 
-        vertex1 = thisFace.vertObj1;
-        vertex2 = thisFace.vertObj2;
-        vertex3 = thisFace.vertObj3;
+        // vertex1 = thisFace.vertObj1;
+        // vertex2 = thisFace.vertObj2;
+        // vertex3 = thisFace.vertObj3;
 
         thisFace.transform.parent = model.transform;
 
