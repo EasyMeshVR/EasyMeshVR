@@ -67,7 +67,7 @@ public class StepExecutor : MonoBehaviour
                 stepBuffer.Dequeue();
                 stepHistory.Add(curStep);
                 counter++;
-                Debug.Log("Command history length: " + stepHistory.Count);
+                // Debug.Log("Command history length: " + stepHistory.Count);
             }
             else
             {

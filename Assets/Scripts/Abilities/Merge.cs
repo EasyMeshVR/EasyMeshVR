@@ -212,7 +212,7 @@ public class Merge : MonoBehaviour
             Destroy(confirmed.thisEdge);
         }
 
-        Debug.Log("meshRebuilder.edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
+        /*Debug.Log("meshRebuilder.edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
         Debug.Log("-----------------");
         Debug.Log("edgesToReID = " + edgesToReID.Count);
         foreach (int i in edgesToReID)
@@ -222,7 +222,7 @@ public class Merge : MonoBehaviour
             Debug.Log("edgeDupes: " + edge.id);
         foreach (Edge edge in reface)
             Debug.Log("refaces: " + edge.id);
-        Debug.Log("-----------------");
+        Debug.Log("-----------------");*/
 
         // Move edges around the edgeObjects list
         ReIDEdges(meshRebuilder.edgeObjects.Count - 1, edgesToReID);
@@ -574,7 +574,7 @@ public class Merge : MonoBehaviour
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
-            Debug.Log("Tag != Vertex");
+            // Debug.Log("Tag != Vertex");
             return;
         }
 
@@ -582,7 +582,7 @@ public class Merge : MonoBehaviour
 
         if (pulleyLocomotion.isMovingVertex == true)
         {
-            Debug.Log("You need to let go of the vertex first.");
+            // Debug.Log("You need to let go of the vertex first.");
             return;
         }
 

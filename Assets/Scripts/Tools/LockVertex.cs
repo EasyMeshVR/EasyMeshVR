@@ -88,6 +88,12 @@ public class LockVertex : ToolClass
     // Change material, disable vertex grab interactable, set boolean
     public void Lock(Vertex currentVertex, bool sendVertexLockEvent = true)
     {
+        if (currentVertex == null)
+        {
+            Debug.LogWarning("Warning: Failed to lock vertex since reference is null!");
+            return;
+        }
+
         MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
 
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
@@ -97,6 +103,8 @@ public class LockVertex : ToolClass
 
         foreach(Edge e in currentVertex.connectedEdges)
         {
+            if (e == null) continue;
+
             e.GetComponent<XRGrabInteractable>().enabled = false;
             materialSwap = e.GetComponent<MeshRenderer>();
             materialSwap.material = lockedEdge;
@@ -106,9 +114,11 @@ public class LockVertex : ToolClass
 
         foreach(Face f in currentVertex.connectedFaces)
         {
-                f.GetComponent<XRGrabInteractable>().enabled = false;
-                f.GetComponent<MoveFace>().isLocked = true;
-                f.locked = true;
+            if (f == null) continue;
+
+            f.GetComponent<XRGrabInteractable>().enabled = false;
+            f.GetComponent<MoveFace>().isLocked = true;
+            f.locked = true;
         }
 
         // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
@@ -131,6 +141,12 @@ public class LockVertex : ToolClass
     // Change material, enbable vertex grab interactable, set boolean
     public void Unlock(Vertex currentVertex, bool sendVertexLockEvent = true)
     {
+        if (currentVertex == null)
+        {
+            Debug.LogWarning("Warning: Failed to unlock vertex since reference is null!");
+            return;
+        }
+
         MeshRebuilder meshRebuilder = currentVertex.GetComponent<MoveVertices>().meshRebuilder;
 
         materialSwap = currentVertex.GetComponent<MeshRenderer>();
@@ -141,6 +157,8 @@ public class LockVertex : ToolClass
         
         foreach(Edge e in currentVertex.connectedEdges)
         {
+            if (e == null) continue;
+
             // Don't unlock edge if it has another vertex that is locked
             if(meshRebuilder.vertexObjects[e.vert1].GetComponent<MoveVertices>().isLocked
                 || meshRebuilder.vertexObjects[e.vert2].GetComponent<MoveVertices>().isLocked)
@@ -159,6 +177,8 @@ public class LockVertex : ToolClass
 
         foreach(Face f in currentVertex.connectedFaces)
         {
+            if (f == null) continue;
+
             // Don't unlock if another vertex on the face is locked
             if(f.vertObj1.GetComponent<MoveVertices>().isLocked || f.vertObj2.GetComponent<MoveVertices>().isLocked || f.vertObj3.GetComponent<MoveVertices>().isLocked)
                 continue;
