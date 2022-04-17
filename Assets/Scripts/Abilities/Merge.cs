@@ -676,14 +676,7 @@ public class Merge : MonoBehaviour
         }
         connection = false;
 
-        /*Debug.Log("vertex1 = " + deleterVertex.id);
-        Debug.Log("vertex2 = " + takeoverVertex.id);*/
-
-        // Performing the actual merge
-        /*getDeleterData();
-        mergeWithTakeover();
-        UpdateMesh(vertex2);
-        Destroy(deleterVertex.thisVertex);*/
+        AddMergeVertexOpStep(meshRebuilder.id, vertex1, vertex2);
 
         // Synchronize merge vertex event
         MergeVertexEvent mergeVertexEvent = new MergeVertexEvent
@@ -695,16 +688,15 @@ public class Merge : MonoBehaviour
             isCached = true,
         };
 
-        MergeVertex(mergeVertexEvent);
-
         NetworkMeshManager.instance.SynchronizeMeshMergeVertex(mergeVertexEvent);
+    }
 
-        // TODO: add step for undo/redo
-        // Timeline shenanigans
-        /*Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+    public void AddMergeVertexOpStep(int meshId, int deleterVertexId, int takeoverVertexId)
+    {
+        Step step = new Step();
+        MergeVertexOp op = new MergeVertexOp(meshId, deleterVertexId, takeoverVertexId);
         step.AddOp(op);
-        StepExecutor.instance.AddStep(step);*/
+        StepExecutor.instance.AddStep(step);
     }
 
     public void MergeVertex(MergeVertexEvent mergeVertexEvent)
