@@ -9,7 +9,7 @@ public class StepExecutor : MonoBehaviour
 {
     public static StepExecutor instance { get; private set; }
 
-    public InputActionReference testSendColor = null;
+    // public InputActionReference testSendColor = null;
     public InputActionReference globalUndo = null;
     public InputActionReference globalRedo = null;
 
@@ -21,7 +21,6 @@ public class StepExecutor : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        testSendColor.action.started += SendTestColorCommand;
         globalUndo.action.started += UndoInputAction;
         globalRedo.action.started += RedoInputAction;
 
@@ -32,7 +31,6 @@ public class StepExecutor : MonoBehaviour
 
     private void OnDestroy()
     {
-        testSendColor.action.started -= SendTestColorCommand;
         globalUndo.action.started -= UndoInputAction;
         globalRedo.action.started -= RedoInputAction;
     }
@@ -149,28 +147,5 @@ public class StepExecutor : MonoBehaviour
         {
             Debug.Log("No steps left to redo");
         }
-    }
-
-    public void SendTestColorCommand(InputAction.CallbackContext context)
-    {
-        Vector3 colorVec = new Vector3(Random.value, Random.value, Random.value);
-        SetLightColorOp(colorVec);
-
-        ChaneLightColorEvent changeLightColorEvent = new ChaneLightColorEvent
-        {
-            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
-            colorVec = colorVec,
-            isCached = true
-        };
-
-        NetworkMeshManager.instance.SynchronizeSetLightColorOp(changeLightColorEvent);
-    }
-
-    public void SetLightColorOp(Vector3 colorVec)
-    {
-        Step step = new Step();
-        SetLightColor op = new SetLightColor(new Color(colorVec.x, colorVec.y, colorVec.z));
-        step.AddOp(op);
-        AddStep(step);
     }
 }

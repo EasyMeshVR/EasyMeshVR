@@ -7,6 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 using System.Linq;
 using System;
+using EasyMeshVR.Multiplayer;
+using Photon.Pun;
 
 public class Merge : MonoBehaviour
 {
@@ -31,8 +33,8 @@ public class Merge : MonoBehaviour
     static int[] triangles;
     static List<int> triangleReferences = new List<int>();
     static List<int> lastVertTriReferences = new List<int>();
-    Vector3[] timelineVertices;
-    int[] timelineTriangles;
+   /* Vector3[] timelineVertices;
+    int[] timelineTriangles;*/
 
     // Vertex lookup
     Vertex mergeVertex;
@@ -61,8 +63,8 @@ public class Merge : MonoBehaviour
         triangles = mesh.triangles;
         
         // MeshFilter references for undo/redo
-        timelineVertices = meshRebuilder.vertices;
-        timelineTriangles = meshRebuilder.triangles;
+        /*timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;*/
 
         // This vertex (the one we're holding atm)
         // If we drag this vertex on top of another, we merge the two, and we delete the one in our hand
@@ -77,11 +79,13 @@ public class Merge : MonoBehaviour
     }
 
     // Save the data we need for the vertex we're merging (this is the one of the two we're deleting)
-    private void getDeleterData()
+    private void getDeleterData(int vertex1, int vertex2)
     {
         // Reset needed data
         vertices = mesh.vertices;
         triangles = mesh.triangles;
+
+        Debug.Log("Vert len " + vertices.Length);
 
         // Grab last index of the vertices array
         // If our deleter vertex is the last index, we don't care about updating the vertex IDs
@@ -101,7 +105,7 @@ public class Merge : MonoBehaviour
     }
 
     // Make the second vertex inherit all the data of the first (this is the one of the two we're keeping)
-    private void mergeWithTakeover()
+    private void mergeWithTakeover(int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
     {
         List<Vector3> verticesList = new List<Vector3>();
         List<int> trianglesList = triangles.ToList();
@@ -131,17 +135,21 @@ public class Merge : MonoBehaviour
         List<int> facesToReID = new List<int>();
 
         // Remove mesh object components
-        reface = RemoveEdges(edgeDupes, reface, edgesToReID);
-        RemoveFaces(reface, facesToReID, edgesToReID);
-        verticesList = RemoveVertices(verticesList, trianglesList);
+        reface = RemoveEdges(edgeDupes, reface, edgesToReID, vertex1, vertex2, deleterVertex, takeoverVertex);
+        Debug.Log("Vert len " + vertices.Length);
+        RemoveFaces(reface, facesToReID, edgesToReID, vertex1, vertex2, deleterVertex, takeoverVertex);
+        Debug.Log("Vert len " + vertices.Length);
+        verticesList = RemoveVertices(verticesList, trianglesList, vertex1, vertex2, deleterVertex, takeoverVertex);
 
         // Updated data
         vertices = verticesList.ToArray();
         triangles = trianglesList.ToArray();
+
+        Debug.Log("Vert len " + vertices.Length);
     }
 
     // Delete edge that connects the two vertices and all overlapping edges
-    private List<Edge> RemoveEdges(List<Edge> edgeDupes, List<Edge> reface, List<int> edgesToReID)
+    private List<Edge> RemoveEdges(List<Edge> edgeDupes, List<Edge> reface, List<int> edgesToReID, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
     {
         int edgeCountOld = meshRebuilder.edgeObjects.Count;
 
@@ -273,7 +281,7 @@ public class Merge : MonoBehaviour
     }
 
     // Delete faces after merging two vertices
-    void RemoveFaces(List<Edge> reface, List<int> facesToReID, List<int> edgesToReID)
+    void RemoveFaces(List<Edge> reface, List<int> facesToReID, List<int> edgesToReID, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
     {
         // Sift through the deleter vertex faces (vertex1)
         foreach (Face face in deleterVertex.connectedFaces)
@@ -379,10 +387,11 @@ public class Merge : MonoBehaviour
     }
 
     // Remove vertex from the mesh filter, special case for removing vertices in the middle of the array
-    private List<Vector3> RemoveVertices(List<Vector3> verticesList, List<int> trianglesList)
+    private List<Vector3> RemoveVertices(List<Vector3> verticesList, List<int> trianglesList, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
     {
         // Remove vertex1 from the vertices array and meshRebuilder vertexObjects list
         verticesList = vertices.ToList();
+        Debug.Log("Vert len " + vertices.Length);
         verticesList.RemoveAt(vertex1);
         meshRebuilder.vertexObjects.Remove(deleterVertex);
 
@@ -474,8 +483,11 @@ public class Merge : MonoBehaviour
     }
 
     // Update MeshFilter and re-draw in-game visuals
-    public void UpdateMesh(int index)
+    public void UpdateMesh(Vertex takeoverVertex)
     {
+        // vertices = meshRebuilder.vertices;
+        // Vector3[] vertices = meshRebuilder.vertices;
+
         // Update actual mesh data
         mesh.Clear();
         mesh.vertices = vertices;
@@ -514,8 +526,13 @@ public class Merge : MonoBehaviour
             * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
     }
 
+    bool VertexIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.vertices.Length;
+    }
+
     // Make edges look at each other
-    void UpdateEdges(Vertex vertex)
+    void UpdateEdges(Vertex takeoverVertex)
     {
         // Reconnect edges to vertices (visually)
         foreach (Edge edge in takeoverVertex.connectedEdges)
@@ -529,6 +546,12 @@ public class Merge : MonoBehaviour
 
             int vert1 = edge.vert1;
             int vert2 = edge.vert2;
+
+            if (!VertexIdInBounds(vert1) || !VertexIdInBounds(vert2))
+            {
+                Debug.Log("Vert ids are not in bounds, skipping edge update");
+                continue;
+            }
 
             // Set the edge's position to between the two vertices and scale it appropriately
             float edgeDistance = 0.5f * Vector3.Distance(vertices[vert1], vertices[vert2]);
@@ -556,6 +579,12 @@ public class Merge : MonoBehaviour
             int vert1 = face.vert1;
             int vert2 = face.vert2;
             int vert3 = face.vert3;
+
+            if (!VertexIdInBounds(vert1) || !VertexIdInBounds(vert2) || !VertexIdInBounds(vert3))
+            {
+                Debug.Log("Vert ids are not in bounds, skipping edge update");
+                continue;
+            }
 
             float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
             float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
@@ -622,13 +651,9 @@ public class Merge : MonoBehaviour
         }
         triggerCheck = 2;
 
-        // Update meshRebuilder with freshest data
-        meshRebuilder.vertices = mesh.vertices;
-        meshRebuilder.triangles = mesh.triangles;
-
         // Save current data for timeline
-        timelineVertices = meshRebuilder.vertices;
-        timelineTriangles = meshRebuilder.triangles;
+        /*timelineVertices = meshRebuilder.vertices;
+        timelineTriangles = meshRebuilder.triangles;*/
 
         // Get Vertex references
         deleterVertex = mergeVertex;
@@ -651,23 +676,54 @@ public class Merge : MonoBehaviour
         }
         connection = false;
 
-        Debug.Log("vertex1 = " + deleterVertex.id);
-        Debug.Log("vertex2 = " + takeoverVertex.id);
-
-        
+        /*Debug.Log("vertex1 = " + deleterVertex.id);
+        Debug.Log("vertex2 = " + takeoverVertex.id);*/
 
         // Performing the actual merge
-        getDeleterData();
+        /*getDeleterData();
         mergeWithTakeover();
         UpdateMesh(vertex2);
-        Destroy(deleterVertex.thisVertex);
+        Destroy(deleterVertex.thisVertex);*/
 
-       
+        // Synchronize merge vertex event
+        MergeVertexEvent mergeVertexEvent = new MergeVertexEvent
+        {
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+            meshId = meshRebuilder.id,
+            deleterVertexId = vertex1,
+            takeOverVertexId = vertex2,
+            isCached = true,
+        };
 
+        MergeVertex(mergeVertexEvent);
+
+        NetworkMeshManager.instance.SynchronizeMeshMergeVertex(mergeVertexEvent);
+
+        // TODO: add step for undo/redo
         // Timeline shenanigans
-        Step step = new Step();
+        /*Step step = new Step();
         MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
         step.AddOp(op);
-        StepExecutor.instance.AddStep(step);
+        StepExecutor.instance.AddStep(step);*/
+    }
+
+    public void MergeVertex(MergeVertexEvent mergeVertexEvent)
+    {
+        Debug.Log("Merge vert event " + mergeVertexEvent.deleterVertexId + " " + mergeVertexEvent.takeOverVertexId);
+
+        // Update meshRebuilder with freshest data
+        meshRebuilder.vertices = mesh.vertices;
+        meshRebuilder.triangles = mesh.triangles;
+
+        int vertex1 = mergeVertexEvent.deleterVertexId;
+        int vertex2 = mergeVertexEvent.takeOverVertexId;
+        Vertex deleterVertex = meshRebuilder.vertexObjects[mergeVertexEvent.deleterVertexId];
+        //Vertex deleterVertex = GetComponent<Vertex>();
+        Vertex takeoverVertex = meshRebuilder.vertexObjects[mergeVertexEvent.takeOverVertexId];
+
+        getDeleterData(vertex1, vertex2);
+        mergeWithTakeover(vertex1, vertex2, deleterVertex, takeoverVertex);
+        UpdateMesh(takeoverVertex);
+        Destroy(deleterVertex.gameObject);
     }
 }
