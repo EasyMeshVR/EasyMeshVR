@@ -85,16 +85,15 @@ namespace EasyMeshVR.UI
             }
         }
 
-        // TODO: when merge ability is done finish this function
         public void HandleAutoMergeVertices(bool toggled)
         {
             if (toggled)
             {
-
+                ToolManager.instance.EnableAutoMergeVertex();
             }
             else
             {
-
+                ToolManager.instance.DisableAutoMergeVertex();
             }
         }
 

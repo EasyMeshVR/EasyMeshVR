@@ -577,6 +577,12 @@ public class Merge : MonoBehaviour
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerStay(Collider takeover)
     {
+        if (!enabled)
+        {
+            // Debug.Log("Merge: OnTriggerStay(): Auto-merge vertices is disabled!");
+            return;
+        }
+
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
