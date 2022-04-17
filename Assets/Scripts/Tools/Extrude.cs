@@ -17,6 +17,8 @@ public class Extrude : ToolClass
     [SerializeField] ToolRaycast ray;
     [SerializeField] XRDirectInteractor directInteractor;
     [SerializeField] Material unselected;
+    [SerializeField] Material lockedEdge;
+
 
     public GameObject currentFace;
     public bool inRadius = false;
@@ -64,7 +66,6 @@ public class Extrude : ToolClass
         MoveFace moveFace = faceObj.gameObject.GetComponent<MoveFace>();
         MeshRebuilder meshRebuilder = moveFace.meshRebuilder;
         float extrudeDistance = 1f;
-
         AddExtrudeOpStep(meshRebuilder.id, faceObj.id, extrudeDistance);
     }
 
@@ -81,7 +82,7 @@ public class Extrude : ToolClass
     {
         if(movingNewFace)
         {
-            print("test stop interaction");
+            //print("test stop interaction");
             directInteractor.EndManualInteraction();
             movingNewFace = false;
             return;
@@ -104,6 +105,18 @@ public class Extrude : ToolClass
         }
     }
 
+    public override void triggerAction()
+    {
+        if(movingNewFace)
+        {
+            //print("test stop interaction");
+            directInteractor.EndManualInteraction();
+            movingNewFace = false;
+            return;
+        }
+
+    }
+
     // Extrude face along normal by distance value set by either button
     public ExtrudedObjects extrudeFace(int faceId, MeshRebuilder meshRebuilder, Mesh mesh, float extrudeDistance, bool sendFaceExtrudeEvent = true)
     {
@@ -112,7 +125,10 @@ public class Extrude : ToolClass
         Vertex vertex2 = meshRebuilder.vertexObjects[faceObj.vert2];
         Vertex vertex3 = meshRebuilder.vertexObjects[faceObj.vert3];
 
-        // calculating normals is done in mesh rebuilder
+        // Re-calculate the normal of the face since the positon of the vertices may have changed
+        Vector3 e1 = meshRebuilder.vertices[faceObj.vert2] - meshRebuilder.vertices[faceObj.vert1];
+        Vector3 e2 = meshRebuilder.vertices[faceObj.vert3] - meshRebuilder.vertices[faceObj.vert2];
+        faceObj.normal = Vector3.Normalize(Vector3.Cross(e1, e2));
 
         // align new vertices w/ face normal
         Vector3 new1 = vertex1.transform.localPosition + ((faceObj.normal  + vertex1.transform.localPosition *.005f).normalized ) / extrudeDistance;
@@ -229,7 +245,6 @@ public class Extrude : ToolClass
         mesh.triangles = tris;
         meshRebuilder.triangles = tris;
         mesh.RecalculateNormals();
-
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
 
         // Connect new edges to old vertices (a little barbaric but it's fine)
@@ -272,6 +287,27 @@ public class Extrude : ToolClass
             NetworkMeshManager.instance.SynchronizeMeshFaceExtrude(faceExtrudeEvent);
         }
 
+        // connectOldVerts(meshRebuilder, vertex1, vertex2, vertex3);
+
+        // vertex1.connectedEdges = vertex1.connectedEdges.Distinct().ToList();
+        // vertex1.connectedFaces = vertex1.connectedFaces.Distinct().ToList();
+
+        // vertex2.connectedEdges = vertex2.connectedEdges.Distinct().ToList();
+        // vertex2.connectedFaces = vertex2.connectedFaces.Distinct().ToList(); 
+
+        // vertex3.connectedEdges = vertex3.connectedEdges.Distinct().ToList();
+        // vertex3.connectedFaces = vertex3.connectedFaces.Distinct().ToList();
+
+        // Lock new edges and triangles connected to locked vertices
+        if(vertex1.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex1.id);
+
+        if(vertex2.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex2.id);
+
+        if(vertex3.GetComponent<MoveVertices>().isLocked)
+            LockNewVisuals(meshRebuilder, vertex3.id);
+            
         // Return the list of new vertexIds that were generated for this extruded face
         // as well as the amount of triangles generated and the starting index of the
         // new triangles in the array. (Used in ExtrudeOp to undo the mesh triangles/verts extrusion)
@@ -322,6 +358,46 @@ public class Extrude : ToolClass
         }
     }
 
+    void connectOldVerts(MeshRebuilder meshRebuilder, Vertex old1, Vertex old2, Vertex old3)
+    {
+        for(int i = 0; i < meshRebuilder.faceObjects.Count; i++)
+        {
+            Face currentFace = meshRebuilder.faceObjects[i];
+            if(currentFace.vert1 == old1.id || currentFace.vert2 == old1.id || currentFace.vert3 == old1.id)
+            {
+                old1.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old1.id || currentFace.edgeObj1.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old1.id || currentFace.edgeObj2.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old1.id || currentFace.edgeObj3.vert2 == old1.id)
+                    old1.connectedEdges.Add(currentFace.edgeObj3);
+            }
+
+            if(currentFace.vert1 == old2.id || currentFace.vert2 == old2.id || currentFace.vert3 == old2.id)
+            {
+                old2.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old2.id || currentFace.edgeObj1.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old2.id || currentFace.edgeObj2.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old2.id || currentFace.edgeObj3.vert2 == old2.id)
+                    old2.connectedEdges.Add(currentFace.edgeObj3);
+            }
+
+            if(currentFace.vert1 == old3.id || currentFace.vert2 == old3.id || currentFace.vert3 == old3.id)
+            {
+                old1.connectedFaces.Add(currentFace);
+                if(currentFace.edgeObj1.vert1 == old3.id || currentFace.edgeObj1.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj1);
+                if(currentFace.edgeObj2.vert1 == old3.id || currentFace.edgeObj2.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj2);
+                if(currentFace.edgeObj3.vert1 == old3.id || currentFace.edgeObj3.vert2 == old3.id)
+                    old3.connectedEdges.Add(currentFace.edgeObj3);
+            }
+        }
+    }
+
     // Actually create the vertex and edge GameObject interactables
     void CreateVisuals(MeshRebuilder meshRebuilder, List<Vector3> newVertices, List<int> newTriangles, int oldLengthVert, int oldLengthTri)
     {
@@ -331,7 +407,7 @@ public class Extrude : ToolClass
         int[] triangles = meshRebuilder.triangles;
 
         for (int i = 0; i < vertices.Length; i++)
-        {
+        {          
             // Create a new vertex from a prefab, make it a child of the mesh and set it's position
             GameObject newVertex = Instantiate(vertex, meshRebuilder.model.transform);
             newVertex.transform.localPosition = vertices[i];
@@ -495,6 +571,52 @@ public class Extrude : ToolClass
                 newFace.SetActive(false);
             }
         }
+    }
+
+    // Lock new visuals if any of the old vertices are locked
+    void LockNewVisuals(MeshRebuilder meshRebuilder, int lockedVertex)
+    {
+       // Vertex currentVertex = meshRebuilder.vertexObjects[lockedVertex];
+        for(int i = meshRebuilder.faceObjects.Count - 8; i < meshRebuilder.faceObjects.Count - 1; i++)
+        {
+            Face currentFace = meshRebuilder.faceObjects[i];
+            // Lock face connected to locked vertex
+            if(currentFace.vert1 == lockedVertex || currentFace.vert2 == lockedVertex || currentFace.vert3 ==lockedVertex)
+            {
+                currentFace.GetComponent<XRGrabInteractable>().enabled = false;
+                currentFace.GetComponent<MoveFace>().isLocked = true;
+                currentFace.locked = true;
+            } 
+
+            // lock edges connected to locked vertex
+            if(currentFace.edgeObj1.vert1 == lockedVertex || currentFace.edgeObj1.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj1.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj1.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj1.locked = true;
+                currentFace.edgeObj1.GetComponent<MoveEdge>().isLocked = true;   
+            }
+            if(currentFace.edgeObj2.vert1 == lockedVertex || currentFace.edgeObj2.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj2.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj2.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj2.locked = true;
+                currentFace.edgeObj2.GetComponent<MoveEdge>().isLocked = true; 
+                
+            }
+            if(currentFace.edgeObj3.vert1 == lockedVertex || currentFace.edgeObj3.vert2 == lockedVertex)
+            {
+                currentFace.edgeObj3.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap =  currentFace.edgeObj3.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                currentFace.edgeObj3.locked = true;
+                currentFace.edgeObj3.GetComponent<MoveEdge>().isLocked = true; 
+                
+            }
+        }
+
     }
 
     // Clear data on exiting radius
