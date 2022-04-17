@@ -12,12 +12,19 @@ public class ToolManager : MonoBehaviour
 
     [SerializeField] public bool LockTool;
     [SerializeField] public bool extrudeTool;
+    [SerializeField] public bool LockAxis;
+
 
     [SerializeField] public LockVertex lockScriptRay;
     [SerializeField] public LockVertex lockScriptGrab;
 
     [SerializeField] public Extrude extrudeScriptRay;
     [SerializeField] public Extrude extrudeScriptGrab;
+
+    [SerializeField] public LockAxis lockAxisGrab;
+
+
+
 
     public bool grabVertex = true;
     public bool grabEdge = true;
@@ -55,6 +62,18 @@ public class ToolManager : MonoBehaviour
         extrudeTool = false;
         extrudeScriptGrab.Disable();
         extrudeScriptRay.Disable();
+    }
+
+    public void EnableAxisLock()
+    {
+        LockAxis = true;
+        lockAxisGrab.Enable();
+    }
+
+    public void DisableAxisLock()
+    {
+        LockAxis = false;
+        lockAxisGrab.Disable();
     }
 
     public void EnableVertex()

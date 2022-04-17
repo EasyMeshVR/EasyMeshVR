@@ -50,14 +50,11 @@ public class ExtrudeOp : IOperation
         HashSet<int> deletedEdgeIds = new HashSet<int>();
         HashSet<int> deletedFaceIds = new HashSet<int>();
         int removedVertsCount = 0;
+        int vertLen = meshRebuilder.vertexObjects.Count;
 
         foreach (int vertexId in extrudedObjects.newVertexIds)
         {
-            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId - removedVertsCount];
-            GameObject.Destroy(vertexObj.gameObject);
-            meshRebuilder.vertexObjects.RemoveAt(vertexId - removedVertsCount);
-            newVertsList.RemoveAt(vertexId - removedVertsCount);
-            removedVertsCount++;
+            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
 
             // Destroy connected edges, and be careful not to call destroy on an already deleted edge
             foreach (Edge edge in vertexObj.connectedEdges)
@@ -85,30 +82,40 @@ public class ExtrudeOp : IOperation
             // Destroy connected faces, and be careful not to call destroy on already deleted face
             foreach (Face face in vertexObj.connectedFaces)
             {
-                if (!deletedFaceIds.Contains(face.id))
+                if (!deletedFaceIds.Contains(face.id) && face != null)
                 {
                     GameObject.Destroy(face.gameObject);
                     meshRebuilder.faceObjects.Remove(face);
                     deletedFaceIds.Add(face.id);
 
                     // Remove connectedFaces from adjacent vertices' array
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert1))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert1) && face.vert1 < vertLen && face.vert1 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert1];
                         adjacentVertex.connectedFaces.Remove(face);
                     }
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert2))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert2) && face.vert2 < vertLen && face.vert2 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert2];
                         adjacentVertex.connectedFaces.Remove(face);
                     }
-                    if (!extrudedObjects.newVertexIds.Contains(face.vert3))
+                    if (!extrudedObjects.newVertexIds.Contains(face.vert3) && face.vert3 < vertLen && face.vert3 >= 0)
                     {
                         Vertex adjacentVertex = meshRebuilder.vertexObjects[face.vert3];
                         adjacentVertex.connectedFaces.Remove(face);
                     }
                 }
             }
+        }
+
+        // Delete the vertex references
+        foreach (int vertexId in extrudedObjects.newVertexIds)
+        {
+            Vertex vertexObj = meshRebuilder.vertexObjects[vertexId - removedVertsCount];
+            GameObject.Destroy(vertexObj.gameObject);
+            meshRebuilder.vertexObjects.RemoveAt(vertexId - removedVertsCount);
+            newVertsList.RemoveAt(vertexId - removedVertsCount);
+            removedVertsCount++;
         }
 
         mesh.Clear();

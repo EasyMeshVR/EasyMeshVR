@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -53,9 +53,6 @@
     <UnityVersion>2020.3.20f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Assets\ExternalAssets\Photon\PhotonRealtime\Demos\DemoLoadBalancing\ConnectAndJoinRandomLb.cs" />
     <Compile Include="Assets\Scripts\UI\LauncherSettingsMenu.cs" />
     <Compile Include="Assets\Scripts\UI\RoomEntry.cs" />
@@ -69,6 +66,7 @@
     <Compile Include="Assets\Scripts\Interaction\MeshRebuilder.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\ChatAppIdCheckerUI.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\AppSettingsExtensions.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveFaceOp.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkPlayerManager.cs" />
     <Compile Include="Assets\Scripts\Abilities\Timeline\StepExecutor.cs" />
     <Compile Include="Assets\Scripts\Interaction\Edge.cs" />
@@ -85,6 +83,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\PhotonDemoExtensions.cs" />
     <Compile Include="Assets\Scripts\Misc\HandPresence.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\SidebarToggle.cs" />
+    <Compile Include="Assets\Scripts\Misc\axislock.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\BackgroundMusicController.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenu.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\EventSystemSpawner.cs" />
@@ -103,6 +102,7 @@
     <Compile Include="Assets\Scripts\Interaction\MoveEdge.cs" />
     <Compile Include="Assets\Scripts\Networking\Launcher.cs" />
     <Compile Include="Assets\Scripts\UI\GameMenuManager.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\ExtrudeOp.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\MouseLookHelper.cs" />
     <Compile Include="Assets\Scripts\Tools\Extrude.cs" />
     <Compile Include="Assets\Scripts\Networking\NetworkMeshManager.cs" />
@@ -116,11 +116,13 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\PointersController.cs" />
     <Compile Include="Assets\Scripts\Abilities\Locomotion\ControllersMidpoint.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Scripts\Highlighter.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveVertexOp.cs" />
     <Compile Include="Assets\Scripts\Networking\XRGrabNetworkInteractable.cs" />
     <Compile Include="Assets\Scripts\Interaction\MoveVertices.cs" />
     <Compile Include="Assets\Scripts\UI\KeyboardButton.cs" />
     <Compile Include="Assets\Scripts\UI\ButtonVR.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoProximityVoiceChat\Scripts\ProximityVoiceTrigger.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveEdgeOp.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\NamePickGui.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoiceUI\Scripts\MicrophoneDropdownFiller.cs" />
     <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\SetLightColor.cs" />
@@ -135,6 +137,7 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\PlatformSpecific\StandaloneInput.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\DemoChat\IgnoreUiRaycastWhenInactive.cs" />
     <Compile Include="Assets\Scripts\Tools\LockVertex.cs" />
+    <Compile Include="Assets\Scripts\Tools\LockAxis.cs" />
     <Compile Include="Assets\Scripts\UI\InputField.cs" />
     <Compile Include="Assets\Scripts\Networking\ModelImportExport.cs" />
     <Compile Include="Assets\Scripts\Tools\ToolRaycast.cs" />
@@ -153,10 +156,6 @@
     <Compile Include="Assets\ExternalAssets\Photon\PhotonChat\Demos\Common\OnStartDelete.cs" />
     <Compile Include="Assets\ExternalAssets\Photon\PhotonVoice\Demos\DemoVoicePun\Standard Assets\CrossPlatformInput\Scripts\AxisTouchButton.cs" />
     <Compile Include="Assets\Scripts\UI\GameSettingsMenu.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveVertexOp.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveEdgeOp.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\MoveFaceOp.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Timeline\Operations\ExtrudeOp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\ExternalAssets\TextMesh Pro\Shaders\TMPro.cginc" />

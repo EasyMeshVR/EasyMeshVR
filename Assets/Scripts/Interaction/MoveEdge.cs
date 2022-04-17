@@ -39,6 +39,9 @@ public class MoveEdge : MonoBehaviour
     Vertex vertex2;
     public bool grabHeld = false;
 
+    public bool isLocked = false;
+
+
     // Get all references we need and add control listeners
     void OnEnable()
     {
@@ -247,7 +250,7 @@ public class MoveEdge : MonoBehaviour
     {
         foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
-            if (currEdge.id == edge.id) continue;
+            if (currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
