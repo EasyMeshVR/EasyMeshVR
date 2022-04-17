@@ -60,12 +60,6 @@ public class Merge : MonoBehaviour
         timelineVertices = meshRebuilder.vertices;
         timelineTriangles = meshRebuilder.triangles;
 
-        for (int i = 0; i < vertices.Length; i++)
-            Debug.Log("starting vertices[" + i + "] = " + vertices[i]);
-
-        for (int i = 0; i < triangles.Length; i += 3)
-            Debug.Log("starting triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
-
         // This vertex (the one we're holding atm)
         // If we drag this vertex on top of another, we merge the two, and we delete the one in our hand
         mergeVertex = GetComponent<Vertex>();
@@ -216,11 +210,6 @@ public class Merge : MonoBehaviour
             Destroy(confirmed.thisEdge);
         }
 
-        // Delete this when getting rid of Debug.Logs
-        int edgeCountDiff = edgeCountOld - meshRebuilder.edgeObjects.Count;
-
-        Debug.Log("-----------------");
-        Debug.Log("edgeCountDiff = " + edgeCountDiff);
         Debug.Log("meshRebuilder.edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
         Debug.Log("-----------------");
         Debug.Log("edgesToReID = " + edgesToReID.Count);
@@ -236,19 +225,8 @@ public class Merge : MonoBehaviour
         // Move edges around the edgeObjects list
         ReIDEdges(meshRebuilder.edgeObjects.Count - 1, edgesToReID);
 
-        foreach (Edge edge in meshRebuilder.edgeObjects)
-        {
-            Debug.Log("===================================");
-            Debug.Log("meshRebuilder.edgeObjects.id = " + edge.id);
-            Debug.Log("+++++++++++++++++");
-            Debug.Log("edge.vert1 = " + edge.vert1);
-            Debug.Log("edge.vert2 = " + edge.vert2);
-            Debug.Log("+++++++++++++++++");
-        }
-        Debug.Log("-----------------");
-        Debug.Log("-----------------");
-        Debug.Log("-----------------");
-
+        // This line might actually be a problem after a few recent changes
+        // We'll have to see, but for now I think it's' good
         if (reface.Count != edgesToReID.Count)
             edgesToReID.RemoveAt(0);
 
@@ -360,33 +338,6 @@ public class Merge : MonoBehaviour
 
         // Move faces around the faceObjects list
         // ReIDFaces(meshRebuilder.faceObjects.Count - 1, facesToReID);
-
-        Debug.Log("-----------------");
-        Debug.Log("-----------------");
-        Debug.Log("-----------------");
-        foreach (Face face in meshRebuilder.faceObjects)
-        {
-            Debug.Log("===================================");
-            Debug.Log("meshRebuilder.faceObjects.id = " + face.id);
-            Debug.Log("+++++++++++++++++");
-            Debug.Log("face.vert1 = " + face.vert1);
-            Debug.Log("face.vert2 = " + face.vert2);
-            Debug.Log("face.vert3 = " + face.vert3);
-            Debug.Log("+++++++++++++++++");
-            Debug.Log("face.vertObj1 = " + face.vertObj1.id);
-            Debug.Log("face.vertObj2 = " + face.vertObj2.id);
-            Debug.Log("face.vertObj3 = " + face.vertObj3.id);
-            Debug.Log("+++++++++++++++++");
-            Debug.Log("face.edge1 = " + face.edge1);
-            Debug.Log("face.edge2 = " + face.edge2);
-            Debug.Log("face.edge3 = " + face.edge3);
-            Debug.Log("+++++++++++++++++");
-            Debug.Log("face.edgeObj1 = " + face.edgeObj1.id);
-            Debug.Log("face.edgeObj2 = " + face.edgeObj2.id);
-            Debug.Log("face.edgeObj3 = " + face.edgeObj3.id);
-            Debug.Log("+++++++++++++++++");
-        }
-        Debug.Log("-----------------");
     }
 
     // If any faces are missing, take the last face and move it to the missing spot
@@ -519,14 +470,6 @@ public class Merge : MonoBehaviour
     // Update MeshFilter and re-draw in-game visuals
     public void UpdateMesh(int index)
     {
-        /*
-        for (int i = 0; i < vertices.Length; i++)
-            Debug.Log("vertices[" + i + "] = " + vertices[i]);
-
-        for (int i = 0; i < triangles.Length; i += 3)
-            Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
-        */
-
         // Update actual mesh data
         mesh.Clear();
         mesh.vertices = vertices;
@@ -534,20 +477,6 @@ public class Merge : MonoBehaviour
         mesh.triangles = triangles;
         meshRebuilder.triangles = triangles;
         mesh.RecalculateNormals();
-
-        /*
-        for (int i = 0; i < mesh.vertices.Length; i++)
-            Debug.Log("mesh.vertices[" + i + "] = " + mesh.vertices[i]);
-
-        for (int i = 0; i < mesh.triangles.Length; i += 3)
-            Debug.Log("mesh.triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i + 1] + ", " + mesh.triangles[i + 2]);
-
-        for (int i = 0; i < meshRebuilder.vertices.Length; i++)
-            Debug.Log("meshRebuilder.vertices[" + i + "] = " + meshRebuilder.vertices[i]);
-
-        for (int i = 0; i < meshRebuilder.triangles.Length; i += 3)
-            Debug.Log("meshRebuilder.triangles = " + meshRebuilder.triangles[i] + ", " + meshRebuilder.triangles[i + 1] + ", " + meshRebuilder.triangles[i + 2]);
-        */
 
         // Make sure everthing's in its designated spots
         UpdateVertices(takeoverVertex.thisVertex.transform, takeoverVertex.id);
@@ -642,7 +571,7 @@ public class Merge : MonoBehaviour
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
-            // Debug.Log("Tag != Vertex");
+            Debug.Log("Tag != Vertex");
             return;
         }
 
@@ -650,7 +579,7 @@ public class Merge : MonoBehaviour
 
         if (pulleyLocomotion.isMovingVertex == true)
         {
-            // Debug.Log("You need to let go of the vertex first.");
+            Debug.Log("You need to let go of the vertex first.");
             return;
         }
 
