@@ -283,4 +283,5 @@ MonoBehaviour:
   merge: {fileID: 2100000, guid: bf855451c641c0c4c8b55fced70219f2, type: 2}
   unselected: {fileID: 2100000, guid: d55813bf786e0eb45921378839d7764c, type: 2}
   locked: {fileID: 2100000, guid: 000a138936d180a438050514c5fdb293, type: 2}
+  lockedEdge: {fileID: 2100000, guid: 72ef9945a6a10884782a788a5247af9a, type: 2}
   model: {fileID: 0}
