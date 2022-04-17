@@ -571,7 +571,21 @@ public class Merge : MonoBehaviour
         if(!gameObject.GetComponent<MoveVertices>().isLocked)
             materialSwap.material = unselected;
         else
+        {
             materialSwap.material = locked;
+        
+            Vertex currentVertex = gameObject.GetComponent<Vertex>();
+            foreach(Edge e in currentVertex.connectedEdges)
+            {
+                e.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap = e.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                e.locked = true;
+                e.GetComponent<MoveEdge>().isLocked = true;     
+            }
+        }
+        materialSwap = GetComponent<MeshRenderer>();
+
     }
 
     // Easiest way to detect a vertex being dragged on top of another was with triggers
@@ -648,25 +662,7 @@ public class Merge : MonoBehaviour
         UpdateMesh(vertex2);
         Destroy(deleterVertex.thisVertex);
 
-        // if(gameObject.GetComponent<MoveVertices>().isLocked)
-        // {
-        //     Vertex currentVertex = gameObject.GetComponent<Vertex>();
-        //     foreach(Edge e in currentVertex.connectedEdges)
-        //     {
-        //         e.GetComponent<XRGrabInteractable>().enabled = false;
-        //         materialSwap = e.GetComponent<MeshRenderer>();
-        //         materialSwap.material = lockedEdge;
-        //         e.locked = true;
-        //         e.GetComponent<MoveEdge>().isLocked = true;     
-        //     }
-
-        //     foreach(Face f in currentVertex.connectedFaces)
-        //     {
-        //             f.GetComponent<XRGrabInteractable>().enabled = false;
-        //             f.GetComponent<MoveFace>().isLocked = true;
-        //             f.locked = true;
-        //     }
-        // }
+       
 
         // Timeline shenanigans
         Step step = new Step();
