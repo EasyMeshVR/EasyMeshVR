@@ -15,6 +15,8 @@ public class Merge : MonoBehaviour
     [SerializeField] Material merge;        // yellow
     [SerializeField] Material unselected;   // gray
 
+    [SerializeField] Material locked;   
+
     // Editing Space Objects
     GameObject editingSpace;
     PulleyLocomotion pulleyLocomotion;
@@ -562,7 +564,8 @@ public class Merge : MonoBehaviour
     // So the takeover doesn't stay yellow if you hover but don't merge
     private void OnTriggerExit(Collider takeover)
     {
-        materialSwap.material = unselected;
+        if(!gameObject.GetComponent<MoveVertices>().isLocked)
+            materialSwap.material = unselected;
     }
 
     // Easiest way to detect a vertex being dragged on top of another was with triggers
@@ -625,11 +628,15 @@ public class Merge : MonoBehaviour
         Debug.Log("vertex1 = " + deleterVertex.id);
         Debug.Log("vertex2 = " + takeoverVertex.id);
 
+
+
         // Performing the actual merge
         getDeleterData();
         mergeWithTakeover();
         UpdateMesh(vertex2);
         Destroy(deleterVertex.thisVertex);
+
+      
 
         // Timeline shenanigans
         Step step = new Step();
