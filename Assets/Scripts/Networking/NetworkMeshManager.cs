@@ -238,6 +238,20 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, content, meshVertexLockEventOptions, SendOptions.SendReliable);
         }
 
+        public void SynchronizeMeshMergeVertex(MergeVertexEvent mergeVertexEvent)
+        {
+            EventCaching cachingOption = (mergeVertexEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
+
+            RaiseEventOptions meshMergeVertexEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = cachingOption
+            };
+
+            object[] content = MergeVertexEvent.SerializeEvent(mergeVertexEvent);
+            PhotonNetwork.RaiseEvent(Constants.MESH_MERGE_VERTEX_EVENT_CODE, content, meshMergeVertexEventOptions, SendOptions.SendReliable);
+        }
+
         public void SynchronizeUndoTimeline(UndoTimelineEvent undoTimelineEvent)
         {
             EventCaching cachingOption = (undoTimelineEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
@@ -266,20 +280,6 @@ namespace EasyMeshVR.Multiplayer
             PhotonNetwork.RaiseEvent(Constants.REDO_TIMELINE_EVENT_CODE, content, options, SendOptions.SendReliable);
         }
 
-        public void SynchronizeSetLightColorOp(ChaneLightColorEvent changeLightColorEvent)
-        {
-            EventCaching cachingOption = (changeLightColorEvent.isCached) ? EventCaching.AddToRoomCacheGlobal : EventCaching.DoNotCache;
-
-            RaiseEventOptions lightColorOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = cachingOption
-            };
-
-            object[] content = ChaneLightColorEvent.SerializeEvent(changeLightColorEvent);
-            PhotonNetwork.RaiseEvent(Constants.LIGHT_COLOR_OP, content, lightColorOptions, SendOptions.SendReliable);
-        }
-
         public void RemoveCachedEvent(byte eventCode, ReceiverGroup receiverGroup, object eventContent = null)
         {
             RaiseEventOptions removeCachedEventOptions = new RaiseEventOptions
@@ -301,7 +301,7 @@ namespace EasyMeshVR.Multiplayer
             RemoveCachedEvent(Constants.MESH_VERTEX_LOCK_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.UNDO_TIMELINE_EVENT_CODE, ReceiverGroup.Others);
             RemoveCachedEvent(Constants.REDO_TIMELINE_EVENT_CODE, ReceiverGroup.Others);
-            RemoveCachedEvent(Constants.LIGHT_COLOR_OP, ReceiverGroup.Others);
+            RemoveCachedEvent(Constants.MESH_MERGE_VERTEX_EVENT_CODE, ReceiverGroup.Others);
         }
 
         public void RemoveAllCachedEvents()
@@ -383,6 +383,15 @@ namespace EasyMeshVR.Multiplayer
                         }
                         break;
                     }
+                case Constants.MESH_MERGE_VERTEX_EVENT_CODE:
+                    {
+                        if (photonEvent.CustomData != null)
+                        {
+                            object[] data = (object[])photonEvent.CustomData;
+                            HandleMeshMergeVertexEvent(data);
+                        }
+                        break;
+                    }
                 case Constants.UNDO_TIMELINE_EVENT_CODE:
                     {
                         if (photonEvent.CustomData != null)
@@ -398,15 +407,6 @@ namespace EasyMeshVR.Multiplayer
                         {
                             object[] data = (object[])photonEvent.CustomData;
                             HandleRedoTimelineEvent(data);
-                        }
-                        break;
-                    }
-                case Constants.LIGHT_COLOR_OP:
-                    {
-                        if (photonEvent.CustomData != null)
-                        {
-                            object[] data = (object[])photonEvent.CustomData;
-                            HandleChangeLightColorEvent(data);
                         }
                         break;
                     }
@@ -444,6 +444,10 @@ namespace EasyMeshVR.Multiplayer
                 {
                     HandleMeshVertexLockEvent((VertexLockEvent)networkEvent);
                 }
+                else if (eventType == typeof(MergeVertexEvent))
+                {
+                    HandleMeshMergeVertexEvent((MergeVertexEvent)networkEvent);
+                }
                 else if (eventType == typeof(UndoTimelineEvent))
                 {
                     HandleUndoTimelineEvent((UndoTimelineEvent)networkEvent);
@@ -451,10 +455,6 @@ namespace EasyMeshVR.Multiplayer
                 else if (eventType == typeof(RedoTimelineEvent))
                 {
                     HandleRedoTimelineEvent((RedoTimelineEvent)networkEvent);
-                }
-                else if (eventType == typeof(ChaneLightColorEvent))
-                {
-                    HandleChangeLightColorEvent((ChaneLightColorEvent)networkEvent);
                 }
             }
         }
@@ -665,6 +665,39 @@ namespace EasyMeshVR.Multiplayer
             }
         }
 
+        private void HandleMeshMergeVertexEvent(object[] data)
+        {
+            MergeVertexEvent mergeVertexEvent = MergeVertexEvent.DeserializeEvent(data);
+
+            if (isImportingMesh)
+            {
+                networkEventQueue.Enqueue(mergeVertexEvent);
+            }
+            else
+            {
+                HandleMeshMergeVertexEvent(mergeVertexEvent);
+            }
+        }
+
+        private void HandleMeshMergeVertexEvent(MergeVertexEvent mergeVertexEvent)
+        {
+            MeshRebuilder meshRebuilder = meshRebuilders[mergeVertexEvent.meshId];
+
+            if (meshRebuilder == null)
+            {
+                Debug.LogWarningFormat("NetworkMeshManager:HandleMeshMergeVertexEvent() - meshRebuilder is null for meshId {0}", mergeVertexEvent.meshId);
+                return;
+            }
+
+            Vertex deleterVertex = meshRebuilder.vertexObjects[mergeVertexEvent.deleterVertexId];
+            Merge mergeVertex = deleterVertex.GetComponent<Merge>();
+            Vector3[] vertices = (Vector3[])meshRebuilder.vertices.Clone();
+            int[] triangles = (int[])meshRebuilder.triangles.Clone();
+            // mergeVertex.AddMergeVertexOpStep(mergeVertexEvent.meshId, mergeVertexEvent.deleterVertexId, mergeVertexEvent.takeOverVertexId);
+            mergeVertex.AddMergeVertexOpStep(vertices, triangles, mergeVertexEvent.meshId, mergeVertexEvent.deleterVertexId, 
+                mergeVertexEvent.takeOverVertexId);
+        }
+
         private void HandleUndoTimelineEvent(object[] data)
         {
             UndoTimelineEvent undoTimelineEvent = UndoTimelineEvent.DeserializeEvent(data);
@@ -703,26 +736,6 @@ namespace EasyMeshVR.Multiplayer
         private void HandleRedoTimelineEvent(RedoTimelineEvent redoTimelineEvent)
         {
             StepExecutor.instance.Redo();
-        }
-
-        private void HandleChangeLightColorEvent(object[] data)
-        {
-            ChaneLightColorEvent changeLightColorEvent = ChaneLightColorEvent.DeserializeEvent(data);
-
-            // Put the edgeEvent in the queue and process it after the NetworkMeshManager is done importing the mesh into the scene
-            if (isImportingMesh)
-            {
-                networkEventQueue.Enqueue(changeLightColorEvent);
-            }
-            else
-            {
-                HandleChangeLightColorEvent(changeLightColorEvent);
-            }
-        }
-
-        private void HandleChangeLightColorEvent(ChaneLightColorEvent changeLightColorEvent)
-        {
-            StepExecutor.instance.SetLightColorOp(changeLightColorEvent.colorVec);
         }
 
         #endregion

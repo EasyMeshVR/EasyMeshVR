@@ -33,7 +33,6 @@ public class MoveVertices : MonoBehaviour
 
     // Vertex lookup
     Vertex thisvertex;
-    int selectedVertex;
 
     bool grabHeld = false;
 
@@ -86,9 +85,6 @@ public class MoveVertices : MonoBehaviour
         // Keep mesh filter updated with most recent mesh data changes
         meshRebuilder.vertices = mesh.vertices;
         oldVertexPos = meshRebuilder.vertices[thisvertex.id];
-
-        // The selected vertex is just the saved id of this vertex representing its index in the vertices array
-        selectedVertex = thisvertex.id;
     }
 
     // Set material back to Unselected
@@ -116,11 +112,11 @@ public class MoveVertices : MonoBehaviour
 
         grabHeld = false;
 
-        Vector3 newVertexPos = meshRebuilder.vertices[selectedVertex];
+        Vector3 newVertexPos = meshRebuilder.vertices[thisvertex.id];
 
         VertexPullEvent vertexEvent = new VertexPullEvent()
         {
-            id = selectedVertex,
+            id = thisvertex.id,
             meshId = meshRebuilder.id,
             oldVertexPos = oldVertexPos,
             vertexPos = newVertexPos,
@@ -169,14 +165,14 @@ public class MoveVertices : MonoBehaviour
             materialSwap.material = selected;
 
             // Update the mesh filter's vertices to the vertex GameObject's position
-            UpdateVertex(transform, selectedVertex);
-            UpdateMesh(selectedVertex);
+            UpdateVertex(transform, thisvertex.id);
+            UpdateMesh(thisvertex.id);
 
             VertexPullEvent vertexEvent = new VertexPullEvent()
             {
-                id = selectedVertex,
+                id = thisvertex.id,
                 meshId = meshRebuilder.id,
-                vertexPos = meshRebuilder.vertices[selectedVertex],
+                vertexPos = meshRebuilder.vertices[thisvertex.id],
                 released = false,
                 isCached = false,
                 actorNumber = PhotonNetwork.LocalPlayer.ActorNumber

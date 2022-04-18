@@ -248,9 +248,15 @@ public class MoveEdge : MonoBehaviour
 
     public void SetActiveEdges(Edge edge, bool active)
     {
+        if (edge == null)
+        {
+            Debug.LogWarning("Warning: MoveEdge: Failed to call SetActiveEdges() on a null edge!");
+            return;
+        }
+
         foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
-            if (currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
+            if (currEdge == null || currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;

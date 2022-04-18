@@ -7,6 +7,8 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.InputSystem;
 using System.Linq;
 using System;
+using EasyMeshVR.Multiplayer;
+using Photon.Pun;
 
 public class Merge : MonoBehaviour
 {
@@ -14,6 +16,10 @@ public class Merge : MonoBehaviour
 
     [SerializeField] Material merge;        // yellow
     [SerializeField] Material unselected;   // gray
+
+    [SerializeField] Material locked;   
+    [SerializeField] Material lockedEdge;   
+
 
     // Editing Space Objects
     GameObject editingSpace;
@@ -34,6 +40,7 @@ public class Merge : MonoBehaviour
     Vertex mergeVertex;
     static Vertex deleterVertex;
     static Vertex takeoverVertex;
+    static Vertex relocaterVertex;
     static int vertex1;
     static int vertex2;
     static int lastIndex;
@@ -51,13 +58,13 @@ public class Merge : MonoBehaviour
         model = meshRebuilder.model;
         mesh = model.GetComponent<MeshFilter>().mesh;
 
+        // Stealing data (like the government)
+        vertices = mesh.vertices;
+        triangles = mesh.triangles;
+        
         // MeshFilter references for undo/redo
         timelineVertices = meshRebuilder.vertices;
         timelineTriangles = meshRebuilder.triangles;
-
-        // Stealing triangles (and vertices if we need them)
-        vertices = mesh.vertices;
-        triangles = mesh.triangles;
 
         // This vertex (the one we're holding atm)
         // If we drag this vertex on top of another, we merge the two, and we delete the one in our hand
@@ -72,8 +79,12 @@ public class Merge : MonoBehaviour
     }
 
     // Save the data we need for the vertex we're merging (this is the one of the two we're deleting)
-    private void getDeleterData()
+    private void getDeleterData(int vertex1, int vertex2)
     {
+        // Reset needed data
+        vertices = mesh.vertices;
+        triangles = mesh.triangles;
+
         // Grab last index of the vertices array
         // If our deleter vertex is the last index, we don't care about updating the vertex IDs
         if (vertex1 == vertices.Length - 1)
@@ -92,10 +103,12 @@ public class Merge : MonoBehaviour
     }
 
     // Make the second vertex inherit all the data of the first (this is the one of the two we're keeping)
-    private void mergeWithTakeover()
+    private void mergeWithTakeover(int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
     {
-        // Update and remove triangles relative to vertex1
+        List<Vector3> verticesList = new List<Vector3>();
         List<int> trianglesList = triangles.ToList();
+
+        // Update and remove triangles relative to vertex1
         trianglesList = UpdateTriangles(trianglesList, triangleReferences, vertex1, vertex2);
 
         // Get references to all triangles the last vertex is a part of (all adjacent vertices)
@@ -111,15 +124,42 @@ public class Merge : MonoBehaviour
             }
         }
 
+        // Used for finding duplicate edges and remapping them to faces
+        List<Edge> edgeDupes = new List<Edge>();
+        List<Edge> reface = new List<Edge>();
+
+        // Used for renaming and re-id'ing edges and faces
+        List<int> edgesToReID = new List<int>();
+        List<int> facesToReID = new List<int>();
+
+        // Remove mesh object components
+        reface = RemoveEdges(edgeDupes, reface, edgesToReID, vertex1, vertex2, deleterVertex, takeoverVertex);
+        RemoveFaces(reface, facesToReID, edgesToReID, vertex1, vertex2, deleterVertex, takeoverVertex);
+        verticesList = RemoveVertices(verticesList, trianglesList, vertex1, vertex2, deleterVertex, takeoverVertex);
+
+        // Updated data
+        vertices = verticesList.ToArray();
+        triangles = trianglesList.ToArray();
+    }
+
+    // Delete edge that connects the two vertices and all overlapping edges
+    private List<Edge> RemoveEdges(List<Edge> edgeDupes, List<Edge> reface, List<int> edgesToReID, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
+    {
+        int edgeCountOld = meshRebuilder.edgeObjects.Count;
+
         // All edges that were connected to vertex 1, connect to vertex 2
         foreach (Edge reconnect in deleterVertex.connectedEdges)
         {
             // Delete the edge that connects the two vertices
             if (reconnect.vert1 == vertex2 || reconnect.vert2 == vertex2)
             {
+                // For moving edges through the edgeObjects list when we're done deleting them
+                if (reconnect.id != meshRebuilder.edgeObjects.Count - 1)
+                    edgesToReID.Add(reconnect.id);
+
                 takeoverVertex.connectedEdges.Remove(reconnect);
-                Destroy(reconnect.thisEdge);
                 meshRebuilder.edgeObjects.Remove(reconnect);
+                Destroy(reconnect.thisEdge);
             }
             else
             {
@@ -131,51 +171,219 @@ public class Merge : MonoBehaviour
 
                 // Add the new edge to the takeover vertex
                 takeoverVertex.connectedEdges.Add(reconnect);
+
+
             }
         }
 
+        // If data from vertex 1 goes to vertex 2, there should be two copies of an edge with the same vertex ids
+        // Look through all edges connected to vertex 2, if two share the same vertex ids, delete one of them
+        foreach (Edge duplicate1 in deleterVertex.connectedEdges)
+        {
+            if (duplicate1 == null)
+                continue;
+
+            // Compare vertex ids between deleter and takeover to find duplicates to get rid of
+            foreach (Edge duplicate2 in takeoverVertex.connectedEdges)
+            {
+                // Same edge
+                if (duplicate2 == null || duplicate1.id == duplicate2.id)
+                    continue;
+
+                // Cross vertex id check
+                if ((duplicate1.vert1 == duplicate2.vert1 && duplicate1.vert2 == duplicate2.vert2) || (duplicate1.vert1 == duplicate2.vert2 && duplicate1.vert2 == duplicate2.vert1))
+                {
+                    // Need lists to use indexing, don't want duplicates
+
+                    // Deleting
+                    if (!edgeDupes.Contains(duplicate1))
+                        edgeDupes.Add(duplicate1);
+
+                    // Keeping
+                    if (!reface.Contains(duplicate2))
+                        reface.Add(duplicate2);
+                    
+                    // For moving edges through the edgeObjects list when we're done deleting them
+                    if (!edgesToReID.Contains(duplicate1.id))
+                        edgesToReID.Add(duplicate1.id);
+                }
+            }
+        }
+
+        // Actually delete the edges from the takeover
+        foreach (Edge confirmed in edgeDupes)
+        {
+            takeoverVertex.connectedEdges.Remove(confirmed);
+            meshRebuilder.edgeObjects.Remove(confirmed);
+            Destroy(confirmed.thisEdge);
+        }
+
+        /*Debug.Log("meshRebuilder.edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
+        Debug.Log("-----------------");
+        Debug.Log("edgesToReID = " + edgesToReID.Count);
+        foreach (int i in edgesToReID)
+            Debug.Log("edges: " + i);
+        Debug.Log("-----------------");
+        foreach (Edge edge in edgeDupes)
+            Debug.Log("edgeDupes: " + edge.id);
+        foreach (Edge edge in reface)
+            Debug.Log("refaces: " + edge.id);
+        Debug.Log("-----------------");*/
+
+        // Move edges around the edgeObjects list
+        ReIDEdges(meshRebuilder.edgeObjects.Count - 1, edgesToReID);
+
+        // This line might actually be a problem after a few recent changes
+        // We'll have to see, but for now I think it's' good
+        if (reface.Count != edgesToReID.Count)
+            edgesToReID.RemoveAt(0);
+
+        return reface;
+    }
+
+    // If any edges are missing, take the last edge and move it to the missing spot
+    void ReIDEdges(int lastEdgeIndex, List<int> edgesToReID)
+    {
+        int idIndex = 0;
+        int idCount = edgesToReID.Count - 1;
+
+        // Loop backwards over edgeObjects
+        for (int i = lastEdgeIndex; i >= 0; i--)
+        {
+            // No more edges to move
+            if (idIndex > idCount)
+                break;
+
+            // Don't update edges outside of the index range
+            if (edgesToReID[idIndex] > lastEdgeIndex)
+            {
+                idIndex++;
+                i++;
+            }
+            else
+            {
+                // ID the edge to the missing index
+                meshRebuilder.edgeObjects[i].id = edgesToReID[idIndex];
+                meshRebuilder.edgeObjects[i].name = "Edge" + (edgesToReID[idIndex]).ToString();
+                idIndex++;
+            }
+        }
+
+        // Sort edges in ascending order so other scripts don't get confused
+        List<Edge> sortedEdges = meshRebuilder.edgeObjects.OrderBy(e => e.id).ToList();
+        meshRebuilder.edgeObjects = sortedEdges;
+    }
+
+    // Delete faces after merging two vertices
+    void RemoveFaces(List<Edge> reface, List<int> facesToReID, List<int> edgesToReID, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
+    {
         // Sift through the deleter vertex faces (vertex1)
-        foreach (Face remove in deleterVertex.connectedFaces)
+        foreach (Face face in deleterVertex.connectedFaces)
         {
             // If any of the face vertices contain both deleter and takeover (vertex1 and 2), delete
-            if (remove.vert1 == vertex2 || remove.vert2 == vertex2 || remove.vert3 == vertex2)
+            if (face.vert1 == vertex2 || face.vert2 == vertex2 || face.vert3 == vertex2)
             {
-                takeoverVertex.connectedFaces.Remove(remove);
-                Destroy(remove.thisFace);
-                meshRebuilder.faceObjects.Remove(remove);
+                // For moving faces through the faceObjects list when we're done deleting them
+                if (face.id != meshRebuilder.faceObjects.Count - 1)
+                    facesToReID.Add(face.id);
+
+                takeoverVertex.connectedFaces.Remove(face);
+                meshRebuilder.faceObjects.Remove(face);
+                Destroy(face.thisFace);
             }
             else
             {
                 // Update vert1 or vert2 ids in the Face.cs script to reference the takeover
-                if (remove.vert1 == vertex1)
+                if (face.vert1 == vertex1)
                 {
-                    remove.vert1 = vertex2;
-                    remove.vertObj1 = takeoverVertex;
+                    face.vertObj1 = takeoverVertex;
+                    face.vert1 = vertex2;
                 }
-                else if (remove.vert2 == vertex1)
+                else if (face.vert2 == vertex1)
                 {
-                    remove.vert2 = vertex2;
-                    remove.vertObj2 = takeoverVertex;
+                    face.vertObj2 = takeoverVertex;
+                    face.vert2 = vertex2;
                 }
-                else if (remove.vert3 == vertex1)
+                else if (face.vert3 == vertex1)
                 {
-                    remove.vert3 = vertex2;
-                    remove.vertObj3 = takeoverVertex;
+                    face.vertObj3 = takeoverVertex;
+                    face.vert3 = vertex2;
                 }
 
                 // Add the new face to the takeover vertex
-                takeoverVertex.connectedFaces.Add(remove);
+                takeoverVertex.connectedFaces.Add(face);
             }
         }
 
-        // Delete edges in the same position (overlapping / duplicate) as one of them is no longer needed
-        // > If this is not possible, we can do some kind of dynamic deletion by comparing triangle triplets with edge ids
-        // > Or brute force it and delete all edges and remake them based on updated triangles array
-        // > NEW IDEA: If data from vertex 1 goes to vertex 2, there should be two copies of an edge with the same vertex ids
-        //             Look through all edges connected to vertex 2, if two share the same vertex ids, delete one of them
+        // Sift through the takeover vertex faces (vertex2)
+        foreach (Face face in takeoverVertex.connectedFaces)
+        {
+            // Deleting edges causes faces to lose edge data
+            // Compare the edge ids from edgeDupes list and replace it with the id from reface list
+            for (int i = 0; i < reface.Count; i++)
+            {
+                if (face.edge1 == edgesToReID[i])
+                    face.edgeObj1 = reface[i];
+                else if (face.edge2 == edgesToReID[i])
+                    face.edgeObj2 = reface[i];
+                else if (face.edge3 == edgesToReID[i])
+                    face.edgeObj3 = reface[i];
+            }
+        }
 
+        // While the faces get the correct EdgeObj components, the IDs weren't updating properly
+        // This was the only way I could find to get them to have the same data
+        int z = 0;
+        foreach (Face face in meshRebuilder.faceObjects)
+        {
+            face.name = "Face" + z.ToString();
+            face.id = z++;
+
+            face.edge1 = face.edgeObj1.id;
+            face.edge2 = face.edgeObj2.id;
+            face.edge3 = face.edgeObj3.id;
+        }
+
+        // Move faces around the faceObjects list
+        // ReIDFaces(meshRebuilder.faceObjects.Count - 1, facesToReID);
+    }
+
+    // If any faces are missing, take the last face and move it to the missing spot
+    void ReIDFaces(int lastFaceIndex, List<int> facesToReID)
+    {
+        int idIndex = 0;
+        int idCount = facesToReID.Count - 1;
+
+        // Loop backwards over faceObjects
+        for (int i = lastFaceIndex; i >= 0; i--)
+        {
+            // No more faces to move
+            if (idIndex > idCount)
+                break;
+
+            // Don't update faces outside of the index range
+            if (facesToReID[idIndex] >= lastFaceIndex)
+            {
+                idIndex++;
+            }
+            else
+            {
+                // ID the face to the missing index
+                meshRebuilder.faceObjects[i].id = facesToReID[idIndex];
+                meshRebuilder.faceObjects[i].name = "Face" + (facesToReID[idIndex]).ToString();
+                idIndex++;
+            }
+        }
+
+        // Sort faces in ascending order so other scripts don't get confused
+        List<Face> sortedFaces = meshRebuilder.faceObjects.OrderBy(f => f.id).ToList();
+        meshRebuilder.faceObjects = sortedFaces;
+    }
+
+    // Remove vertex from the mesh filter, special case for removing vertices in the middle of the array
+    private List<Vector3> RemoveVertices(List<Vector3> verticesList, List<int> trianglesList, int vertex1, int vertex2, Vertex deleterVertex, Vertex takeoverVertex)
+    {
         // Remove vertex1 from the vertices array and meshRebuilder vertexObjects list
-        List<Vector3> verticesList = new List<Vector3>();
         verticesList = vertices.ToList();
         verticesList.RemoveAt(vertex1);
         meshRebuilder.vertexObjects.Remove(deleterVertex);
@@ -187,18 +395,18 @@ public class Merge : MonoBehaviour
             // Move vertex in last position to the position of the one we just deleted
             Vector3 lastVertex = verticesList[verticesList.Count - 1];
             verticesList.RemoveAt(verticesList.Count - 1);
-            verticesList.Insert(vertex1 - 1, lastVertex);
+            verticesList.Insert(vertex1, lastVertex);
 
             // Update the triangles for the newly moved last vertex
             trianglesList = UpdateTriangles(trianglesList, lastVertTriReferences, vertices.Length - 1, vertex1);
 
             // Update vertex name and IDs in Vertex.cs (Vertex.id)
-            // Vertex lastVertexGO = GameObject.Find("Vertex" + (vertices.Length - 1)).GetComponent<Vertex>();
             Vertex lastVertexGO = meshRebuilder.vertexObjects[meshRebuilder.vertexObjects.Count - 1];
             meshRebuilder.vertexObjects.RemoveAt(verticesList.Count - 1);
-            meshRebuilder.vertexObjects.Insert(vertex1 - 1, lastVertexGO);
+            meshRebuilder.vertexObjects.Insert(vertex1, lastVertexGO);
             lastVertexGO.name = "Vertex" + vertex1.ToString();
             lastVertexGO.id = vertex1;
+            relocaterVertex = lastVertexGO;
 
             // Update Edge.cs (Vertex.connectedEdges -> Edge.vert1 or Edge.vert2)
             foreach (Edge reconnect in lastVertexGO.connectedEdges)
@@ -232,11 +440,7 @@ public class Merge : MonoBehaviour
             }
         }
 
-        // Delete the merged vertex
-        Destroy(deleterVertex.thisVertex);
-
-        vertices = verticesList.ToArray();
-        triangles = trianglesList.ToArray();
+        return verticesList;
     }
 
     // Removes triangles with both deleter and takeover in it, replaces deleter ID with takeover ID otherwise
@@ -272,15 +476,10 @@ public class Merge : MonoBehaviour
     }
 
     // Update MeshFilter and re-draw in-game visuals
-    public void UpdateMesh(int index)
+    public void UpdateMesh(Vertex takeoverVertex)
     {
-        /*
-        for (int i = 0; i < vertices.Length; i++)
-            Debug.Log("vertices[" + i + "] = " + vertices[i]);
-
-        for (int i = 0; i < triangles.Length; i += 3)
-            Debug.Log("triangles = " + triangles[i] + ", " + triangles[i + 1] + ", " + triangles[i + 2]);
-        */
+        // vertices = meshRebuilder.vertices;
+        // Vector3[] vertices = meshRebuilder.vertices;
 
         // Update actual mesh data
         mesh.Clear();
@@ -290,20 +489,62 @@ public class Merge : MonoBehaviour
         meshRebuilder.triangles = triangles;
         mesh.RecalculateNormals();
 
-        /*
-        for (int i = 0; i < mesh.vertices.Length; i++)
-            Debug.Log("mesh.vertices[" + i + "] = " + mesh.vertices[i]);
+        // Make sure everthing's in its designated spots
+        UpdateVertices(takeoverVertex.thisVertex.transform, takeoverVertex.id);
+        UpdateEdges(takeoverVertex);
+        UpdateFaces(takeoverVertex);
+        if (lastIndex != -1)
+            UpdateFaces(relocaterVertex);
+    }
 
-        for (int i = 0; i < mesh.triangles.Length; i += 3)
-            Debug.Log("mesh.triangles = " + mesh.triangles[i] + ", " + mesh.triangles[i + 1] + ", " + mesh.triangles[i + 2]);
-        */
+    // Not sure if the editing space stuff is needed, but it doesn't break having it here
+    public void UpdateVertices(Transform transform, int index)
+    {
+        Vector3 editingSpaceScale = editingSpace.transform.localScale;
 
-        // Look through visuals Dictionary to update mesh visuals (reconnect edges to vertices)
+        // Handle divide by zero error
+        if (editingSpaceScale.x == 0 || editingSpaceScale.y == 0 || editingSpaceScale.z == 0)
+            return;
+
+        // Calculate inverse scale vector based on editing space scale
+        Vector3 inverseScale = new Vector3(
+            1.0f / editingSpaceScale.x,
+            1.0f / editingSpaceScale.y,
+            1.0f / editingSpaceScale.z
+        );
+
+        // Translate, Scale, and Rotate the vertex position based on the current transform of the editingSpace object.
+        meshRebuilder.vertices[index] =
+            Quaternion.Inverse(editingSpace.transform.rotation)
+            * Vector3.Scale(inverseScale, transform.position - editingSpace.transform.position);
+    }
+
+    bool VertexIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.vertices.Length;
+    }
+
+    // Make edges look at each other
+    void UpdateEdges(Vertex takeoverVertex)
+    {
+        // Reconnect edges to vertices (visually)
         foreach (Edge edge in takeoverVertex.connectedEdges)
         {
-            GameObject edgeObject = edge.thisEdge;
+            GameObject edgeObject;
+
+            if (edge.thisEdge != null)
+                edgeObject = edge.thisEdge;
+            else
+                continue;
+
             int vert1 = edge.vert1;
             int vert2 = edge.vert2;
+
+            if (!VertexIdInBounds(vert1) || !VertexIdInBounds(vert2))
+            {
+                Debug.Log("Vert ids are not in bounds, skipping edge update");
+                continue;
+            }
 
             // Set the edge's position to between the two vertices and scale it appropriately
             float edgeDistance = 0.5f * Vector3.Distance(vertices[vert1], vertices[vert2]);
@@ -314,29 +555,74 @@ public class Merge : MonoBehaviour
             edgeObject.transform.LookAt(transform, Vector3.up);
             edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
         }
-
-        // meshRebuilder.removeVisuals();
-        // meshRebuilder.CreateVisuals(mesh.vertices, mesh.triangles);
     }
 
-    void checkImport()
+    // Put the faces in the center of each triangle ("visually")
+    void UpdateFaces(Vertex vertex)
     {
-        // editingSpace = GameObject.Find("EditingSpace");
-        meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
-        model = meshRebuilder.model;
-        mesh = model.GetComponent<MeshFilter>().mesh;
+        foreach (Face face in vertex.connectedFaces)
+        {
+            GameObject faceObject;
+
+            if (face.thisFace != null)
+                faceObject = face.thisFace;
+            else
+                continue;
+
+            int vert1 = face.vert1;
+            int vert2 = face.vert2;
+            int vert3 = face.vert3;
+
+            if (!VertexIdInBounds(vert1) || !VertexIdInBounds(vert2) || !VertexIdInBounds(vert3))
+            {
+                Debug.Log("Vert ids are not in bounds, skipping edge update");
+                continue;
+            }
+
+            float totalX = vertices[vert1].x + vertices[vert2].x + vertices[vert3].x;
+            float totalY = vertices[vert1].y + vertices[vert2].y + vertices[vert3].y;
+            float totalZ = vertices[vert1].z + vertices[vert2].z + vertices[vert3].z;
+
+            faceObject.transform.localPosition = new Vector3(totalX / 3, totalY / 3, totalZ / 3);
+        }
+    }
+
+    // So the takeover doesn't stay yellow if you hover but don't merge
+    private void OnTriggerExit(Collider takeover)
+    {
+        if(!gameObject.GetComponent<MoveVertices>().isLocked)
+            materialSwap.material = unselected;
+        else
+        {
+            materialSwap.material = locked;
+        
+            Vertex currentVertex = gameObject.GetComponent<Vertex>();
+            foreach(Edge e in currentVertex.connectedEdges)
+            {
+                e.GetComponent<XRGrabInteractable>().enabled = false;
+                materialSwap = e.GetComponent<MeshRenderer>();
+                materialSwap.material = lockedEdge;
+                e.locked = true;
+                e.GetComponent<MoveEdge>().isLocked = true;     
+            }
+        }
+        materialSwap = GetComponent<MeshRenderer>();
+
     }
 
     // Easiest way to detect a vertex being dragged on top of another was with triggers
     private void OnTriggerStay(Collider takeover)
     {
         if (!enabled)
+        {
+            // Debug.Log("Merge: OnTriggerStay(): Auto-merge vertices is disabled!");
             return;
+        }
 
         // If we collide with something that isn't a vertex, we don't want to continue
         if (takeover.gameObject.tag != "Vertex")
         {
-            Debug.Log("Tag != Vertex");
+            // Debug.Log("Tag != Vertex");
             return;
         }
 
@@ -344,7 +630,7 @@ public class Merge : MonoBehaviour
 
         if (pulleyLocomotion.isMovingVertex == true)
         {
-            Debug.Log("You need to let go of the vertex first.");
+            // Debug.Log("You need to let go of the vertex first.");
             return;
         }
 
@@ -358,13 +644,13 @@ public class Merge : MonoBehaviour
         }
         triggerCheck = 2;
 
-        // checkImport();
-
+        // Update meshRebuilder with freshest data
         meshRebuilder.vertices = mesh.vertices;
         meshRebuilder.triangles = mesh.triangles;
 
-        timelineVertices = meshRebuilder.vertices;
-        timelineTriangles = meshRebuilder.triangles;
+        // Save current data for timeline
+        timelineVertices = (Vector3[])meshRebuilder.vertices.Clone();
+        timelineTriangles = (int[])meshRebuilder.triangles.Clone();
 
         // Get Vertex references
         deleterVertex = mergeVertex;
@@ -387,16 +673,53 @@ public class Merge : MonoBehaviour
         }
         connection = false;
 
-        Debug.Log("vertex1 = " + deleterVertex.id);
-        Debug.Log("vertex2 = " + takeoverVertex.id);
+        AddMergeVertexOpStep(timelineVertices, timelineTriangles, meshRebuilder.id, vertex1, vertex2);
 
-        getDeleterData();
-        mergeWithTakeover();
-        UpdateMesh(vertex2);
+        // Synchronize merge vertex event
+        MergeVertexEvent mergeVertexEvent = new MergeVertexEvent
+        {
+            actorNumber = PhotonNetwork.LocalPlayer.ActorNumber,
+            meshId = meshRebuilder.id,
+            deleterVertexId = vertex1,
+            takeOverVertexId = vertex2,
+            isCached = true,
+        };
 
+        NetworkMeshManager.instance.SynchronizeMeshMergeVertex(mergeVertexEvent);
+    }
+
+    public void AddMergeVertexOpStep(Vector3[] timelineVertices, int[] timelineTriangles, int meshId, int deleterId, int takeoverId)
+    {
         Step step = new Step();
-        MeshChange op = new MeshChange(timelineVertices, timelineTriangles);
+        MeshChange op = new MeshChange(timelineVertices, timelineTriangles, meshId, deleterId, takeoverId);
         step.AddOp(op);
         StepExecutor.instance.AddStep(step);
+    }
+
+    /*public void AddMergeVertexOpStep(int meshId, int deleterVertexId, int takeoverVertexId)
+    {
+        Step step = new Step();
+        MergeVertexOp op = new MergeVertexOp(meshId, deleterVertexId, takeoverVertexId);
+        step.AddOp(op);
+        StepExecutor.instance.AddStep(step);
+    }*/
+
+    public void MergeVertex(MergeVertexEvent mergeVertexEvent)
+    {
+        Debug.Log("Merge vert event " + mergeVertexEvent.deleterVertexId + " " + mergeVertexEvent.takeOverVertexId);
+
+        // Update meshRebuilder with freshest data
+        /*meshRebuilder.vertices = mesh.vertices;
+        meshRebuilder.triangles = mesh.triangles;*/
+
+        int vertex1 = mergeVertexEvent.deleterVertexId;
+        int vertex2 = mergeVertexEvent.takeOverVertexId;
+        Vertex deleterVertex = meshRebuilder.vertexObjects[mergeVertexEvent.deleterVertexId];
+        Vertex takeoverVertex = meshRebuilder.vertexObjects[mergeVertexEvent.takeOverVertexId];
+
+        getDeleterData(vertex1, vertex2);
+        mergeWithTakeover(vertex1, vertex2, deleterVertex, takeoverVertex);
+        UpdateMesh(takeoverVertex);
+        Destroy(deleterVertex.gameObject);
     }
 }

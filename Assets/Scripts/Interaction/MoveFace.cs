@@ -136,6 +136,7 @@ public class MoveFace : MonoBehaviour
         if (pulleyLocomotion.isMovingEditingSpace || thisFace.locked)
             return;
 
+        Debug.Log("edgeObjects.Count = " + meshRebuilder.edgeObjects.Count);
 
         edge1 = meshRebuilder.edgeObjects[thisFace.edge1];
         edge2 = meshRebuilder.edgeObjects[thisFace.edge2];
@@ -345,9 +346,15 @@ public class MoveFace : MonoBehaviour
 
     public void SetActiveEdges(Edge edge, bool active)
     {
+        if (edge == null)
+        {
+            Debug.LogWarning("Warning: Moveface: Failed to call SetActiveEdges() on a null edge!");
+            return;
+        }
+
         foreach (Edge currEdge in meshRebuilder.edgeObjects)
         {
-            if (currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
+            if (currEdge == null || currEdge.id == edge.id || currEdge.GetComponent<MoveEdge>().isLocked) continue;
 
             currEdge.locked = !active;
             currEdge.GetComponent<MoveEdge>().materialSwap.material = (active) ? unselected : locked;
@@ -357,9 +364,15 @@ public class MoveFace : MonoBehaviour
 
     public void SetActiveFaces(Face face, bool active)
     {
+        if (face == null)
+        {
+            Debug.LogWarning("Warning: Moveface: Failed to call SetActiveFaces() on a null face!");
+            return;
+        }
+
         foreach (Face currFace in meshRebuilder.faceObjects)
         {
-            if (currFace.id == face.id || currFace.GetComponent<MoveFace>().isLocked) continue;
+            if (currFace == null || currFace.id == face.id || currFace.GetComponent<MoveFace>().isLocked) continue;
 
             currFace.locked = !active;
             currFace.GetComponent<XRGrabInteractable>().enabled = active;

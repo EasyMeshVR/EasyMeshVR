@@ -21,6 +21,12 @@ public class MoveVertexOp : IOperation
 
     public void Execute()
     {
+        if (!MoveVertexIdsInBounds(vertexId))
+        {
+            Debug.LogWarning("Warning: MoveVertexOp Deexecute(): vertexId is not in bounds!");
+            return;
+        }
+
         Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
         MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
 
@@ -36,8 +42,30 @@ public class MoveVertexOp : IOperation
         return true;
     }
 
+    bool VertexIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.vertexObjects.Count;
+    }
+
+    public bool MoveVertexIdsInBounds(int vertexId)
+    {
+        if (!VertexIdInBounds(vertexId))
+        {
+            Debug.LogWarningFormat("Warning: MoveVertexOp: vertexId {0} was out of bounds of vertexObjects of length {1}", vertexId, meshRebuilder.vertexObjects.Count);
+            return false;
+        }
+
+        return true;
+    }
+
     public void Deexecute()
     {
+        if (!MoveVertexIdsInBounds(vertexId))
+        {
+            Debug.LogWarning("Warning: MoveVertexOp Deexecute(): vertexId is not in bounds!");
+            return;
+        }
+
         Vertex vertexObj = meshRebuilder.vertexObjects[vertexId];
         MoveVertices moveVertices = vertexObj.GetComponent<MoveVertices>();
 

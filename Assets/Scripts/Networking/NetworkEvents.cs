@@ -253,6 +253,35 @@ namespace EasyMeshVR.Multiplayer
         }
     }
 
+    public class MergeVertexEvent: NetworkEvent
+    {
+        public int deleterVertexId { get; set; }
+        public int takeOverVertexId { get; set; }
+        public int meshId { get; set; }
+        
+        public static object[] SerializeEvent(MergeVertexEvent mergeVertexEvent)
+        {
+            return new object[]
+            {
+                mergeVertexEvent.deleterVertexId,
+                mergeVertexEvent.takeOverVertexId,
+                mergeVertexEvent.meshId,
+                mergeVertexEvent.actorNumber
+            };
+        }
+
+        public static MergeVertexEvent DeserializeEvent(object[] data)
+        {
+            return new MergeVertexEvent
+            {
+                deleterVertexId = (int)data[0],
+                takeOverVertexId = (int)data[1],
+                meshId = (int)data[2],
+                actorNumber = (int)data[3]
+            };
+        }
+    }
+
     public class UndoTimelineEvent : NetworkEvent
     {
         public static object[] SerializeEvent(UndoTimelineEvent undoTimelineEvent)

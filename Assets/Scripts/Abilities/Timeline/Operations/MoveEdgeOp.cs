@@ -28,6 +28,12 @@ public class MoveEdgeOp : IOperation
 
     public void Execute()
     {
+        if (!MoveEdgeIdsInBounds(edgeId))
+        {
+            Debug.LogWarning("Warning: MoveEdgeOp Execute(): edgeIds are not in bounds!");
+            return;
+        }
+
         Edge edgeObj = meshRebuilder.edgeObjects[edgeId];
         Vertex vert1Obj = meshRebuilder.vertexObjects[edgeObj.vert1];
         Vertex vert2Obj = meshRebuilder.vertexObjects[edgeObj.vert2];
@@ -48,8 +54,45 @@ public class MoveEdgeOp : IOperation
         return true;
     }
 
+    bool VertexIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.vertexObjects.Count;
+    }
+
+    bool EdgeIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.edgeObjects.Count;
+    }
+
+    public bool MoveEdgeIdsInBounds(int edgeId)
+    {
+        if (!EdgeIdInBounds(edgeId))
+        {
+            Debug.LogWarningFormat("Warning: MoveEdgeOp: edgeId {0} was out of bounds of edgeObjects of length {1}", edgeId, meshRebuilder.edgeObjects.Count);
+            return false;
+        }
+
+        Edge edgeObj = meshRebuilder.edgeObjects[edgeId];
+
+        if (!VertexIdInBounds(edgeObj.vert1) ||
+            !VertexIdInBounds(edgeObj.vert2))
+        {
+            Debug.LogWarningFormat("Warning: MoveEdgeOp: vertexId {0} or {1} was out of bounds of vertexObjects of length {2}",
+                edgeObj.vert1, edgeObj.vert2, meshRebuilder.vertexObjects.Count);
+            return false;
+        }
+
+        return true;
+    }
+
     public void Deexecute()
     {
+        if (!MoveEdgeIdsInBounds(edgeId))
+        {
+            Debug.LogWarning("Warning: MoveEdgeOp Deexecute(): edgeIds are not in bounds!");
+            return;
+        }
+
         Edge edgeObj = meshRebuilder.edgeObjects[edgeId];
         Vertex vert1Obj = meshRebuilder.vertexObjects[edgeObj.vert1];
         Vertex vert2Obj = meshRebuilder.vertexObjects[edgeObj.vert2];

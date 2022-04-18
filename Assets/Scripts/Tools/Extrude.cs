@@ -238,7 +238,6 @@ public class Extrude : ToolClass
         triList.AddRange(newTriangles);
         int[] tris = triList.ToArray();
 
-        
         // Update mesh data
         mesh.Clear();
         mesh.vertices = vertices;
@@ -248,8 +247,30 @@ public class Extrude : ToolClass
         mesh.RecalculateNormals();
         CreateVisuals(meshRebuilder, newVertices, newTriangles, oldLength, oldLengthTri);
 
+        // Connect new edges to old vertices (a little barbaric but it's fine)
+        for (int i = 0; i < newVertexIds.Count; i++)
+        {
+            // Reference to vertex created from extrusion (3 total)
+            Vertex newVertex = meshRebuilder.vertexObjects[newVertexIds[i]];
 
-          // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
+            // Loop through new vertex's edges
+            foreach (Edge edge in newVertex.connectedEdges)
+            {
+                Vertex oldVertex;
+
+                // Reference to vertex the extrusion was created from
+                if (edge.vert1 != newVertex.id)
+                    oldVertex = meshRebuilder.vertexObjects[edge.vert1];
+                else
+                    oldVertex = meshRebuilder.vertexObjects[edge.vert2];
+
+                // Add the edge if it doesn't have it already
+                if (!oldVertex.connectedEdges.Contains(edge))
+                    oldVertex.connectedEdges.Add(edge);
+            }
+        }
+
+        // Only send the event if specified by the bool parameter "sendFaceExtrudeEvent"
         if (sendFaceExtrudeEvent)
         {
             // Synchronize the cached face extrusion event to other players by face id
