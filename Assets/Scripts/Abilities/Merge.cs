@@ -675,8 +675,6 @@ public class Merge : MonoBehaviour
 
         AddMergeVertexOpStep(timelineVertices, timelineTriangles, meshRebuilder.id, vertex1, vertex2);
 
-        // AddMergeVertexOpStep(meshRebuilder.id, vertex1, vertex2);
-
         // Synchronize merge vertex event
         MergeVertexEvent mergeVertexEvent = new MergeVertexEvent
         {
@@ -717,7 +715,6 @@ public class Merge : MonoBehaviour
         int vertex1 = mergeVertexEvent.deleterVertexId;
         int vertex2 = mergeVertexEvent.takeOverVertexId;
         Vertex deleterVertex = meshRebuilder.vertexObjects[mergeVertexEvent.deleterVertexId];
-        //Vertex deleterVertex = GetComponent<Vertex>();
         Vertex takeoverVertex = meshRebuilder.vertexObjects[mergeVertexEvent.takeOverVertexId];
 
         getDeleterData(vertex1, vertex2);

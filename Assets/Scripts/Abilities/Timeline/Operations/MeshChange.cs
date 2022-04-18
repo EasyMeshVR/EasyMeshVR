@@ -29,11 +29,12 @@ public class MeshChange : IOperation
     public void Execute()
     {
         Vertex deleterVertex = meshRebuilder.vertexObjects[deleterVertexId];
-        /*mesh.vertices = newVertices;
+
+        mesh.vertices = newVertices;
         mesh.triangles = newTriangles;
 
         meshRebuilder.vertices = newVertices;
-        meshRebuilder.triangles = newTriangles;*/
+        meshRebuilder.triangles = newTriangles;
 
         deleterVertex.GetComponent<Merge>().MergeVertex(new MergeVertexEvent
         {
