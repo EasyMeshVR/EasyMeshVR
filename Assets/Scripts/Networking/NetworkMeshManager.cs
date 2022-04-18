@@ -691,7 +691,11 @@ namespace EasyMeshVR.Multiplayer
 
             Vertex deleterVertex = meshRebuilder.vertexObjects[mergeVertexEvent.deleterVertexId];
             Merge mergeVertex = deleterVertex.GetComponent<Merge>();
-            mergeVertex.AddMergeVertexOpStep(mergeVertexEvent.meshId, mergeVertexEvent.deleterVertexId, mergeVertexEvent.takeOverVertexId);
+            Vector3[] vertices = (Vector3[])meshRebuilder.vertices.Clone();
+            int[] triangles = (int[])meshRebuilder.triangles.Clone();
+            // mergeVertex.AddMergeVertexOpStep(mergeVertexEvent.meshId, mergeVertexEvent.deleterVertexId, mergeVertexEvent.takeOverVertexId);
+            mergeVertex.AddMergeVertexOpStep(vertices, triangles, mergeVertexEvent.meshId, mergeVertexEvent.deleterVertexId, 
+                mergeVertexEvent.takeOverVertexId);
         }
 
         private void HandleUndoTimelineEvent(object[] data)

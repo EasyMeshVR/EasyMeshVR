@@ -48,6 +48,12 @@ public class MoveFaceOp : IOperation
 
     public void Execute()
     {
+        if (!MoveFaceIdsInBounds(faceId))
+        {
+            Debug.LogWarning("Warning: MoveFaceOp Execute(): faceIds are not in bounds!");
+            return;
+        }
+
         Face faceObj = meshRebuilder.faceObjects[faceId];
         Vertex vert1Obj = meshRebuilder.vertexObjects[faceObj.vert1];
         Vertex vert2Obj = meshRebuilder.vertexObjects[faceObj.vert2];
@@ -79,8 +85,60 @@ public class MoveFaceOp : IOperation
         return true;
     }
 
+    bool VertexIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.vertexObjects.Count;
+    }
+
+    bool EdgeIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.edgeObjects.Count;
+    }
+
+    bool FaceIdInBounds(int id)
+    {
+        return id >= 0 && id < meshRebuilder.faceObjects.Count;
+    }
+
+    bool MoveFaceIdsInBounds(int faceId)
+    {
+        if (!FaceIdInBounds(faceId))
+        {
+            Debug.LogWarningFormat("Warning: MoveFaceOp: faceId {0} was out of bounds of faceObjects of length {1}", faceId, meshRebuilder.faceObjects.Count);
+            return false;
+        }
+
+        Face faceObj = meshRebuilder.faceObjects[faceId];
+
+        if (!VertexIdInBounds(faceObj.vert1) ||
+            !VertexIdInBounds(faceObj.vert2) ||
+            !VertexIdInBounds(faceObj.vert3))
+        {
+            Debug.LogWarningFormat("Warning: MoveFaceOp: vertexId {0}, {1}, or {2} was out of bounds of vertexObjects of length {3}",
+                faceObj.vert1, faceObj.vert2, faceObj.vert3, meshRebuilder.vertexObjects.Count);
+            return false;
+        }
+
+        if (!EdgeIdInBounds(faceObj.edge1) ||
+            !EdgeIdInBounds(faceObj.edge2) ||
+            !EdgeIdInBounds(faceObj.edge3))
+        {
+            Debug.LogWarningFormat("Warning: MoveFaceOp: edgeId {0}, {1}, or {2} was out of bounds of edgeObjects of length {3}",
+                faceObj.edge1, faceObj.edge2, faceObj.edge3, meshRebuilder.edgeObjects.Count);
+            return false;
+        }
+
+        return true;
+    }
+
     public void Deexecute()
     {
+        if (!MoveFaceIdsInBounds(faceId))
+        {
+            Debug.LogWarning("Warning: MoveFaceOp Deexecute(): faceIds are not in bounds!");
+            return;
+        }
+
         Face faceObj = meshRebuilder.faceObjects[faceId];
         Vertex vert1Obj = meshRebuilder.vertexObjects[faceObj.vert1];
         Vertex vert2Obj = meshRebuilder.vertexObjects[faceObj.vert2];

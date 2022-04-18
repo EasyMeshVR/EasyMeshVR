@@ -1,26 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using EasyMeshVR.Multiplayer;
 
 public class MeshChange : IOperation
 {
-    MeshRebuilder meshRebuilder = GameObject.FindObjectOfType<MeshRebuilder>();
+    MeshRebuilder meshRebuilder;
+    Mesh mesh;
+    int meshId, deleterVertexId, takeoverVertexId;
     Vector3[] oldVertices, newVertices;
     int[] oldTriangles, newTriangles;
 
-    public MeshChange(Vector3[] inputVertices, int[] inputTriangles)
+    public MeshChange(Vector3[] inputVertices, int[] inputTriangles, int meshId, int deleterVertexId, int takeoverVertexId)
     {
+        this.meshId = meshId;
+        this.deleterVertexId = deleterVertexId;
+        this.takeoverVertexId = takeoverVertexId;
+        meshRebuilder = NetworkMeshManager.instance.meshRebuilders[meshId];
+        mesh = meshRebuilder.model.GetComponent<MeshFilter>().mesh;
+
         oldVertices = inputVertices;
-        newVertices = meshRebuilder.model.GetComponent<MeshFilter>().mesh.vertices;
+        newVertices = mesh.vertices;
 
         oldTriangles = inputTriangles;
-        newTriangles = meshRebuilder.model.GetComponent<MeshFilter>().mesh.triangles;
+        newTriangles = mesh.triangles;
     }
 
     public void Execute()
     {
-        meshRebuilder.model.GetComponent<MeshFilter>().mesh.vertices = newVertices;
-        meshRebuilder.model.GetComponent<MeshFilter>().mesh.triangles = newTriangles;
+        Vertex deleterVertex = meshRebuilder.vertexObjects[deleterVertexId];
+        /*mesh.vertices = newVertices;
+        mesh.triangles = newTriangles;
+
+        meshRebuilder.vertices = newVertices;
+        meshRebuilder.triangles = newTriangles;*/
+
+        deleterVertex.GetComponent<Merge>().MergeVertex(new MergeVertexEvent
+        {
+            deleterVertexId = deleterVertexId,
+            takeOverVertexId = takeoverVertexId,
+            meshId = meshId
+        });
     }
 
     bool IOperation.CanBeExecuted()
@@ -30,8 +50,14 @@ public class MeshChange : IOperation
 
     public void Deexecute()
     {
-        meshRebuilder.model.GetComponent<MeshFilter>().mesh.vertices = oldVertices;
-        meshRebuilder.model.GetComponent<MeshFilter>().mesh.triangles = oldTriangles;
+        mesh.vertices = oldVertices;
+        mesh.triangles = oldTriangles;
+
+        meshRebuilder.vertices = oldVertices;
+        meshRebuilder.triangles = oldTriangles;
+
+        meshRebuilder.removeVisuals();
+        meshRebuilder.CreateVisuals();
     }
 
     public bool CanBeDeexecuted()
