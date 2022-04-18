@@ -103,16 +103,6 @@ public class MoveVertices : MonoBehaviour
         pulleyLocomotion.isMovingVertex = true;
 
         thisvertex.gameObject.GetComponent<BoxCollider>().isTrigger = true;
-
-        foreach (Edge connEdge in thisvertex.connectedEdges)
-        {
-            
-            connEdge.attachedVertexHeldCount++;
-            Debug.LogFormat("Locking connEdge {0} heldCount {1} vert {2}", connEdge.id, connEdge.attachedVertexHeldCount, thisvertex.id);
-            connEdge.locked = true;
-            connEdge.GetComponent<MoveEdge>().isLocked = true;
-            connEdge.GetComponent<XRGrabInteractable>().enabled = false;
-        }
     }
 
     // Stop updating the mesh data
@@ -140,23 +130,6 @@ public class MoveVertices : MonoBehaviour
         // Synchronize the position of the mesh vertex by sending a cached event to other players
         NetworkMeshManager.instance.SynchronizeMeshVertexPull(vertexEvent);
         pulleyLocomotion.isMovingVertex = false;
-
-        foreach (Edge connEdge in thisvertex.connectedEdges)
-        {
-            connEdge.attachedVertexHeldCount--;
-
-            if (connEdge.attachedVertexHeldCount == 0)
-            {
-                Debug.LogFormat("Unlocking connEdge {0} vert {1}", connEdge.id, thisvertex.id);
-                connEdge.locked = false;
-                connEdge.GetComponent<MoveEdge>().isLocked = false;
-                connEdge.GetComponent<XRGrabInteractable>().enabled = true;
-            }
-            else
-            {
-                Debug.LogFormat("Not unlocking connEdge {0} heldCount {1} vert {2}", connEdge.id, connEdge.attachedVertexHeldCount, thisvertex.id);
-            }
-        }
 
         if (enabled && gameObject.activeInHierarchy)
         {

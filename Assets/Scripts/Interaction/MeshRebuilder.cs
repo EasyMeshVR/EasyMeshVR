@@ -230,7 +230,6 @@ public class MeshRebuilder : MonoBehaviour
                 edgeComponent.vert1 = i;
                 edgeComponent.vert2 = k;
                 edgeComponent.thisEdge = newEdge;
-                edgeComponent.attachedVertexHeldCount = 0;
                 edgeObjects.Add(edgeComponent);
 
                 if (!ToolManager.instance.grabEdge)
