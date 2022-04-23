@@ -215,13 +215,13 @@ public class MeshRebuilder : MonoBehaviour
                 newEdge = Instantiate(edge, model.transform);
                 newEdge.name = "Edge" + (i + edgeCount++).ToString();
 
-                // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[i], vertices[k]);
-                newEdge.transform.localPosition = (vertices[i] + vertices[k]) / 2;
-                newEdge.transform.localScale = new Vector3(newEdge.transform.localScale.x, edgeDistance, newEdge.transform.localScale.z);
-
-                // Orient the edge to look at the vertices
-                newEdge.transform.LookAt(newVertex.transform, Vector3.up);
+                // Set edge's position, scale, rotation to look at the vertices
+                // (We only need to change the Y scale since that's the axis pointing up)
+                newEdge.transform.localPosition = ((vertices[i] + vertices[k]) / 2);
+                Vector3 edgeScale = newEdge.transform.localScale;
+                edgeScale.y = (Vector3.Distance(vertices[i], vertices[k])) / 2;
+                newEdge.transform.localScale = edgeScale;
+                newEdge.transform.LookAt(newVertex.transform);
                 newEdge.transform.rotation *= Quaternion.Euler(90, 0, 0);
 
                 // Add edge and it's connecting vertices to a dictionary reference for use in other scripts

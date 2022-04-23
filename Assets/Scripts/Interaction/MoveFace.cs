@@ -404,39 +404,39 @@ public class MoveFace : MonoBehaviour
             // If either of the vertex values are the same as selectedVertex1, it will update the edges that vertex is connected to
             if (vert1 == vertex1Id || vert2 == vertex1Id)
             {
-                // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
-                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
-                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
-
-                // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                edgeObject.transform.LookAt(vertex1Transform, Vector3.up);
+                // Set edge's position, scale, rotation to look at the vertices
+                // (We only need to change the Y scale since that's the axis pointing up)
+                edgeObject.transform.localPosition = ((vertices[vert1] + vertices[vert2]) / 2);
+                Vector3 edgeScale = edgeObject.transform.localScale;
+                edgeScale.y = (Vector3.Distance(vertices[vert1], vertices[vert2])) / 2;
+                edgeObject.transform.localScale = edgeScale;
+                edgeObject.transform.LookAt(vertex1Transform);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
 
             // If either of the vertex values are the same as selectedVertex2, it will update the edges that vertex is connected to
             if (vert1 == vertex2Id || vert2 == vertex2Id)
             {
-                // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
-                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
-                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
-
-                // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                edgeObject.transform.LookAt(vertex2Transform, Vector3.up);
+                // Set edge's position, scale, rotation to look at the vertices
+                // (We only need to change the Y scale since that's the axis pointing up)
+                edgeObject.transform.localPosition = ((vertices[vert1] + vertices[vert2]) / 2);
+                Vector3 edgeScale = edgeObject.transform.localScale;
+                edgeScale.y = (Vector3.Distance(vertices[vert1], vertices[vert2])) / 2;
+                edgeObject.transform.localScale = edgeScale;
+                edgeObject.transform.LookAt(vertex2Transform);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
 
             // If either of the vertex values are the same as selectedVertex2, it will update the edges that vertex is connected to
             if (vert1 == vertex3Id || vert2 == vertex3Id)
             {
-                // Set the edge's position to between the two vertices and scale it appropriately
-                float edgeDistance = 0.5f * Vector3.Distance(vertices[edge.vert1], vertices[edge.vert2]);
-                edgeObject.transform.localPosition = (vertices[vert1] + vertices[vert2]) / 2;
-                edgeObject.transform.localScale = new Vector3(edgeObject.transform.localScale.x, edgeDistance, edgeObject.transform.localScale.z);
-
-                // Orient the edge to look at the vertices (specifically the one we're currently holding)
-                edgeObject.transform.LookAt(vertex3Transform, Vector3.up);
+                // Set edge's position, scale, rotation to look at the vertices
+                // (We only need to change the Y scale since that's the axis pointing up)
+                edgeObject.transform.localPosition = ((vertices[vert1] + vertices[vert2]) / 2);
+                Vector3 edgeScale = edgeObject.transform.localScale;
+                edgeScale.y = (Vector3.Distance(vertices[vert1], vertices[vert2])) / 2;
+                edgeObject.transform.localScale = edgeScale;
+                edgeObject.transform.LookAt(vertex3Transform);
                 edgeObject.transform.rotation *= Quaternion.Euler(90, 0, 0);
             }
         }
